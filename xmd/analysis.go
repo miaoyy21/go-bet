@@ -14,7 +14,6 @@ var rate = 1.0
 var sigma float64
 var wins int
 var fails int
-var times = 1
 
 func analysis(cache *Cache) error {
 	if err := cache.Sync(200); err != nil {
@@ -52,7 +51,7 @@ func analysis(cache *Cache) error {
 
 	// 输出
 	if len(latest) == 0 {
-		log.Printf("【%-4d】第【%d】期：开奖结果【%d】，余额【%d】，投注尾数【%s】，开始执行分析 ...\n", times, cache.issue, cache.result, surplus, strings.Join(sw8s, ","))
+		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，投注尾数【%s】，开始执行分析 ...\n", cache.issue, cache.result, surplus, strings.Join(sw8s, ","))
 	} else {
 		// L:	2 			-1
 		// W:	2 			+0.4
@@ -98,7 +97,7 @@ func analysis(cache *Cache) error {
 				rate = rate + 0.125*float64(wins-5)
 			}
 
-			log.Printf("【%-4d %.2f】第【👍 %d %02d】期：开奖结果【%d】，余额【%d】，投注尾数【%s】，投注倍率【%.3f】，开始执行分析 ...\n", times, sigma, cache.issue, wins, cache.result, surplus, strings.Join(sw8s, ","), rate)
+			log.Printf("【%.2f】第【👍 %d %02d】期：开奖结果【%d】，余额【%d】，投注尾数【%s】，投注倍率【%.3f】，开始执行分析 ...\n", sigma, cache.issue, wins, cache.result, surplus, strings.Join(sw8s, ","), rate)
 		} else {
 			wins = 0
 			fails++
@@ -108,7 +107,7 @@ func analysis(cache *Cache) error {
 			// 0.88: 2.0 * 1.88 * 1.77 * 1.68 * 1.60 * 1.53 * 1.46 = 40
 			rate = rate * (1.0 + math.Pow(0.9, (float64(sigma)/4.0)-1))
 
-			log.Printf("【%-4d %.2f】第【👀 %d %02d】期：开奖结果【%d】，余额【%d】，投注尾数【%s】，投注倍率【%.3f】，开始执行分析 ...\n", times, sigma, cache.issue, fails, cache.result, surplus, strings.Join(sw8s, ","), rate)
+			log.Printf("【%.2f】第【👀 %d %02d】期：开奖结果【%d】，余额【%d】，投注尾数【%s】，投注倍率【%.3f】，开始执行分析 ...\n", sigma, cache.issue, fails, cache.result, surplus, strings.Join(sw8s, ","), rate)
 		}
 	}
 
@@ -133,7 +132,6 @@ func analysis(cache *Cache) error {
 		total = total + betGold
 	}
 
-	times++
 	surplus = surplus - total
 	log.Printf("第【%s】期：投注数字【%s】，投注金额【%d】，余额【%d】 >>>>>>>>>> \n", nextIssue, strings.Join(bets, ","), total, surplus)
 
