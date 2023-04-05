@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8a987aa5-ee73-4bca-85a0-82cea81b8678" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/xmd/analysis1.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xmd/analysis.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/analysis.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/xmd_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/xmd_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +30,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2No8q73Q7OGJoTPakiTmHA45CXg" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />

@@ -84,7 +84,8 @@ func analysis(cache *Cache) error {
 			continue
 		}
 
-		rate := 0.725 + 0.75*(float64(sigma)+3)/4
+		rate := 2.0
+		//rate := 0.725 + 0.75*(float64(sigma)+3)/4
 		betGold := int(rate * float64(cache.user.gold) * float64(stds[i]) / 1000)
 		if err := hPostBet(nextIssue, betGold, i, cache.user); err != nil {
 			return err
