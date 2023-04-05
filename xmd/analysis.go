@@ -17,7 +17,10 @@ var times = 1
 var rate float64
 var wins int
 var fails int
-var maxFails int
+var mWins int
+var mFails int
+var xWins int
+var xFails int
 
 func analysis(cache *Cache) error {
 	if err := cache.Sync(200); err != nil {
@@ -35,28 +38,33 @@ func analysis(cache *Cache) error {
 	// 输出
 	if len(latest) == 0 {
 		rate = 1.0
-		log.Printf("【%-4d  %d】第【✊ %d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", times, maxFails, cache.issue, cache.result, surplus)
+		log.Printf("【%-4d】第【✊ %d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", times, cache.issue, cache.result, surplus)
 	} else {
 		if _, exists := latest[cache.result]; exists {
 			wins++
+			if wins > mWins {
+				mWins = wins
+			}
 			fails = 0
 
 			rate = 1.0
-			log.Printf("【%-4d  %d】第【👍 %d %02d】期：开奖结果【%d】，余额【%d】，投注倍率【%.3f】，开始执行分析 ...\n", times, maxFails, cache.issue, wins, cache.result, surplus, rate)
+
+			xWins++
+			log.Printf("【%-4d W(%d,%d) F(%d,%d)】第【👍 %d %02d】期：开奖结果【%d】，余额【%d】，投注倍率【%.3f】，开始执行分析 ...\n", times, xWins, mWins, xFails, mFails, cache.issue, wins, cache.result, surplus, rate)
 		} else {
 			wins = 0
 			fails++
-			if fails > maxFails {
-				maxFails = fails
-			}
-
-			// 最大失败次数
-			if fails >= 6 {
-				rate = 1.0
+			if fails > mFails {
+				mFails = fails
 			}
 
 			rate = rate * (1.375 + math.Pow(0.75, float64(fails)-1))
-			log.Printf("【%-4d  %d】第【👀 %d %02d】期：开奖结果【%d】，余额【%d】，投注倍率【%.3f】，开始执行分析 ...\n", times, maxFails, cache.issue, fails, cache.result, surplus, rate)
+			if fails >= 4 {
+				rate = rate / 2
+			}
+
+			xFails++
+			log.Printf("【%-4d W(%d,%d) F(%d,%d)】第【👀 %d %02d】期：开奖结果【%d】，余额【%d】，投注倍率【%.3f】，开始执行分析 ...\n", times, xWins, mWins, xFails, mFails, cache.issue, fails, cache.result, surplus, rate)
 		}
 	}
 
