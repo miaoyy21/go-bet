@@ -38,5 +38,6 @@ func TestInit(t *testing.T) {
 		log.Printf("%02d:  %.2f \n", i, 1000.0/float64(stds[i]))
 	}
 
-	log.Println(math.Round(3 / 4))
+	log.Println(math.Floor(3 / 4))
+	log.Println(math.Floor(3.0 / 4))
 }

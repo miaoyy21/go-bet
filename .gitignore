@@ -13,3 +13,6 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+go-bet_darwin_arm64
+go-bet_linux_386
+go-bet_windows_386
