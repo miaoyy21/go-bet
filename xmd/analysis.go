@@ -59,9 +59,9 @@ func analysis(cache *Cache) error {
 			}
 
 			rate = rate * (1.375 + math.Pow(0.75, float64(fails)-1))
-			if fails >= 4 {
-				rate = rate / 2
-			}
+			//if fails >= 4 {
+			//	rate = rate / 2
+			//}
 
 			xFails++
 			log.Printf("【%-4d W(%d,%d) F(%d,%d)】第【👀 %d %02d】期：开奖结果【%d】，余额【%d】，投注倍率【%.3f】，开始执行分析 ...\n", times, xWins, mWins, xFails, mFails, cache.issue, fails, cache.result, surplus, rate)
