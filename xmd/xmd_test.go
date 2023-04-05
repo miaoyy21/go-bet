@@ -38,6 +38,16 @@ func TestInit(t *testing.T) {
 		log.Printf("%02d:  %.2f \n", i, 1000.0/float64(stds[i]))
 	}
 
-	log.Println(math.Floor(3 / 4))
-	log.Println(math.Floor(3.0 / 4))
+	log.Println(0.725 + 0.75*(float64(0)+3)/4)
+	log.Println(0.725 + 0.75*(float64(1)+3)/4)
+	log.Println(0.725 + 0.75*(float64(2)+3)/4)
+	log.Println(0.725 + 0.75*(float64(3)+3)/4)
+	log.Println(0.725 + 0.75*(float64(4)+3)/4)
+	log.Println(0.725 + 0.75*(float64(5)+3)/4)
+	log.Println(0.725 + 0.75*(float64(6)+3)/4)
+	log.Println(0.725 + 0.75*(float64(7)+3)/4)
+	log.Println(0.725 + 0.75*(float64(8)+3)/4)
+	log.Println(0.725 + 0.75*(float64(9)+3)/4)
+	log.Println(0.725 + 0.75*(float64(10)+3)/4)
+	log.Println(0.725 + 0.75*(float64(11)+3)/4)
 }

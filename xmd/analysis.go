@@ -3,7 +3,6 @@ package xmd
 import (
 	"fmt"
 	"log"
-	"math"
 	"sort"
 	"strconv"
 )
@@ -51,6 +50,8 @@ func analysis(cache *Cache) error {
 			xWins = 0
 			if isBet {
 				sigma = sigma + 4
+			} else {
+				sigma = sigma + 2
 			}
 
 			isBet = false
@@ -79,16 +80,16 @@ func analysis(cache *Cache) error {
 	var total int
 	for i := 0; i <= 27; i++ {
 		if _, exists := w8s[i%10]; !exists {
-			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，投注倍率【%.3f】，投注金额【    -】\n", nextIssue, i, 1000.0/float64(stds[i]), 0.0)
+			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，投注倍率【%-7.3f】，投注金额【    -】\n", nextIssue, i, 1000.0/float64(stds[i]), 0.0)
 			continue
 		}
 
-		rate := 1.25 + 0.25*math.Floor(float64(sigma)/4)
+		rate := 0.725 + 0.75*(float64(sigma)+3)/4
 		betGold := int(rate * float64(cache.user.gold) * float64(stds[i]) / 1000)
 		if err := hPostBet(nextIssue, betGold, i, cache.user); err != nil {
 			return err
 		}
-		log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，投注倍率【%.3f】，投注金额【% 5d】\n", nextIssue, i, 1000.0/float64(stds[i]), rate, betGold)
+		log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，投注倍率【%-7.3f】，投注金额【% 5d】\n", nextIssue, i, 1000.0/float64(stds[i]), rate, betGold)
 
 		total = total + betGold
 	}
