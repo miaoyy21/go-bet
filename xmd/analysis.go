@@ -30,7 +30,7 @@ func analysis(cache *Cache) error {
 	}
 
 	// 按照尾数取最热的8期
-	w8s, w2s := make(map[int]struct{}), make(map[int]struct{})
+	w8s := make(map[int]struct{})
 	for i := len(cache.histories) - 1; i >= 0; i-- {
 		if len(w8s) == 8 {
 			break
@@ -39,11 +39,6 @@ func analysis(cache *Cache) error {
 		result := cache.histories[i].result
 		mod := result % 10
 
-		// 最近3期的尾数
-		if len(w2s) < 2 {
-			w2s[mod] = struct{}{}
-		}
-
 		// 最近2期的尾数
 		w8s[mod] = struct{}{}
 	}
@@ -51,11 +46,6 @@ func analysis(cache *Cache) error {
 	// String
 	sw8s := make([]string, 0, len(w8s))
 	for i := range w8s {
-		if _, exists := w2s[i]; exists {
-			sw8s = append(sw8s, fmt.Sprintf("%d★", i))
-			continue
-		}
-
 		sw8s = append(sw8s, fmt.Sprintf("%d", i))
 	}
 	sort.Strings(sw8s)
@@ -123,53 +113,29 @@ func analysis(cache *Cache) error {
 	}
 
 	latest = make(map[int]struct{})
-	bets, total, extra, coverage := make([]string, 0), 0, 0, 0
+	bets, total := make([]string, 0), 0
 	for i := 0; i <= 27; i++ {
-		_, isBet := w8s[i%10]
-
-		// 特殊情况下的投注
-		if rate >= 1<<7 && (i <= 5 || i >= 22) {
-			isBet = true // 128倍
-		} else if rate >= 1<<6 && (i <= 4 || i >= 23) {
-			isBet = true // 64倍
-		} else if rate >= 1<<5 && (i <= 3 || i >= 24) {
-			isBet = true // 32倍
-		} else if rate >= 1<<4 && (i <= 2 || i >= 25) {
-			isBet = true // 16倍
-		} else if rate >= 1<<3 && (i <= 1 || i >= 26) {
-			isBet = true // 8倍
-		} else if rate >= 1<<2 && (i <= 0 || i >= 27) {
-			isBet = true // 4倍
-		}
-
-		if !isBet {
+		_, exists := w8s[i%10]
+		if !exists {
 			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，变化倍率【%.2f】，投注金额【    -】\n", nextIssue, i, 1000.0/float64(stds[i]), 0.0)
 			continue
 		}
 
-		// 倍率变化率
-		delta := 1.0
-		if _, exists := w2s[i%10]; exists {
-			delta = 1.1
-		}
-
-		betGold := int(delta * rate * float64(cache.user.gold) * float64(stds[i]) / 1000)
+		betGold := int(rate * float64(cache.user.gold) * float64(stds[i]) / 1000)
 		if err := hPostBet(nextIssue, betGold, i, cache.user); err != nil {
 			return err
 		}
-		log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，变化倍率【%.2f】，投注金额【% 5d】\n", nextIssue, i, 1000.0/float64(stds[i]), delta, betGold)
+		log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，投注金额【% 5d】\n", nextIssue, i, 1000.0/float64(stds[i]), betGold)
 
 		latest[i] = struct{}{}
 		bets = append(bets, fmt.Sprintf("%02d", i))
 
 		total = total + betGold
-		extra = extra + int((delta-1.0)*rate*float64(cache.user.gold)*float64(stds[i])/1000)
-		coverage = coverage + stds[i]
 	}
 
 	times++
 	surplus = surplus - total
-	log.Printf("第【%s】期：投注数字【%s】，投注金额【%d】，额外金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, strings.Join(bets, ","), total, extra, surplus, float64(coverage)/10)
+	log.Printf("第【%s】期：投注数字【%s】，投注金额【%d】，余额【%d】 >>>>>>>>>> \n", nextIssue, strings.Join(bets, ","), total, surplus)
 
 	return nil
 }
