@@ -37,4 +37,6 @@ func TestInit(t *testing.T) {
 	for i := 0; i <= 27; i++ {
 		log.Printf("%02d:  %.2f \n", i, 1000.0/float64(stds[i]))
 	}
+
+	log.Println(math.Round(3 / 4))
 }
