@@ -15,16 +15,21 @@ func TestInit(t *testing.T) {
 	i = 1
 	fmt.Printf("%.2f\n", i/4)
 
-	log.Printf("%.3f \n", 1.375+math.Pow(0.75, 0))
-	log.Printf("%.3f \n", 1.375+math.Pow(0.75, 1))
-	log.Printf("%.3f \n", 1.375+math.Pow(0.75, 2))
-	log.Printf("%.3f \n", 1.375+math.Pow(0.75, 3))
-	log.Printf("%.3f \n", 1.375+math.Pow(0.75, 4))
-	log.Printf("%.3f \n", 1.375+math.Pow(0.75, 5))
-	log.Printf("%.3f \n", 1.375+math.Pow(0.75, 6))
-	log.Printf("%.3f \n", 1.375+math.Pow(0.75, 7))
-	log.Printf("%.3f \n", 1.375+math.Pow(0.75, 8))
-	log.Printf("%.3f \n", 1.375+math.Pow(0.75, 9))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 0))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 1))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 2))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 3))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 4))
+	fmt.Println()
+
+	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 0))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 1))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 2))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 3))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 4))
+	fmt.Println()
+
+	fmt.Println(math.Pow(1.25, float64(4)))
 	fmt.Printf("%.3f \n", 2.15*2.06*1.98*1.91*1.84*1.78)
 
 	log.Println("标准赔率")

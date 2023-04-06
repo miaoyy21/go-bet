@@ -51,7 +51,10 @@ func analysis(cache *Cache) error {
 				mWins = wins
 			}
 
-			nFails[fails]++
+			if fails > 0 {
+				nFails[fails]++
+			}
+
 			if fails >= 4 {
 				rate = math.Pow(1.25, float64(fails))
 			} else {
@@ -67,7 +70,7 @@ func analysis(cache *Cache) error {
 				mFails = fails
 			}
 
-			rate = rate * (1.375 + math.Pow(0.75, float64(fails)-1))
+			rate = rate * (1.35 + math.Pow(0.65, float64(fails)-1))
 			if fails >= 4 {
 				rate = rate / 2.0
 			}
