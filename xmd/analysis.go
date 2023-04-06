@@ -83,7 +83,13 @@ func analysis(cache *Cache) error {
 					log.Printf("【%-4d】第【%d】期：重新初始化随机种子【%d】 ...\n", times, cache.issue, seed)
 				}
 			} else {
-				rate = rate * 0.75
+				for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
+					result := cache.histories[i].result
+					if result <= 6 || result >= 21 {
+						rate = rate * 0.65
+						break
+					}
+				}
 			}
 
 			fails++
