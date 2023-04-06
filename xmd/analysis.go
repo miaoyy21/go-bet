@@ -14,6 +14,8 @@ import (
 var latest = make(map[int]struct{})
 var times = 1
 
+var source rand.Source
+
 var rate float64
 var wins int
 var fails int
@@ -21,6 +23,7 @@ var mWins int
 var mFails int
 var xWins int
 var xFails int
+var nFails map[int]int
 
 func analysis(cache *Cache) error {
 	if err := cache.Sync(200); err != nil {
@@ -38,6 +41,8 @@ func analysis(cache *Cache) error {
 	// 输出
 	if len(latest) == 0 {
 		rate = 1.0
+		source = rand.NewSource(time.Now().UnixNano())
+		nFails = make(map[int]int)
 		log.Printf("【%-4d】第【✊ %d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", times, cache.issue, cache.result, surplus)
 	} else {
 		if _, exists := latest[cache.result]; exists {
@@ -45,14 +50,18 @@ func analysis(cache *Cache) error {
 			if wins > mWins {
 				mWins = wins
 			}
+
+			nFails[fails]++
+			if fails >= 4 {
+				rate = math.Pow(1.25, float64(fails))
+			} else {
+				rate = 1.0
+			}
+
 			fails = 0
-
-			rate = 1.0
-
 			xWins++
 			log.Printf("【%-4d W(%d,%d) F(%d,%d)】第【👍 %d %02d】期：开奖结果【%d】，余额【%d】，投注倍率【%.3f】，开始执行分析 ...\n", times, xWins, mWins, xFails, mFails, cache.issue, wins, cache.result, surplus, rate)
 		} else {
-			wins = 0
 			fails++
 			if fails > mFails {
 				mFails = fails
@@ -63,13 +72,25 @@ func analysis(cache *Cache) error {
 				rate = rate / 2.0
 			}
 
+			wins = 0
 			xFails++
+			source = rand.NewSource(time.Now().UnixNano()) // 重新初始化随机种子
 			log.Printf("【%-4d W(%d,%d) F(%d,%d)】第【👀 %d %02d】期：开奖结果【%d】，余额【%d】，投注倍率【%.3f】，开始执行分析 ...\n", times, xWins, mWins, xFails, mFails, cache.issue, fails, cache.result, surplus, rate)
 		}
 	}
 
 	p50s, sp50s, coverage := getP50()
-	log.Printf("第【%s】期：随机数字【🧐 %s】\n", nextIssue, strings.Join(sp50s, ","))
+	nfs := make([]string, 0)
+	for i := 1; ; i++ {
+		if len(nfs) == len(nFails) {
+			break
+		}
+
+		if n, ok := nFails[i]; ok {
+			nfs = append(nfs, fmt.Sprintf("%d:%d", i, n))
+		}
+	}
+	log.Printf("第【%s】期：随机数字【🧐 %s】，分布情况【%s】......\n", nextIssue, strings.Join(sp50s, ","), strings.Join(nfs, " , "))
 
 	var total int
 
@@ -97,14 +118,12 @@ func analysis(cache *Cache) error {
 }
 
 func getP50() (map[int]struct{}, []string, int) {
-	src := rand.NewSource(time.Now().UnixNano())
-
 	coverage := 0
 	p50s, sp50s := make(map[int]struct{}), make([]string, 0)
 	for {
-		d1 := rand.New(src).Intn(10)
-		d2 := rand.New(src).Intn(10)
-		d3 := rand.New(src).Intn(10)
+		d1 := rand.New(source).Intn(10)
+		d2 := rand.New(source).Intn(10)
+		d3 := rand.New(source).Intn(10)
 
 		d := d1 + d2 + d3
 		if _, ok := p50s[d]; ok {
