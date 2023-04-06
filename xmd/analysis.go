@@ -66,7 +66,8 @@ func analysis(cache *Cache) error {
 			xWins++
 			log.Printf("【%-4d W(%d,%d) F(%d,%d)】第【👍 %d %02d】期：开奖结果【%d】，余额【%d】，投注倍率【%.3f】，开始执行分析 ...\n", times, xWins, mWins, xFails, mFails, cache.issue, wins, cache.result, surplus, rate)
 		} else {
-			if fails <= 3 {
+			fails++
+			if rate <= 9.0 {
 				for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
 					result := cache.histories[i].result
 					if result <= 5 || result >= 22 {
@@ -76,7 +77,7 @@ func analysis(cache *Cache) error {
 					}
 				}
 
-				if fails == 0 {
+				if fails == 1 {
 					seed := time.Now().UnixNano()
 					source = rand.NewSource(seed) // 重新初始化随机种子
 
@@ -92,7 +93,6 @@ func analysis(cache *Cache) error {
 				}
 			}
 
-			fails++
 			if fails > mFails {
 				mFails = fails
 			}

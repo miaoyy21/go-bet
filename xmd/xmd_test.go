@@ -20,7 +20,7 @@ func TestInit(t *testing.T) {
 	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 2))
 	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 3))
 	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 4))
-	fmt.Println()
+	fmt.Println(2.35 * 2.00 * 1.77)
 
 	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 0))
 	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 1))
