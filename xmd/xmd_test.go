@@ -15,6 +15,13 @@ func TestInit(t *testing.T) {
 	i = 1
 	fmt.Printf("%.2f\n", i/4)
 
+	log.Printf("%.2f \n", 1.35+math.Pow(0.1, 0))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 1))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 2))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 3))
+	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 4))
+	fmt.Println()
+
 	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 0))
 	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 1))
 	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 2))

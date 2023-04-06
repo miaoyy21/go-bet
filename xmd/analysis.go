@@ -38,12 +38,13 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
-	// 输出
 	if len(latest) == 0 {
-		rate = 1.0
-		source = rand.NewSource(time.Now().UnixNano())
+		wins, fails, rate = 0, 0, 1.0
+
+		seed := time.Now().UnixNano()
+		source = rand.NewSource(seed)
 		nFails = make(map[int]int)
-		log.Printf("【%-4d】第【✊ %d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", times, cache.issue, cache.result, surplus)
+		log.Printf("【%-4d】第【✊ %d】期：开奖结果【%d】，余额【%d】，初始化随机种子【%d】，开始执行分析 ...\n", times, cache.issue, cache.result, surplus, seed)
 	} else {
 		if _, exists := latest[cache.result]; exists {
 			wins++
@@ -55,31 +56,42 @@ func analysis(cache *Cache) error {
 				nFails[fails]++
 			}
 
-			if fails >= 4 {
-				rate = math.Pow(1.25, float64(fails))
+			if rate >= 2.0 {
+				rate = rate / 2.0
 			} else {
-				rate = 1.0
+				rate = math.Pow(1.25, float64(fails))
 			}
 
 			fails = 0
 			xWins++
 			log.Printf("【%-4d W(%d,%d) F(%d,%d)】第【👍 %d %02d】期：开奖结果【%d】，余额【%d】，投注倍率【%.3f】，开始执行分析 ...\n", times, xWins, mWins, xFails, mFails, cache.issue, wins, cache.result, surplus, rate)
 		} else {
-			if fails == 0 {
-				seed := time.Now().UnixNano()
-				source = rand.NewSource(seed) // 重新初始化随机种子
+			if fails <= 3 {
+				for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
+					result := cache.histories[i].result
+					if result <= 5 || result >= 22 {
+						latest = make(map[int]struct{})
+						log.Printf("【%-4d W(%d,%d) F(%d,%d)】第【✊ %d %02d】期：开奖结果【%d】，余额【%d】，重置竞猜状态 ...\n", times, xWins, mWins, xFails, mFails, cache.issue, fails, cache.result, surplus)
+						return nil
+					}
+				}
 
-				log.Printf("【%-4d】第【%d】期：重新初始化随机种子【%d】 ...\n", times, cache.issue, seed)
+				if fails == 0 {
+					seed := time.Now().UnixNano()
+					source = rand.NewSource(seed) // 重新初始化随机种子
+
+					log.Printf("【%-4d】第【%d】期：重新初始化随机种子【%d】 ...\n", times, cache.issue, seed)
+				}
+			} else {
+				rate = rate * 0.75
 			}
+
 			fails++
 			if fails > mFails {
 				mFails = fails
 			}
 
 			rate = rate * (1.35 + math.Pow(0.65, float64(fails)-1))
-			if fails >= 4 {
-				rate = rate / 2.0
-			}
 
 			wins = 0
 			xFails++
