@@ -36,7 +36,14 @@ func TestInit(t *testing.T) {
 	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 4))
 	fmt.Println()
 
+	fmt.Println(math.Pow(1.25, float64(1)))
+	fmt.Println(math.Pow(1.25, float64(2)))
+	fmt.Println(math.Pow(1.25, float64(3)))
 	fmt.Println(math.Pow(1.25, float64(4)))
+	fmt.Println(math.Pow(1.25, float64(5)))
+	fmt.Println(math.Pow(1.25, float64(6)))
+	fmt.Println(math.Pow(1.25, float64(7)))
+	fmt.Println(math.Pow(1.25, float64(8)))
 	fmt.Printf("%.3f \n", 2.15*2.06*1.98*1.91*1.84*1.78)
 
 	log.Println("标准赔率")
