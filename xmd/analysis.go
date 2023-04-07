@@ -69,6 +69,41 @@ func analysis(cache *Cache) error {
 		total = total + betGold
 	}
 
+	// 额外投注
+	isExtra := true
+	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
+		result := cache.histories[i].result
+		if result <= 5 || result >= 22 {
+			isExtra = false
+			break
+		}
+	}
+
+	if isExtra {
+		r1, r2 := cache.result, cache.histories[len(cache.histories)-2].result
+		if (r1 >= 10 && r1 <= 17) && (r2 < 10 || r2 > 17) {
+			for i := 0; i <= 27; i++ {
+				if i == 4 || i == 23 || i == 5 || i == 22 {
+					log.Printf("第【%s】期【额外投注】：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，投注金额【    -】\n", nextIssue, i, 1000.0/float64(stds[i]))
+					continue
+				}
+
+				delta := 1.0
+				if i == 3 || i == 24 || i == 6 || i == 21 {
+					delta = 0.5
+				}
+
+				betGold := int(5 * delta * float64(cache.user.gold) * float64(stds[i]) / 1000)
+				if err := hPostBet(nextIssue, betGold, i, cache.user); err != nil {
+					return err
+				}
+
+				log.Printf("第【%s】期【额外投注】：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，投注金额【% 5d】\n", nextIssue, i, 1000.0/float64(stds[i]), betGold)
+				total = total + betGold
+			}
+		}
+	}
+
 	times++
 	surplus = surplus - total
 	log.Printf("第【%s】期：投注金额【%d】，余额【%d】 >>>>>>>>>> \n", nextIssue, total, surplus)
