@@ -1,9 +1,17 @@
 package xmd
 
 //
+//import (
+//	"fmt"
+//	"log"
+//	"math"
+//	"sort"
+//	"strconv"
+//	"strings"
+//)
+//
 //var latest = make(map[int]struct{})
 //var rate = 1.0
-//var sigma float64
 //var wins int
 //var fails int
 //var times = 1
@@ -70,71 +78,37 @@ package xmd
 //		if _, exists := latest[cache.result]; exists {
 //			wins++
 //			fails = 0
-//			rate = rate * 0.825
 //
-//			// 连续赢4次，那么再降1次
-//			if wins >= 4 {
-//				rate = rate * 0.9
-//			}
-//
-//			// 连续开奖
+//			rate = rate * 0.8
 //			if rate < 1.0 {
 //				rate = 1.0
 //			}
 //
-//			// 倍率变化量
-//			if rate <= 3.0 && sigma > 0 {
-//				if rate <= 1.5 {
-//					log.Printf("当前倍率【%.3f】，重置倍率变化量【%.2f】为零\n", rate, sigma)
-//					sigma = 0
-//				} else {
-//					log.Printf("当前倍率【%.3f】，将倍率变化量由【%.2f】调整为【%.2f】\n", rate, sigma, sigma*0.825)
-//					sigma = sigma * 0.825
-//				}
-//			} else if sigma >= 1 {
-//				sigma = sigma - 1
-//			}
-//
-//			// 防止引高倍率
-//			if wins > 5 {
-//				rate = rate + 0.125*float64(wins-5)
-//			}
-//
-//			log.Printf("【%-4d %.2f】第【👍 %d %02d】期：开奖结果【%d】，余额【%d】，投注尾数【%s】，投注倍率【%.3f】，开始执行分析 ...\n", times, sigma, cache.issue, wins, cache.result, surplus, strings.Join(sw8s, ","), rate)
+//			log.Printf("【%-4d】第【👍 %d %02d】期：开奖结果【%d】，余额【%d】，投注尾数【%s】，投注倍率【%.3f】，开始执行分析 ...\n", times, cache.issue, wins, cache.result, surplus, strings.Join(sw8s, ","), rate)
 //		} else {
 //			wins = 0
 //			fails++
-//			sigma = sigma + 4.0
 //
 //			// 0.90: 2.0 * 1.90 * 1.81 * 1.73 * 1.66 * 1.59 * 1.53 = 48
 //			// 0.88: 2.0 * 1.88 * 1.77 * 1.68 * 1.60 * 1.53 * 1.46 = 40
-//			rate = rate * (1.0 + math.Pow(0.9, (float64(sigma)/4.0)-1))
+//			if rate >= 2.0*1.88*1.77*1.68 {
+//				rate = rate * math.Pow(0.85, float64(fails)-1)
+//			} else {
+//				if fails <= 3 {
+//					rate = rate * (1.0 + math.Pow(0.75, float64(fails)-1))
+//				} else {
+//					rate = rate * math.Pow(1.375, float64(fails)-3)
+//				}
+//			}
 //
-//			log.Printf("【%-4d %.2f】第【👀 %d %02d】期：开奖结果【%d】，余额【%d】，投注尾数【%s】，投注倍率【%.3f】，开始执行分析 ...\n", times, sigma, cache.issue, fails, cache.result, surplus, strings.Join(sw8s, ","), rate)
+//			log.Printf("【%-4d】第【👀 %d %02d】期：开奖结果【%d】，余额【%d】，投注尾数【%s】，投注倍率【%.3f】，开始执行分析 ...\n", times, cache.issue, fails, cache.result, surplus, strings.Join(sw8s, ","), rate)
 //		}
 //	}
 //
 //	latest = make(map[int]struct{})
 //	bets, total, extra, coverage := make([]string, 0), 0, 0, 0
 //	for i := 0; i <= 27; i++ {
-//		_, isBet := w8s[i%10]
-//
-//		// 特殊情况下的投注
-//		if rate >= 1<<7 && (i <= 5 || i >= 22) {
-//			isBet = true // 128倍
-//		} else if rate >= 1<<6 && (i <= 4 || i >= 23) {
-//			isBet = true // 64倍
-//		} else if rate >= 1<<5 && (i <= 3 || i >= 24) {
-//			isBet = true // 32倍
-//		} else if rate >= 1<<4 && (i <= 2 || i >= 25) {
-//			isBet = true // 16倍
-//		} else if rate >= 1<<3 && (i <= 1 || i >= 26) {
-//			isBet = true // 8倍
-//		} else if rate >= 1<<2 && (i <= 0 || i >= 27) {
-//			isBet = true // 4倍
-//		}
-//
-//		if !isBet {
+//		if _, isBet := w8s[i%10]; !isBet {
 //			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，变化倍率【%.2f】，投注金额【    -】\n", nextIssue, i, 1000.0/float64(stds[i]), 0.0)
 //			continue
 //		}
