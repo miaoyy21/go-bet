@@ -32,6 +32,6 @@ func TestCache_Sync(t *testing.T) {
 			continue
 		}
 
-		log.Printf("Insert Issue %q Successful ! \n", histories[i].Issue)
+		log.Printf("Insert %q Successful ! \n", histories[i].Issue)
 	}
 }
