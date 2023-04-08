@@ -34,7 +34,6 @@ func hDo(method string, url string, s interface{}, t interface{}) error {
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36")
 
 	// Response
-	http.DefaultClient.Timeout = 3 * time.Second
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err

@@ -26,11 +26,12 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
+	for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
 		result := cache.histories[i].result
 		if result <= 5 || result >= 22 {
 			latest = make(map[int]struct{})
 			log.Printf("【%-4d】第【%d】期：开奖结果【%d】，余额【%d】，出现小边，不进行投注 ...\n", times, cache.issue, cache.result, surplus)
+			return nil
 		}
 	}
 

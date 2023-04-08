@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8a987aa5-ee73-4bca-85a0-82cea81b8678" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/xmd/analysis3.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/xmd/sync_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xmd/analysis.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/analysis.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis0.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/analysis0.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/h_do.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/h_do.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +65,7 @@
       <recent name="$PROJECT_DIR$/xmk" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.xmd_test.go">
+  <component name="RunManager" selected="Go Test.sync_test.go">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="go-bet" />
       <working_directory value="$PROJECT_DIR$" />
@@ -73,6 +73,17 @@
       <package value="go-bet" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sync_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="go-bet" />
+      <working_directory value="$PROJECT_DIR$/xmd" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="go-bet" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/xmd/sync_test.go" />
+      <framework value="gotest" />
       <method v="2" />
     </configuration>
     <configuration name="xmd_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -88,6 +99,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.sync_test.go" />
         <item itemvalue="Go Test.xmd_test.go" />
         <item itemvalue="Go Build.go build main.go" />
       </list>
