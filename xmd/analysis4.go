@@ -53,7 +53,7 @@ func analysis(cache *Cache) error {
 
 			times++
 			surplus = surplus - total
-			log.Printf("第【%s】期：投注数字【0, 1, 2, 3, 4, 23, 24, 25, 26, 27】，投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, surplus, float64(coverage)/10)
+			log.Printf("第【%s】期：投注数字【0 ~ 4, 23 ~ 27】，投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, surplus, float64(coverage)/10)
 			return nil
 		}
 	}
