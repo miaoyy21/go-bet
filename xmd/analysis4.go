@@ -11,7 +11,7 @@ import (
 var latest = make(map[int]struct{})
 var wins int
 var fails int
-var rate = 1.0
+var rate = 6.0
 var times = 1
 
 func analysis(cache *Cache) error {
@@ -40,8 +40,8 @@ func analysis(cache *Cache) error {
 
 			latest = make(map[int]struct{})
 			total, coverage := 0, 0
-			for _, n := range []int{0, 1, 2, 3, 4, 23, 24, 25, 26, 27} {
-				betGold := int(2.0 * float64(cache.user.gold) * float64(stds[n]) / 1000)
+			for _, n := range []int{0, 1, 2, 3, 4, 5, 22, 23, 24, 25, 26, 27} {
+				betGold := int(float64(cache.user.gold) * float64(stds[n]) / 1000)
 				if err := hPostBet(nextIssue, betGold, n, cache.user); err != nil {
 					return err
 				}
@@ -53,7 +53,7 @@ func analysis(cache *Cache) error {
 
 			times++
 			surplus = surplus - total
-			log.Printf("第【%s】期：投注数字【0 ~ 4, 23 ~ 27】，投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, surplus, float64(coverage)/10)
+			log.Printf("第【%s】期：投注数字【0 ~ 5, 22 ~ 27】，投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, surplus, float64(coverage)/10)
 			return nil
 		}
 	}
@@ -119,7 +119,7 @@ func analysis(cache *Cache) error {
 		// 倍率变化率
 		delta := 1.0
 		if _, exists := w2s[result%10]; exists {
-			delta = 1.15
+			delta = 1.1
 		}
 
 		betGold := int(rate * delta * float64(cache.user.gold) * float64(stds[result]) / 1000)
