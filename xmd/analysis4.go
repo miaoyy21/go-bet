@@ -11,7 +11,7 @@ import (
 var latest = make(map[int]struct{})
 var wins int
 var fails int
-var rate = 6.0
+var rate = 5.25
 var times = 1
 
 func analysis(cache *Cache) error {
@@ -95,7 +95,7 @@ func analysis(cache *Cache) error {
 	} else {
 		if _, exists := latest[cache.result]; exists {
 			wins++
-			rate = rate * 0.875
+			rate = rate * 0.825
 			if rate < 1.0 {
 				rate = 1.0
 			}
@@ -109,7 +109,7 @@ func analysis(cache *Cache) error {
 	}
 
 	latest = make(map[int]struct{})
-	bets, total, coverage := make([]string, 0), 0, 0
+	bets, total := make([]string, 0), 0
 	for _, result := range []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27} {
 		if _, exists := w8s[result%10]; !exists {
 			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，变化倍率【%.2f】，投注金额【    -】\n", nextIssue, result, 1000.0/float64(stds[result]), 0.0)
@@ -119,7 +119,7 @@ func analysis(cache *Cache) error {
 		// 倍率变化率
 		delta := 1.0
 		if _, exists := w2s[result%10]; exists {
-			delta = 1.1
+			delta = 1.075
 		}
 
 		betGold := int(rate * delta * float64(cache.user.gold) * float64(stds[result]) / 1000)
@@ -132,12 +132,11 @@ func analysis(cache *Cache) error {
 		bets = append(bets, fmt.Sprintf("%02d", result))
 
 		total = total + betGold
-		coverage = coverage + stds[result]
 	}
 
 	times++
 	surplus = surplus - total
-	log.Printf("第【%s】期：投注数字【%s】，投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, strings.Join(bets, ","), total, surplus, float64(coverage)/10)
+	log.Printf("第【%s】期：投注数字【%s】，投注金额【%d】，余额【%d】 >>>>>>>>>> \n", nextIssue, strings.Join(bets, ","), total, surplus)
 
 	return nil
 }

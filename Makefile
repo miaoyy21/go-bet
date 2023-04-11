@@ -10,20 +10,20 @@ build:
 install:
 	go install
 release:
-	# Clean
+	# Build for windows
 	go clean
-
-	# Build for mac
-	go build -o ${BINARY}_darwin_arm64
+	rm -rf ${BINARY}_windows_386
+	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o ${BINARY}_windows_386
 
 	# Build for linux
 	go clean
 	rm -rf ${BINARY}_linux_386
 	CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -o  ${BINARY}_linux_386
 
-	# Build for windows
+	# Build for mac
 	go clean
-	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o ${BINARY}_windows_386
+	rm -rf ${BINARY}_darwin_arm64
+	go build -o ${BINARY}_darwin_arm64
 
 	go clean
 
