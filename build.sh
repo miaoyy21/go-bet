@@ -2,9 +2,7 @@
 
 make release
 
-mv go-bet_windows_386 $DOCUMENTS/start/bet_150.158.171.47/os/bet/go-bet_windows_386
 mv go-bet_linux_386 $DOCUMENTS/start/bet_150.158.171.47/os/bet/go-bet_linux_386
-mv go-bet_darwin_arm64 $DOCUMENTS/start/bet_150.158.171.47/os/bet/go-bet_darwin_arm64
 
 
 # cd ~/start/bet_150.158.171.47
