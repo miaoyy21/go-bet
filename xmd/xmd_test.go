@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestInit(t *testing.T) {
+func TestRun(t *testing.T) {
 	calc()
 
 	var i float64
@@ -50,4 +50,6 @@ func TestInit(t *testing.T) {
 	for i := 0; i <= 27; i++ {
 		log.Printf("%02d:  %.2f \n", i, 1000.0/float64(stds[i]))
 	}
+
+	fmt.Printf("%.2f\n", 1.675*0.825*0.825*0.825*0.825)
 }
