@@ -31,10 +31,17 @@ func analysis(cache *Cache) error {
 	} else {
 		if _, exists := latest[cache.result]; exists {
 			wins++
-			log.Printf("【%-4d】第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", times, cache.issue, wins, fails, cache.result, surplus)
+			rate = rate * 0.9457416
+			if rate < 1.0 {
+				rate = 1.0
+			}
+
+			log.Printf("【%-4d】第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", times, cache.issue, wins, fails, cache.result, surplus, rate)
 		} else {
 			fails++
-			log.Printf("【%-4d】第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", times, cache.issue, wins, fails, cache.result, surplus)
+			rate = rate * 1.25
+
+			log.Printf("【%-4d】第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", times, cache.issue, wins, fails, cache.result, surplus, rate)
 		}
 	}
 

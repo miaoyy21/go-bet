@@ -6,10 +6,11 @@ import (
 )
 
 func Run(cache *Cache) {
-	calc()
+	log.Printf("当前设置投注基数为 %d ...\n", cache.user.gold)
 	if cache.user.isDebug {
 		log.Println("当前设置为调试模式，不发送投注请求 ...")
 	}
+	calc()
 
 	sec := 75.0
 	dua := time.Now().Sub(time.Now().Truncate(time.Minute))
