@@ -20,8 +20,12 @@ func TestCache_Sync(t *testing.T) {
 	token := "cbj7s576p3se6c87194kwqo1c1w2cq87sau8lc2s"
 
 	userBase := NewUserBase(true, 0, unix, keyCode, deviceId, userId, token)
-	histories, err := hGetHistories(5000, userBase)
+	histories, err := hGetHistories(720, userBase)
 	if err != nil {
+		log.Fatalf("hGetHistories() fail : %s \n", err.Error())
+	}
+
+	if _, err := db.Exec("TRUNCATE TABLE histories"); err != nil {
 		log.Fatalf("hGetHistories() fail : %s \n", err.Error())
 	}
 

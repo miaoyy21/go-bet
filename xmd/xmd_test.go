@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestRun(t *testing.T) {
+func TestCache_Sync2(t *testing.T) {
 	calc()
 
 	var i float64
