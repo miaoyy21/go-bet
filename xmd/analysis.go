@@ -18,13 +18,13 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
-		result := cache.histories[i].result
-		if result <= 5 || result >= 22 {
-			log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，暂时停止投注 ...\n", cache.issue, cache.result, surplus)
-			return nil
-		}
-	}
+	//for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
+	//	result := cache.histories[i].result
+	//	if result <= 5 || result >= 22 {
+	//		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，暂时停止投注 ...\n", cache.issue, cache.result, surplus)
+	//		return nil
+	//	}
+	//}
 
 	size := len(cache.histories)
 	r1 := cache.histories[size-1].result
