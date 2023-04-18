@@ -22,34 +22,39 @@ func TestCache_Sync2(t *testing.T) {
 
 	log.Printf("Rows Total Count is %d \n", rows)
 
+	size := 1440
 	for no := 0; no <= 27; no++ {
-		rates := make([]string, 0, int(math.Ceil(float64(rows)/1440)))
-		for i := 0; i < int(math.Ceil(float64(rows)/1440)); i++ {
+		rates := make([]float64, 0, int(math.Ceil(float64(rows)/float64(size))))
+		for i := 0; i < int(math.Ceil(float64(rows)/float64(size))); i++ {
 			var rate float64
-			if err := db.QueryRow("CALL PROC(?,?,?)", no, 1440, i*1440).Scan(&rate); err != nil {
+			if err := db.QueryRow("CALL PROC(?,?,?)", no, size, i*size).Scan(&rate); err != nil {
 				if err == sql.ErrNoRows {
-					rates = append(rates, fmt.Sprintf("%.4f", rate))
+					rates = append(rates, rate)
 					continue
 				}
 
 				log.Fatalf("sql.Exec() fail : %s \n", err.Error())
 			}
 
-			rates = append(rates, fmt.Sprintf("%.4f", rate))
+			rates = append(rates, rate)
 		}
 
 		var rate float64
-		if err := db.QueryRow("CALL PROC(?,?,?)", no, 720, rows-720).Scan(&rate); err != nil {
-			if err == sql.ErrNoRows {
-				rates = append(rates, fmt.Sprintf("[%.4f]", rate))
-			} else {
+		if err := db.QueryRow("CALL PROC(?,?,?)", no, size/2, rows-size/2).Scan(&rate); err != nil {
+			if err != sql.ErrNoRows {
 				log.Fatalf("sql.Exec() fail : %s \n", err.Error())
 			}
-		} else {
-			rates = append(rates, fmt.Sprintf("[%.4f]", rate))
 		}
 
-		log.Printf("[%02d] %s \n", no, strings.Join(rates, "  "))
+		log.Printf("[%02d] %s [%.4f]\n", no, fmtF64(rates), rate)
+	}
+}
+
+func fmtF64(fs []float64) string {
+	ss := make([]string, 0, len(fs))
+	for _, f := range fs {
+		ss = append(ss, fmt.Sprintf("%.4f", f))
 	}
 
+	return strings.Join(ss, "  ")
 }
