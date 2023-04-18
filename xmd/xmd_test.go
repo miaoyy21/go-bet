@@ -1,55 +1,55 @@
 package xmd
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"math"
+	"strings"
 	"testing"
 )
 
 func TestCache_Sync2(t *testing.T) {
-	calc()
-
-	var i float64
-
-	i = 1
-	fmt.Printf("%.2f\n", i/4)
-
-	log.Printf("%.2f \n", 1.35+math.Pow(0.1, 0))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 1))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 2))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 3))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 4))
-	fmt.Println(2.35 * 2.00 * 1.77)
-
-	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 0))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 1))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 2))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 3))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.65, 4))
-	fmt.Println()
-
-	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 0))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 1))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 2))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 3))
-	log.Printf("%.2f \n", 1.35+math.Pow(0.75, 4))
-	fmt.Println()
-
-	fmt.Println(math.Pow(1.25, float64(1)))
-	fmt.Println(math.Pow(1.25, float64(2)))
-	fmt.Println(math.Pow(1.25, float64(3)))
-	fmt.Println(math.Pow(1.25, float64(4)))
-	fmt.Println(math.Pow(1.25, float64(5)))
-	fmt.Println(math.Pow(1.25, float64(6)))
-	fmt.Println(math.Pow(1.25, float64(7)))
-	fmt.Println(math.Pow(1.25, float64(8)))
-	fmt.Printf("%.3f \n", 2.15*2.06*1.98*1.91*1.84*1.78)
-
-	log.Println("标准赔率")
-	for i := 0; i <= 27; i++ {
-		log.Printf("%02d:  %.2f \n", i, 1000.0/float64(stds[i]))
+	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/bet?charset=utf8mb4&collation=utf8mb4_general_ci&loc=Local&parseTime=true")
+	if err != nil {
+		log.Fatalf("sql.Open() fail : %s \n", err.Error())
 	}
 
-	fmt.Printf("%.2f\n", 1.675*0.825*0.825*0.825*0.825)
+	var rows int
+	if err := db.QueryRow("SELECT COUNT(1) AS XN FROM histories").Scan(&rows); err != nil {
+		log.Fatalf("sql.QueryRow() fail : %s \n", err.Error())
+	}
+
+	log.Printf("Rows Total Count is %d \n", rows)
+
+	for no := 0; no <= 27; no++ {
+		rates := make([]string, 0, int(math.Ceil(float64(rows)/1440)))
+		for i := 0; i < int(math.Ceil(float64(rows)/1440)); i++ {
+			var rate float64
+			if err := db.QueryRow("CALL PROC(?,?,?)", no, 1440, i*1440).Scan(&rate); err != nil {
+				if err == sql.ErrNoRows {
+					rates = append(rates, fmt.Sprintf("%.4f", rate))
+					continue
+				}
+
+				log.Fatalf("sql.Exec() fail : %s \n", err.Error())
+			}
+
+			rates = append(rates, fmt.Sprintf("%.4f", rate))
+		}
+
+		var rate float64
+		if err := db.QueryRow("CALL PROC(?,?,?)", no, 720, rows-720).Scan(&rate); err != nil {
+			if err == sql.ErrNoRows {
+				rates = append(rates, fmt.Sprintf("[%.4f]", rate))
+			} else {
+				log.Fatalf("sql.Exec() fail : %s \n", err.Error())
+			}
+		} else {
+			rates = append(rates, fmt.Sprintf("[%.4f]", rate))
+		}
+
+		log.Printf("[%02d] %s \n", no, strings.Join(rates, "  "))
+	}
+
 }
