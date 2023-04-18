@@ -38,19 +38,19 @@ func analysis(cache *Cache) error {
 
 	latest = make(map[int]struct{})
 
-	//size := len(cache.histories)
-	//r1 := cache.histories[size-1].result
-	//r2 := cache.histories[size-2].result
-	//
-	//if r1 < 10 || r1 > 17 {
-	//	log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件A ...\n", cache.issue, cache.result, surplus)
-	//	return nil
-	//}
-	//
-	//if r2 >= 10 && r2 <= 17 {
-	//	log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
-	//	return nil
-	//}
+	size := len(cache.histories)
+	r1 := cache.histories[size-1].result
+	r2 := cache.histories[size-2].result
+
+	if r1 < 10 || r1 > 17 {
+		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件A ...\n", cache.issue, cache.result, surplus)
+		return nil
+	}
+
+	if r2 >= 10 && r2 <= 17 {
+		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
+		return nil
+	}
 
 	var total, coverage int
 	for result := range getTarget(cache) {
@@ -102,19 +102,19 @@ func getTarget(cache *Cache) map[int]struct{} {
 	for _, newSpace := range newSpaces {
 		if newSpace.Result >= 10 && newSpace.Result <= 17 {
 			// [10,17]
-			if n1 < 4 {
+			if n1 < 2 {
 				n1++
 				continue
 			}
 		} else if newSpace.Result <= 5 || newSpace.Result >= 22 {
 			// [00,05] [22,27]
-			if n2 < 6 {
+			if n2 < 12 {
 				n2++
 				continue
 			}
 		} else {
 			// [06,09] [18,21]
-			if n3 < 4 {
+			if n3 < 2 {
 				n3++
 				continue
 			}
