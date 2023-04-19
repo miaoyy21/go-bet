@@ -27,36 +27,6 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
-	// 输出
-	rate0 := 1.0
-	if len(latest) == 0 {
-		log.Printf("第【✊ %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
-	} else {
-		if _, exists := latest[cache.result]; exists {
-			wins++
-			fails = 0
-
-			if wins >= 2 {
-				if wins == 2 {
-					rate = rate + 1
-				} else if wins > 2 {
-					rate = rate - 0.35
-				}
-
-				rate0 = rate
-			}
-
-			zWins++
-			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f -> %.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate, rate0)
-		} else {
-			wins = 0
-			fails++
-
-			zFails++
-			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f -> %.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate, rate0)
-		}
-	}
-
 	latest = make(map[int]struct{})
 
 	size := len(cache.histories)
@@ -72,6 +42,39 @@ func analysis(cache *Cache) error {
 	//	log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
 	//	return nil
 	//}
+
+	// 输出
+	rate0 := 1.0
+	if len(latest) == 0 {
+		log.Printf("第【✊ %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
+	} else {
+		if _, exists := latest[cache.result]; exists {
+			wins++
+			fails = 0
+
+			if wins >= 2 {
+				if wins%3 == 2 {
+					rate = rate + 0.25
+				} else {
+					rate = rate - 0.125
+					if rate < 1.0 {
+						rate = 1.0
+					}
+				}
+
+				rate0 = rate
+			}
+
+			zWins++
+			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f -> %.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate, rate0)
+		} else {
+			wins = 0
+			fails++
+
+			zFails++
+			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f -> %.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate, rate0)
+		}
+	}
 
 	var total, coverage int
 	for result := range getTarget(cache) {
