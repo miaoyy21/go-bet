@@ -15,7 +15,7 @@ var zWins int
 var zFails int
 
 func analysis(cache *Cache) error {
-	if err := cache.Sync(2000); err != nil {
+	if err := cache.Sync(200); err != nil {
 		return err
 	}
 
@@ -35,7 +35,7 @@ func analysis(cache *Cache) error {
 			wins++
 			fails = 0
 
-			rate = rate - 0.2
+			rate = rate - 0.125
 			if rate < 1.0 {
 				rate = 1.0
 			}
@@ -46,8 +46,8 @@ func analysis(cache *Cache) error {
 			wins = 0
 			fails++
 
-			if rate < 3.0 {
-				rate = rate + 0.5
+			if rate < 5.0 {
+				rate = rate + 1
 			}
 
 			zFails++
@@ -74,7 +74,12 @@ func analysis(cache *Cache) error {
 	var total, coverage int
 
 	latest = make(map[int]struct{})
-	for result := range getTarget(cache) {
+	target := getTarget(cache)
+	for _, result := range []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27} {
+		if _, ok := target[result]; !ok {
+			continue
+		}
+
 		betGold := int(rate * float64(cache.user.gold) * float64(stds[result]) / 1000)
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
@@ -121,7 +126,7 @@ func getTarget(cache *Cache) map[int]struct{} {
 	for _, newSpace := range newSpaces {
 		if newSpace.Result >= 10 && newSpace.Result <= 17 {
 			// [10,17]
-			if n1 < 1 {
+			if n1 < 0 {
 				n1++
 				continue
 			}
@@ -133,7 +138,7 @@ func getTarget(cache *Cache) map[int]struct{} {
 			}
 		} else {
 			// [06,09] [18,21]
-			if n3 < 1 {
+			if n3 < 0 {
 				n3++
 				continue
 			}
