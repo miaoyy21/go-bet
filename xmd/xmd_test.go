@@ -20,9 +20,12 @@ func TestCache_Sync2(t *testing.T) {
 		log.Fatalf("sql.QueryRow() fail : %s \n", err.Error())
 	}
 
-	log.Printf("Rows Total Count is %d \n", rows)
+	log.Printf("样本容量： %d \n", rows)
 
 	size := 1440
+	target := make([]int, 0)
+
+	log.Printf("样本分析周期：%d \n", size)
 	for no := 0; no <= 27; no++ {
 		rates := make([]float64, 0, int(math.Ceil(float64(rows)/float64(size))))
 		for i := 0; i < int(math.Ceil(float64(rows)/float64(size))); i++ {
@@ -46,8 +49,29 @@ func TestCache_Sync2(t *testing.T) {
 			}
 		}
 
-		log.Printf("[%02d] %s [%.4f]\n", no, fmtF64(rates), rate)
+		rate1 := rates[len(rates)-1]
+		rate2 := rates[len(rates)-2]
+
+		if rate1 > 1 && rate2 > 1 && rate > 1 {
+			target = append(target, no)
+			log.Printf("[ %02d √ P1 ] %s [%.4f]\n", no, fmtF64(rates), rate)
+		} else {
+			if rate1 < 1 && rate < 1 {
+				log.Printf("[ %02d x N1 ] %s [%.4f]\n", no, fmtF64(rates), rate)
+			} else if rate1 > 1 && rate < 1 {
+				log.Printf("[ %02d x N2 ] %s [%.4f]\n", no, fmtF64(rates), rate)
+			} else if rate1 < 1 && rate > 1 {
+				target = append(target, no)
+				log.Printf("[ %02d √ P2 ] %s [%.4f]\n", no, fmtF64(rates), rate)
+			} else if (rate1+rate2)/2 < rate {
+				target = append(target, no)
+				log.Printf("[ %02d √ P3 ] %s [%.4f]\n", no, fmtF64(rates), rate)
+			} else {
+				log.Printf("[ %02d _ __ ] %s [%.4f]\n", no, fmtF64(rates), rate)
+			}
+		}
 	}
+	log.Printf("所选取的结果：%s \n", fmtInt(target))
 }
 
 func fmtF64(fs []float64) string {
@@ -57,4 +81,13 @@ func fmtF64(fs []float64) string {
 	}
 
 	return strings.Join(ss, "  ")
+}
+
+func fmtInt(fs []int) string {
+	ss := make([]string, 0, len(fs))
+	for _, f := range fs {
+		ss = append(ss, fmt.Sprintf("%d", f))
+	}
+
+	return strings.Join(ss, ",")
 }

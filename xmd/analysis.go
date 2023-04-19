@@ -16,7 +16,7 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
-	target := []int{8, 9, 11, 12, 16, 18}
+	target := []int{6, 7, 12, 16, 18, 20, 22}
 	exists := make(map[int]struct{}, 0)
 	for _, result := range target {
 		exists[result] = struct{}{}
