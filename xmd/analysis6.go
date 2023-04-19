@@ -54,9 +54,9 @@ func analysis(cache *Cache) error {
 
 			if wins >= 2 {
 				if wins%3 == 2 {
-					rate = rate + 0.25
+					rate = rate + 0.45
 				} else {
-					rate = rate - 0.125
+					rate = rate - 0.25
 					if rate < 1.0 {
 						rate = 1.0
 					}
