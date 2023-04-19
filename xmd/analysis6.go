@@ -27,21 +27,21 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
-	latest = make(map[int]struct{})
-
 	size := len(cache.histories)
 	r1 := cache.histories[size-1].result
-	//r2 := cache.histories[size-2].result
+	r2 := cache.histories[size-2].result
 
 	if r1 < 10 || r1 > 17 {
+		latest = make(map[int]struct{})
 		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件A ...\n", cache.issue, cache.result, surplus)
 		return nil
 	}
 
-	//if r2 >= 10 && r2 <= 17 {
-	//	log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
-	//	return nil
-	//}
+	if r2 >= 10 && r2 <= 17 {
+		latest = make(map[int]struct{})
+		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
+		return nil
+	}
 
 	// 输出
 	rate0 := 1.0
@@ -54,7 +54,9 @@ func analysis(cache *Cache) error {
 
 			if wins >= 2 {
 				if wins%3 == 2 {
-					rate = rate + 0.45
+					if rate <= 2.5 {
+						rate = rate + 0.50
+					}
 				} else {
 					rate = rate - 0.25
 					if rate < 1.0 {
@@ -77,6 +79,8 @@ func analysis(cache *Cache) error {
 	}
 
 	var total, coverage int
+
+	latest = make(map[int]struct{})
 	for result := range getTarget(cache) {
 		betGold := int(rate0 * float64(cache.user.gold) * float64(stds[result]) / 1000)
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
@@ -88,7 +92,6 @@ func analysis(cache *Cache) error {
 		total = total + betGold
 		coverage = coverage + stds[result]
 	}
-
 	log.Printf("第【%s】期：投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, surplus-total, float64(coverage)/10)
 
 	return nil
