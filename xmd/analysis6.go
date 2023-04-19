@@ -84,7 +84,7 @@ func analysis(cache *Cache) error {
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
 		}
-		log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，投注金额【% 5d】\n", nextIssue, result, 1000.0/float64(stds[result]), betGold)
+		log.Printf("第【%s】期：竞猜数字【❤️ %02d】，标准赔率【%-7.2f】，投注金额【% 5d】\n", nextIssue, result, 1000.0/float64(stds[result]), betGold)
 
 		latest[result] = struct{}{}
 		total = total + betGold
