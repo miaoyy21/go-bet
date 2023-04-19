@@ -27,6 +27,34 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
+	// 输出
+	if len(latest) == 0 {
+		log.Printf("第【✊ %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
+	} else {
+		if _, exists := latest[cache.result]; exists {
+			wins++
+			fails = 0
+
+			rate = rate - 0.2
+			if rate < 1.0 {
+				rate = 1.0
+			}
+
+			zWins++
+			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate)
+		} else {
+			wins = 0
+			fails++
+
+			if rate < 3.0 {
+				rate = rate + 0.5
+			}
+
+			zFails++
+			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate)
+		}
+	}
+
 	size := len(cache.histories)
 	r1 := cache.histories[size-1].result
 	//r2 := cache.histories[size-2].result
@@ -42,34 +70,6 @@ func analysis(cache *Cache) error {
 	//	log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
 	//	return nil
 	//}
-
-	// 输出
-	if len(latest) == 0 {
-		log.Printf("第【✊ %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
-	} else {
-		if _, exists := latest[cache.result]; exists {
-			wins++
-			fails = 0
-
-			rate = rate - 0.125
-			if rate < 1.0 {
-				rate = 1.0
-			}
-
-			zWins++
-			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate)
-		} else {
-			wins = 0
-			fails++
-
-			if rate < 5.0 {
-				rate = rate + 0.25
-			}
-
-			zFails++
-			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate)
-		}
-	}
 
 	var total, coverage int
 
@@ -121,7 +121,7 @@ func getTarget(cache *Cache) map[int]struct{} {
 	for _, newSpace := range newSpaces {
 		if newSpace.Result >= 10 && newSpace.Result <= 17 {
 			// [10,17]
-			if n1 < 2 {
+			if n1 < 1 {
 				n1++
 				continue
 			}
@@ -133,7 +133,7 @@ func getTarget(cache *Cache) map[int]struct{} {
 			}
 		} else {
 			// [06,09] [18,21]
-			if n3 < 2 {
+			if n3 < 1 {
 				n3++
 				continue
 			}
