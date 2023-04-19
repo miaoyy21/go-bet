@@ -29,7 +29,7 @@ func analysis(cache *Cache) error {
 
 	size := len(cache.histories)
 	r1 := cache.histories[size-1].result
-	r2 := cache.histories[size-2].result
+	//r2 := cache.histories[size-2].result
 
 	if r1 < 10 || r1 > 17 {
 		latest = make(map[int]struct{})
@@ -37,11 +37,11 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
-	if r2 >= 10 && r2 <= 17 {
-		latest = make(map[int]struct{})
-		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
-		return nil
-	}
+	//if r2 >= 10 && r2 <= 17 {
+	//	latest = make(map[int]struct{})
+	//	log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
+	//	return nil
+	//}
 
 	// 输出
 	rate0 := 1.0
