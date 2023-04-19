@@ -7,8 +7,12 @@ import (
 )
 
 var latest = make(map[int]struct{})
+
+var rate = 1.0
 var wins int
 var fails int
+var zWins int
+var zFails int
 
 func analysis(cache *Cache) error {
 	if err := cache.Sync(2000); err != nil {
@@ -24,15 +28,32 @@ func analysis(cache *Cache) error {
 	}
 
 	// 输出
+	rate0 := 1.0
 	if len(latest) == 0 {
-		log.Printf("第【✊ %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, wins, fails, cache.result, surplus)
+		log.Printf("第【✊ %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
 	} else {
 		if _, exists := latest[cache.result]; exists {
 			wins++
-			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, wins, fails, cache.result, surplus)
+			fails = 0
+
+			if wins >= 2 {
+				if wins == 2 {
+					rate = rate + 1
+				} else if wins > 2 {
+					rate = rate - 0.35
+				}
+
+				rate0 = rate
+			}
+
+			zWins++
+			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f -> %.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate, rate0)
 		} else {
+			wins = 0
 			fails++
-			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, wins, fails, cache.result, surplus)
+
+			zFails++
+			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f -> %.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate, rate0)
 		}
 	}
 
@@ -40,21 +61,21 @@ func analysis(cache *Cache) error {
 
 	size := len(cache.histories)
 	r1 := cache.histories[size-1].result
-	r2 := cache.histories[size-2].result
+	//r2 := cache.histories[size-2].result
 
 	if r1 < 10 || r1 > 17 {
 		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件A ...\n", cache.issue, cache.result, surplus)
 		return nil
 	}
 
-	if r2 >= 10 && r2 <= 17 {
-		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
-		return nil
-	}
+	//if r2 >= 10 && r2 <= 17 {
+	//	log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
+	//	return nil
+	//}
 
 	var total, coverage int
 	for result := range getTarget(cache) {
-		betGold := int(float64(cache.user.gold) * float64(stds[result]) / 1000)
+		betGold := int(rate0 * float64(cache.user.gold) * float64(stds[result]) / 1000)
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
 		}
@@ -65,8 +86,7 @@ func analysis(cache *Cache) error {
 		coverage = coverage + stds[result]
 	}
 
-	surplus = surplus - total
-	log.Printf("第【%s】期：投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, surplus, float64(coverage)/10)
+	log.Printf("第【%s】期：投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, surplus-total, float64(coverage)/10)
 
 	return nil
 }
