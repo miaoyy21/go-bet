@@ -63,7 +63,7 @@ func analysis(cache *Cache) error {
 			fails++
 
 			if rate < 5.0 {
-				rate = rate + 0.30
+				rate = rate + 0.25
 			}
 
 			zFails++
