@@ -29,7 +29,7 @@ func analysis(cache *Cache) error {
 
 	size := len(cache.histories)
 	r1 := cache.histories[size-1].result
-	//r2 := cache.histories[size-2].result
+	r2 := cache.histories[size-2].result
 
 	if r1 < 10 || r1 > 17 {
 		latest = make(map[int]struct{})
@@ -37,14 +37,13 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
-	//if r2 >= 10 && r2 <= 17 {
-	//	latest = make(map[int]struct{})
-	//	log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
-	//	return nil
-	//}
+	if r2 >= 10 && r2 <= 17 {
+		latest = make(map[int]struct{})
+		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
+		return nil
+	}
 
 	// 输出
-	rate0 := 1.0
 	if len(latest) == 0 {
 		log.Printf("第【✊ %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
 	} else {
@@ -52,29 +51,23 @@ func analysis(cache *Cache) error {
 			wins++
 			fails = 0
 
-			if wins >= 2 {
-				if wins%3 == 2 {
-					if rate <= 2.5 {
-						rate = rate + 0.50
-					}
-				} else {
-					rate = rate - 0.25
-					if rate < 1.0 {
-						rate = 1.0
-					}
-				}
-
-				rate0 = rate
+			rate = rate - 0.125
+			if rate < 1.0 {
+				rate = 1.0
 			}
 
 			zWins++
-			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f -> %.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate, rate0)
+			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate)
 		} else {
 			wins = 0
 			fails++
 
+			if rate < 5.0 {
+				rate = rate + 0.30
+			}
+
 			zFails++
-			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f -> %.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate, rate0)
+			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate)
 		}
 	}
 
@@ -82,7 +75,7 @@ func analysis(cache *Cache) error {
 
 	latest = make(map[int]struct{})
 	for result := range getTarget(cache) {
-		betGold := int(rate0 * float64(cache.user.gold) * float64(stds[result]) / 1000)
+		betGold := int(rate * float64(cache.user.gold) * float64(stds[result]) / 1000)
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
 		}
