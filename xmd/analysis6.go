@@ -35,10 +35,10 @@ func analysis(cache *Cache) error {
 			wins++
 			fails = 0
 
-			rate = rate - 0.125
-			if rate < 1.0 {
-				rate = 1.0
-			}
+			//rate = rate - 0.125
+			//if rate < 1.0 {
+			//	rate = 1.0
+			//}
 
 			zWins++
 			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate)
@@ -46,9 +46,9 @@ func analysis(cache *Cache) error {
 			wins = 0
 			fails++
 
-			if rate < 5.0 {
-				rate = rate + 1
-			}
+			//if rate < 5.0 {
+			//	rate = rate + 1
+			//}
 
 			zFails++
 			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate)
@@ -121,30 +121,34 @@ func getTarget(cache *Cache) map[int]struct{} {
 		return newSpaces[i].Rate > newSpaces[j].Rate
 	})
 
-	var n1, n2, n3 int
+	//var n1, n2, n3 int
 	target := make(map[int]struct{})
 	for _, newSpace := range newSpaces {
-		if newSpace.Result >= 10 && newSpace.Result <= 17 {
-			// [10,17]
-			if n1 < 0 {
-				n1++
-				continue
-			}
-		} else if newSpace.Result <= 5 || newSpace.Result >= 22 {
-			// [00,05] [22,27]
-			if n2 < 12 {
-				n2++
-				continue
-			}
-		} else {
-			// [06,09] [18,21]
-			if n3 < 0 {
-				n3++
-				continue
-			}
-		}
+		//if newSpace.Result >= 10 && newSpace.Result <= 17 {
+		//	// [10,17]
+		//	if n1 < 0 {
+		//		n1++
+		//		continue
+		//	}
+		//} else if newSpace.Result <= 5 || newSpace.Result >= 22 {
+		//	// [00,05] [22,27]
+		//	if n2 < 12 {
+		//		n2++
+		//		continue
+		//	}
+		//} else {
+		//	// [06,09] [18,21]
+		//	if n3 < 0 {
+		//		n3++
+		//		continue
+		//	}
+		//}
+		//
+		//target[newSpace.Result] = struct{}{}
 
-		target[newSpace.Result] = struct{}{}
+		if newSpace.Result >= 6 && newSpace.Result <= 21 {
+			target[newSpace.Result] = struct{}{}
+		}
 	}
 
 	return target
