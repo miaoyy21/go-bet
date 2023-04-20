@@ -35,7 +35,7 @@ func analysis(cache *Cache) error {
 			wins++
 			fails = 0
 
-			//rate = rate - 0.125
+			//rate = rate - 0.25
 			//if rate < 1.0 {
 			//	rate = 1.0
 			//}
@@ -57,19 +57,25 @@ func analysis(cache *Cache) error {
 
 	size := len(cache.histories)
 	r1 := cache.histories[size-1].result
-	//r2 := cache.histories[size-2].result
+	r2 := cache.histories[size-2].result
 
 	if r1 < 10 || r1 > 17 {
 		latest = make(map[int]struct{})
-		log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件A ...\n", cache.issue, cache.result, surplus)
+		if err := bet28(cache, nextIssue, surplus); err != nil {
+			return err
+		}
+
 		return nil
 	}
 
-	//if r2 >= 10 && r2 <= 17 {
-	//	latest = make(map[int]struct{})
-	//	log.Printf("第【%d】期：开奖结果【%d】，余额【%d】，不符合投注条件B ...\n", cache.issue, cache.result, surplus)
-	//	return nil
-	//}
+	if r2 < 10 || r2 > 17 {
+		latest = make(map[int]struct{})
+		if err := bet28(cache, nextIssue, surplus); err != nil {
+			return err
+		}
+
+		return nil
+	}
 
 	var total, coverage int
 
@@ -146,7 +152,7 @@ func getTarget(cache *Cache) map[int]struct{} {
 		//
 		//target[newSpace.Result] = struct{}{}
 
-		if newSpace.Result >= 6 && newSpace.Result <= 21 {
+		if newSpace.Result >= 6 && newSpace.Result <= 21 && newSpace.Rate < 1.67 {
 			target[newSpace.Result] = struct{}{}
 		}
 	}
