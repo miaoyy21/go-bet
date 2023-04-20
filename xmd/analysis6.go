@@ -152,8 +152,14 @@ func getTarget(cache *Cache) map[int]struct{} {
 		//
 		//target[newSpace.Result] = struct{}{}
 
-		if newSpace.Result >= 6 && newSpace.Result <= 21 && newSpace.Rate < 1.67 {
-			target[newSpace.Result] = struct{}{}
+		if newSpace.Result <= 5 || newSpace.Result >= 22 {
+			if newSpace.Rate < 0.75 {
+				target[newSpace.Result] = struct{}{}
+			}
+		} else if newSpace.Result >= 6 && newSpace.Result <= 21 {
+			if newSpace.Rate < 1.67 {
+				target[newSpace.Result] = struct{}{}
+			}
 		}
 	}
 
