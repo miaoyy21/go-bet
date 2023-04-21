@@ -51,3 +51,21 @@ func bet28(cache *Cache, issue string, surplus int) error {
 
 	return nil
 }
+
+func bet10(cache *Cache, issue string, surplus int) error {
+	var total, coverage int
+
+	for _, result := range []int{0, 1, 2, 3, 4, 23, 24, 25, 26, 27} {
+		betGold := int(rate * float64(cache.user.gold) * float64(stds[result]) / 1000)
+		if err := hPostBet(issue, betGold, result, cache.user); err != nil {
+			return err
+		}
+		log.Printf("第【%s】期：竞猜数字【❤️ %02d】，标准赔率【%-7.2f】，投注金额【% 5d】\n", issue, result, 1000.0/float64(stds[result]), betGold)
+
+		total = total + betGold
+		coverage = coverage + stds[result]
+	}
+	log.Printf("第【%s】期：投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", issue, total, surplus-total, float64(coverage)/10)
+
+	return nil
+}

@@ -20,7 +20,7 @@ type Config struct {
 }
 
 func main() {
-	log.Printf("当前版本 2023.04.21 20:00\n")
+	log.Printf("当前版本 2023.04.22 06:12\n")
 
 	dir, err := os.Getwd()
 	if err != nil {
