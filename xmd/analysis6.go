@@ -61,18 +61,18 @@ func analysis(cache *Cache) error {
 
 	if r1 < 10 || r1 > 17 {
 		latest = make(map[int]struct{})
-		if err := bet28(cache, nextIssue, surplus); err != nil {
-			return err
-		}
+		//if err := bet28(cache, nextIssue, surplus); err != nil {
+		//	return err
+		//}
 
 		return nil
 	}
 
 	if r2 < 10 || r2 > 17 {
 		latest = make(map[int]struct{})
-		if err := bet28(cache, nextIssue, surplus); err != nil {
-			return err
-		}
+		//if err := bet28(cache, nextIssue, surplus); err != nil {
+		//	return err
+		//}
 
 		return nil
 	}
