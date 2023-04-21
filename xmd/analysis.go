@@ -58,9 +58,10 @@ func analysis(cache *Cache) error {
 	for i := len(cache.histories) - 1; i >= len(cache.histories)-13; i-- {
 		result := cache.histories[i].result
 		if result <= 4 || result >= 23 {
-			latest = make(map[int]struct{})
-			if err := bet10(cache, nextIssue, surplus); err != nil {
+			if ns, err := bet28(cache, nextIssue, surplus, SN10); err != nil {
 				return err
+			} else {
+				latest = ns
 			}
 
 			return nil
@@ -71,10 +72,10 @@ func analysis(cache *Cache) error {
 	r1 := cache.histories[size-1].result
 
 	if r1 < 10 || r1 > 17 {
-		latest = make(map[int]struct{})
-		if err := bet28(cache, nextIssue, surplus); err != nil {
+		if _, err := bet28(cache, nextIssue, surplus, SN28); err != nil {
 			return err
 		}
+		latest = make(map[int]struct{})
 
 		return nil
 	}
@@ -83,7 +84,7 @@ func analysis(cache *Cache) error {
 
 	latest = make(map[int]struct{})
 	target := getTarget(cache)
-	for _, result := range []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27} {
+	for _, result := range SN28 {
 		if _, ok := target[result]; !ok {
 			continue
 		}
