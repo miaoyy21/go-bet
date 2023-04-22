@@ -55,7 +55,8 @@ func analysis(cache *Cache) error {
 		}
 	}
 
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-13; i-- {
+	// 13期 04～23
+	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
 		result := cache.histories[i].result
 		if result <= 4 || result >= 23 {
 			if ns, err := bet28(cache, nextIssue, surplus, SN10); err != nil {
@@ -68,14 +69,24 @@ func analysis(cache *Cache) error {
 		}
 	}
 
-	size := len(cache.histories)
-	r1 := cache.histories[size-1].result
+	// 8期 05～22
+	for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
+		result := cache.histories[i].result
+		if result <= 5 || result >= 22 {
+			latest = make(map[int]struct{})
 
-	if r1 < 10 || r1 > 17 {
-		latest = make(map[int]struct{})
-
-		return nil
+			return nil
+		}
 	}
+
+	//size := len(cache.histories)
+	//r1 := cache.histories[size-1].result
+	//
+	//if r1 < 10 || r1 > 17 {
+	//	latest = make(map[int]struct{})
+	//
+	//	return nil
+	//}
 
 	var total, coverage int
 
@@ -130,36 +141,36 @@ func getTarget(cache *Cache) map[int]struct{} {
 	var n1, n2, n3 int
 	target := make(map[int]struct{})
 	for _, newSpace := range newSpaces {
-		if newSpace.Rate > 2.0 {
-			if newSpace.Result >= 10 && newSpace.Result <= 17 {
-				// [10,17]
-				n1++
-			} else if newSpace.Result <= 5 || newSpace.Result >= 22 {
-				// [00,05] [22,27]
-				n2++
-			} else {
-				// [06,09] [18,21]
-				n3++
-			}
-
-			continue
-		}
+		//if newSpace.Rate > 2.0 {
+		//	if newSpace.Result >= 10 && newSpace.Result <= 17 {
+		//		// [10,17]
+		//		n1++
+		//	} else if newSpace.Result <= 5 || newSpace.Result >= 22 {
+		//		// [00,05] [22,27]
+		//		n2++
+		//	} else {
+		//		// [06,09] [18,21]
+		//		n3++
+		//	}
+		//
+		//	continue
+		//}
 
 		if newSpace.Result >= 10 && newSpace.Result <= 17 {
-			// [10,17]
-			if n1 < 1 {
+			// 8 [10,17]
+			if n1 < 2 {
 				n1++
 				continue
 			}
 		} else if newSpace.Result <= 5 || newSpace.Result >= 22 {
-			// [00,05] [22,27]
-			if n2 < 12 {
+			// 12 [00,05] [22,27]
+			if n2 < 3 {
 				n2++
 				continue
 			}
 		} else {
-			// [06,09] [18,21]
-			if n3 < 1 {
+			// 8 [06,09] [18,21]
+			if n3 < 2 {
 				n3++
 				continue
 			}
