@@ -55,25 +55,15 @@ func analysis(cache *Cache) error {
 		}
 	}
 
-	// 12期 04～23
+	// 12期 00~04、23～27
 	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
 		result := cache.histories[i].result
-		if result <= 4 || result >= 23 {
+		if result <= 5 || result >= 22 {
 			if ns, err := bet28(cache, nextIssue, surplus, SN10); err != nil {
 				return err
 			} else {
 				latest = ns
 			}
-
-			return nil
-		}
-	}
-
-	// 8期 05～22
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
-		result := cache.histories[i].result
-		if result <= 5 || result >= 22 {
-			latest = make(map[int]struct{})
 
 			return nil
 		}
@@ -164,7 +154,7 @@ func getTarget(cache *Cache) map[int]struct{} {
 			}
 		} else if newSpace.Result <= 5 || newSpace.Result >= 22 {
 			// 12 [00,05] [22,27]
-			if n2 < 3 {
+			if n2 < 4 {
 				n2++
 				continue
 			}
