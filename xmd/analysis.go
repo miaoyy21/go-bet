@@ -72,9 +72,6 @@ func analysis(cache *Cache) error {
 	r1 := cache.histories[size-1].result
 
 	if r1 < 10 || r1 > 17 {
-		if _, err := bet28(cache, nextIssue, surplus, SN28); err != nil {
-			return err
-		}
 		latest = make(map[int]struct{})
 
 		return nil
@@ -133,7 +130,7 @@ func getTarget(cache *Cache) map[int]struct{} {
 	var n1, n2, n3 int
 	target := make(map[int]struct{})
 	for _, newSpace := range newSpaces {
-		if newSpace.Rate < 2.0 {
+		if newSpace.Rate > 2.0 {
 			if newSpace.Result >= 10 && newSpace.Result <= 17 {
 				// [10,17]
 				n1++
