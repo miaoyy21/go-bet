@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-var SN10 = []int{0, 1, 2, 3, 4, 23, 24, 25, 26, 27}
+var SN8 = []int{0, 1, 2, 3, 4, 23, 24, 25, 26, 27}
 var SN28 = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27}
 
 func Run(cache *Cache) {
@@ -37,12 +37,12 @@ func Run(cache *Cache) {
 	}
 }
 
-func bet28(cache *Cache, issue string, surplus int, ns []int) (map[int]struct{}, error) {
+func bet28(cache *Cache, issue string, surplus int, ns []int, std float64) (map[int]struct{}, error) {
 	var total, coverage int
 
 	bets := make(map[int]struct{})
 	for _, result := range ns {
-		betGold := int(rate * float64(cache.user.gold) * float64(stds[result]) / 1000)
+		betGold := int(std * float64(stds[result]) / 1000)
 		if err := hPostBet(issue, betGold, result, cache.user); err != nil {
 			return nil, err
 		}

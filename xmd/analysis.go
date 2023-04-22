@@ -8,7 +8,6 @@ import (
 
 var latest = make(map[int]struct{})
 
-var rate = 1.0
 var wins int
 var fails int
 var zWins int
@@ -41,7 +40,7 @@ func analysis(cache *Cache) error {
 			//}
 
 			zWins++
-			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate)
+			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
 		} else {
 			wins = 0
 			fails++
@@ -51,19 +50,40 @@ func analysis(cache *Cache) error {
 			//}
 
 			zFails++
-			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，倍率【%.4f】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus, rate)
+			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
 		}
 	}
 
 	// 12期 00~04、23～27
 	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
 		result := cache.histories[i].result
-		if result <= 5 || result >= 22 {
-			if ns, err := bet28(cache, nextIssue, surplus, SN10); err != nil {
+		if result <= 4 || result >= 23 {
+			if ns, err := bet28(cache, nextIssue, surplus, SN8, float64(cache.user.gold)); err != nil {
 				return err
 			} else {
 				latest = ns
 			}
+
+			return nil
+		}
+	}
+
+	for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
+		result := cache.histories[i].result
+		if result <= 5 || result >= 22 {
+			latest = make(map[int]struct{})
+			if _, err := bet28(cache, nextIssue, surplus, SN28, 20000); err != nil {
+				return err
+			}
+
+			return nil
+		}
+	}
+
+	for i := len(cache.histories) - 1; i >= len(cache.histories)-4; i-- {
+		result := cache.histories[i].result
+		if result <= 6 || result >= 21 {
+			latest = make(map[int]struct{})
 
 			return nil
 		}
@@ -78,7 +98,7 @@ func analysis(cache *Cache) error {
 			continue
 		}
 
-		betGold := int(rate * float64(cache.user.gold) * float64(stds[result]) / 1000)
+		betGold := int(float64(cache.user.gold) * float64(stds[result]) / 1000)
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
 		}
@@ -123,17 +143,17 @@ func getTarget(cache *Cache) map[int]struct{} {
 	target := make(map[int]struct{})
 	for _, newSpace := range newSpaces {
 		if newSpace.Result >= 10 && newSpace.Result <= 17 {
-			if n1 < 2 {
+			if n1 < 1 {
 				n1++
 				continue
 			}
-		} else if newSpace.Result <= 5 || newSpace.Result >= 22 {
-			if n2 < 3 {
+		} else if newSpace.Result <= 6 || newSpace.Result >= 21 {
+			if n2 < 14 {
 				n2++
 				continue
 			}
 		} else {
-			if n3 < 2 {
+			if n3 < 1 {
 				n3++
 				continue
 			}
