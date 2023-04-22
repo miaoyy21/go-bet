@@ -55,7 +55,7 @@ func analysis(cache *Cache) error {
 		}
 	}
 
-	// 13期 04～23
+	// 12期 04～23
 	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
 		result := cache.histories[i].result
 		if result <= 4 || result >= 23 {
