@@ -54,24 +54,12 @@ func analysis(cache *Cache) error {
 		}
 	}
 
-	// 12期 00~04、23～27
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
-		result := cache.histories[i].result
-		if result <= 4 || result >= 23 {
-			if ns, err := bet28(cache, nextIssue, surplus, SN8, float64(cache.user.gold)); err != nil {
-				return err
-			} else {
-				latest = ns
-			}
-
-			return nil
-		}
-	}
+	spaces := SpaceFn(cache)
 
 	for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
 		result := cache.histories[i].result
 		if result <= 5 || result >= 22 {
-			if _, err := bet28(cache, nextIssue, surplus, SN28, 2000); err != nil {
+			if _, err := bet28(cache, nextIssue, surplus, SN10, spaces, float64(cache.user.gold)); err != nil {
 				return err
 			}
 			latest = make(map[int]struct{})
@@ -82,10 +70,7 @@ func analysis(cache *Cache) error {
 
 	for i := len(cache.histories) - 1; i >= len(cache.histories)-4; i-- {
 		result := cache.histories[i].result
-		if result <= 6 || result >= 21 {
-			if _, err := bet28(cache, nextIssue, surplus, SN28, 1000); err != nil {
-				return err
-			}
+		if result == 6 || result == 21 {
 			latest = make(map[int]struct{})
 
 			return nil
@@ -95,7 +80,7 @@ func analysis(cache *Cache) error {
 	var total, coverage int
 
 	latest = make(map[int]struct{})
-	target := getTarget(cache)
+	target := getTarget(spaces)
 	for _, result := range SN28 {
 		if _, ok := target[result]; !ok {
 			continue
@@ -105,7 +90,7 @@ func analysis(cache *Cache) error {
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
 		}
-		log.Printf("第【%s】期：竞猜数字【❤️ %02d】，标准赔率【%-7.2f】，投注金额【% 5d】\n", nextIssue, result, 1000.0/float64(stds[result]), betGold)
+		log.Printf("第【%s】期：竞猜数字【❤️ %02d】，标准赔率【%-7.2f】，间隔次数【%-4d】，投注金额【% 5d】\n", nextIssue, result, 1000.0/float64(stds[result]), spaces[result], betGold)
 
 		latest[result] = struct{}{}
 		total = total + betGold
@@ -116,7 +101,7 @@ func analysis(cache *Cache) error {
 	return nil
 }
 
-func getTarget(cache *Cache) map[int]struct{} {
+func getTarget(spaces map[int]int) map[int]struct{} {
 	type Space struct {
 		Result int
 		Space  int
@@ -124,16 +109,7 @@ func getTarget(cache *Cache) map[int]struct{} {
 		Rate float64
 	}
 
-	spaces := make(map[int]int)
-	for i := len(cache.histories) - 1; i >= 0; i-- {
-		if _, ok := spaces[cache.histories[i].result]; ok {
-			continue
-		}
-
-		spaces[cache.histories[i].result] = len(cache.histories) - i
-	}
-
-	newSpaces := make([]Space, 0, len(spaces))
+	newSpaces := make([]Space, 0)
 	for result, space := range spaces {
 		rate := float64(space) / (1000 / float64(stds[result]))
 		newSpaces = append(newSpaces, Space{Result: result, Space: space, Rate: rate})
@@ -142,24 +118,10 @@ func getTarget(cache *Cache) map[int]struct{} {
 		return newSpaces[i].Rate > newSpaces[j].Rate
 	})
 
-	var n1, n2, n3 int
 	target := make(map[int]struct{})
 	for _, newSpace := range newSpaces {
-		if newSpace.Result >= 10 && newSpace.Result <= 17 {
-			if n1 < 8 && newSpace.Rate > 2.0 {
-				n1++
-				continue
-			}
-		} else if newSpace.Result <= 6 || newSpace.Result >= 21 {
-			if n2 < 14 {
-				n2++
-				continue
-			}
-		} else {
-			if n3 < 6 && newSpace.Rate > 2.0 {
-				n3++
-				continue
-			}
+		if newSpace.Result <= 6 || newSpace.Result >= 21 {
+			continue
 		}
 
 		target[newSpace.Result] = struct{}{}

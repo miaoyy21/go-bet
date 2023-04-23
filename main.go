@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	_ "github.com/go-sql-driver/mysql"
 	"go-bet/xmd"
 	"log"
 	"os"
@@ -20,7 +19,7 @@ type Config struct {
 }
 
 func main() {
-	log.Printf("当前版本 2023.04.23 08:24\n")
+	log.Printf("当前版本 2023.04.23 21:15\n")
 
 	dir, err := os.Getwd()
 	if err != nil {
