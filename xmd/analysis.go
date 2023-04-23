@@ -34,20 +34,11 @@ func analysis(cache *Cache) error {
 			wins++
 			fails = 0
 
-			//rate = rate - 0.25
-			//if rate < 1.0 {
-			//	rate = 1.0
-			//}
-
 			zWins++
 			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
 		} else {
 			wins = 0
 			fails++
-
-			//if rate < 5.0 {
-			//	rate = rate + 1
-			//}
 
 			zFails++
 			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
@@ -56,21 +47,9 @@ func analysis(cache *Cache) error {
 
 	spaces := SpaceFn(cache)
 
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
+	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
 		result := cache.histories[i].result
 		if result <= 5 || result >= 22 {
-			if _, err := bet28(cache, nextIssue, surplus, SN10, spaces, float64(cache.user.gold)); err != nil {
-				return err
-			}
-			latest = make(map[int]struct{})
-
-			return nil
-		}
-	}
-
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-4; i-- {
-		result := cache.histories[i].result
-		if result == 6 || result == 21 {
 			latest = make(map[int]struct{})
 
 			return nil
@@ -118,10 +97,24 @@ func getTarget(spaces map[int]int) map[int]struct{} {
 		return newSpaces[i].Rate > newSpaces[j].Rate
 	})
 
+	var n1, n2 int
+
 	target := make(map[int]struct{})
 	for _, newSpace := range newSpaces {
-		if newSpace.Result <= 6 || newSpace.Result >= 21 {
+		if newSpace.Rate <= 5 || newSpace.Result >= 22 {
 			continue
+		}
+
+		if newSpace.Result >= 10 && newSpace.Result <= 17 {
+			if n1 < 1 {
+				n1++
+				continue
+			}
+		} else {
+			if n2 < 1 {
+				n2++
+				continue
+			}
 		}
 
 		target[newSpace.Result] = struct{}{}
