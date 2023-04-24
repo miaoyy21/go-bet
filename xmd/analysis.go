@@ -45,13 +45,26 @@ func analysis(cache *Cache) error {
 		}
 	}
 
+	size := len(cache.histories)
+	r1 := cache.histories[size-1].result
+	r2 := cache.histories[size-2].result
+
+	if r1 < 10 || r1 > 17 {
+		latest = make(map[int]struct{})
+		return nil
+	}
+
+	if r2 < 10 || r2 > 17 {
+		latest = make(map[int]struct{})
+		return nil
+	}
+
 	spaces := SpaceFn(cache)
 
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
+	for i := len(cache.histories) - 1; i >= len(cache.histories)-4; i-- {
 		result := cache.histories[i].result
-		if result <= 5 || result >= 22 {
+		if result <= 6 || result >= 21 {
 			latest = make(map[int]struct{})
-
 			return nil
 		}
 	}
@@ -97,11 +110,11 @@ func getTarget(spaces map[int]int) map[int]struct{} {
 		return newSpaces[i].Rate > newSpaces[j].Rate
 	})
 
-	var n1, n2 int
-
 	target := make(map[int]struct{})
+
+	var n1, n2 int
 	for _, newSpace := range newSpaces {
-		if newSpace.Rate <= 5 || newSpace.Result >= 22 {
+		if newSpace.Result <= 6 || newSpace.Result >= 21 {
 			continue
 		}
 
@@ -117,7 +130,9 @@ func getTarget(spaces map[int]int) map[int]struct{} {
 			}
 		}
 
-		target[newSpace.Result] = struct{}{}
+		if newSpace.Rate < 2.0 {
+			target[newSpace.Result] = struct{}{}
+		}
 	}
 
 	return target
