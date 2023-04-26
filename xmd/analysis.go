@@ -45,6 +45,14 @@ func analysis(cache *Cache) error {
 		}
 	}
 
+	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
+		result := cache.histories[i].result
+		if result <= 5 || result >= 22 {
+			latest = make(map[int]struct{})
+			return nil
+		}
+	}
+
 	size := len(cache.histories)
 	r1 := cache.histories[size-1].result
 	r2 := cache.histories[size-2].result
@@ -54,20 +62,12 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
-	if r2 < 10 || r2 > 17 {
+	if r2 >= 10 && r2 <= 17 {
 		latest = make(map[int]struct{})
 		return nil
 	}
 
 	spaces := SpaceFn(cache)
-
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-4; i-- {
-		result := cache.histories[i].result
-		if result <= 6 || result >= 21 {
-			latest = make(map[int]struct{})
-			return nil
-		}
-	}
 
 	var total, coverage int
 
@@ -97,8 +97,7 @@ func getTarget(spaces map[int]int) map[int]struct{} {
 	type Space struct {
 		Result int
 		Space  int
-
-		Rate float64
+		Rate   float64
 	}
 
 	newSpaces := make([]Space, 0)
@@ -106,31 +105,18 @@ func getTarget(spaces map[int]int) map[int]struct{} {
 		rate := float64(space) / (1000 / float64(stds[result]))
 		newSpaces = append(newSpaces, Space{Result: result, Space: space, Rate: rate})
 	}
+
 	sort.Slice(newSpaces, func(i, j int) bool {
 		return newSpaces[i].Rate > newSpaces[j].Rate
 	})
 
 	target := make(map[int]struct{})
-
-	var n1, n2 int
 	for _, newSpace := range newSpaces {
 		if newSpace.Result <= 6 || newSpace.Result >= 21 {
 			continue
 		}
 
-		if newSpace.Result >= 10 && newSpace.Result <= 17 {
-			if n1 < 1 {
-				n1++
-				continue
-			}
-		} else {
-			if n2 < 1 {
-				n2++
-				continue
-			}
-		}
-
-		if newSpace.Rate < 2.0 {
+		if newSpace.Rate < 1.75 {
 			target[newSpace.Result] = struct{}{}
 		}
 	}
