@@ -2,6 +2,7 @@ package xmd
 
 import (
 	"log"
+	"math"
 	"time"
 )
 
@@ -40,10 +41,13 @@ func Run(cache *Cache) {
 
 func bet28(cache *Cache, issue string, surplus int, ns []int, spaces map[int]int, std float64) (map[int]struct{}, error) {
 	var total, coverage int
+	if std <= 0 {
+		return nil, nil
+	}
 
 	bets := make(map[int]struct{})
 	for _, result := range ns {
-		betGold := int(std * float64(stds[result]) / 1000)
+		betGold := int(math.Ceil(std * float64(stds[result]) / 1000))
 		if err := hPostBet(issue, betGold, result, cache.user); err != nil {
 			return nil, err
 		}

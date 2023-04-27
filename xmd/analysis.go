@@ -10,8 +10,6 @@ var latest = make(map[int]struct{})
 
 var wins int
 var fails int
-var zWins int
-var zFails int
 
 func analysis(cache *Cache) error {
 	if err := cache.Sync(200); err != nil {
@@ -28,29 +26,48 @@ func analysis(cache *Cache) error {
 
 	// 输出
 	if len(latest) == 0 {
-		log.Printf("第【✊ %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
+		log.Printf("第【✊ %d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, surplus)
 	} else {
 		if _, exists := latest[cache.result]; exists {
 			wins++
 			fails = 0
 
-			zWins++
-			log.Printf("第【👍 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
+			log.Printf("第【👍 %d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, surplus)
 		} else {
 			wins = 0
 			fails++
 
-			zFails++
-			log.Printf("第【👀 %d %03d/%03d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, zWins, zFails, cache.result, surplus)
+			log.Printf("第【👀 %d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, surplus)
 		}
 	}
 
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-12; i-- {
+	var nn int
+
+	spaces := SpaceFn(cache)
+	for i := len(cache.histories) - 1; i >= len(cache.histories)-20; i-- {
 		result := cache.histories[i].result
-		if result <= 5 || result >= 22 {
-			latest = make(map[int]struct{})
-			return nil
+		if result <= 4 || result >= 23 {
+			nn++
+			continue
 		}
+	}
+
+	if nn <= 1 {
+		for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
+			result := cache.histories[i].result
+			if result <= 5 || result >= 22 {
+				latest = make(map[int]struct{})
+				return nil
+			}
+		}
+	} else {
+		if bets, err := bet28(cache, nextIssue, surplus, SN10, spaces, float64(cache.user.gold)); err != nil {
+			return err
+		} else {
+			latest = bets
+		}
+
+		return nil
 	}
 
 	size := len(cache.histories)
@@ -66,8 +83,6 @@ func analysis(cache *Cache) error {
 		latest = make(map[int]struct{})
 		return nil
 	}
-
-	spaces := SpaceFn(cache)
 
 	var total, coverage int
 
@@ -112,11 +127,11 @@ func getTarget(spaces map[int]int) map[int]struct{} {
 
 	target := make(map[int]struct{})
 	for _, newSpace := range newSpaces {
-		if newSpace.Result <= 6 || newSpace.Result >= 21 {
+		if newSpace.Result <= 5 || newSpace.Result >= 22 {
 			continue
 		}
 
-		if newSpace.Rate < 1.75 {
+		if newSpace.Rate < 2.0 {
 			target[newSpace.Result] = struct{}{}
 		}
 	}
