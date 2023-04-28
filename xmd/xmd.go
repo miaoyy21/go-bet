@@ -17,7 +17,7 @@ func Run(cache *Cache) {
 	}
 	calc()
 
-	sec := 75.0
+	sec := 56.0
 	dua := time.Now().Sub(time.Now().Truncate(time.Minute))
 	log.Printf("%.2f秒后[%s]，将运行小鸡竞猜游戏 ...", sec-dua.Seconds(), time.Now().Add(time.Second*time.Duration(sec-dua.Seconds())).Format("2006-01-02 15:04:05"))
 	time.Sleep(time.Second * time.Duration(sec-dua.Seconds()))
