@@ -41,51 +41,9 @@ func analysis(cache *Cache) error {
 		}
 	}
 
-	var nn int
-
-	spaces := SpaceFn(cache)
-	for i := len(cache.histories) - 1; i >= len(cache.histories)-20; i-- {
-		result := cache.histories[i].result
-		if result <= 4 || result >= 23 {
-			nn++
-			continue
-		}
-	}
-
-	if nn <= 1 {
-		for i := len(cache.histories) - 1; i >= len(cache.histories)-8; i-- {
-			result := cache.histories[i].result
-			if result <= 5 || result >= 22 {
-				latest = make(map[int]struct{})
-				return nil
-			}
-		}
-	} else {
-		if bets, err := bet28(cache, nextIssue, surplus, SN10, spaces, float64(cache.user.gold)); err != nil {
-			return err
-		} else {
-			latest = bets
-		}
-
-		return nil
-	}
-
-	size := len(cache.histories)
-	r1 := cache.histories[size-1].result
-	r2 := cache.histories[size-2].result
-
-	if r1 < 10 || r1 > 17 {
-		latest = make(map[int]struct{})
-		return nil
-	}
-
-	if r2 >= 10 && r2 <= 17 {
-		latest = make(map[int]struct{})
-		return nil
-	}
-
 	var total, coverage int
 
+	spaces := SpaceFn(cache)
 	latest = make(map[int]struct{})
 	target := getTarget(spaces)
 	for _, result := range SN28 {
@@ -127,11 +85,7 @@ func getTarget(spaces map[int]int) map[int]struct{} {
 
 	target := make(map[int]struct{})
 	for _, newSpace := range newSpaces {
-		if newSpace.Result <= 5 || newSpace.Result >= 22 {
-			continue
-		}
-
-		if newSpace.Rate < 2.0 {
+		if newSpace.Rate < 1.75 {
 			target[newSpace.Result] = struct{}{}
 		}
 	}
