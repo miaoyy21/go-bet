@@ -67,6 +67,7 @@ func analysis(cache *Cache) error {
 			}
 		}
 
+		log.Printf("第【%s】期：覆盖率【%.2f%%】不足15%%，不进行投注 >>>>>>>>>> \n", nextIssue, float64(c0)/10)
 		return nil
 	}
 
@@ -75,7 +76,7 @@ func analysis(cache *Cache) error {
 	for _, result := range SN28 {
 		r0 := 1000.0 / float64(stds[result])
 		r1 := rts[result]
-		if r1 < r0*1.025 {
+		if r1 < r0 {
 			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-4.2f】，间隔次数【%-4d】，投注金额【    -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
 			continue
 		}
