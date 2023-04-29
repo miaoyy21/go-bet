@@ -42,7 +42,7 @@ func RiddleDetail(user UserBase, issue string) (map[int]float64, int, float64, e
 
 	var riddleResponse QRiddleDetail
 
-	err := hDo("GET", fmt.Sprintf("%s_MyRiddleDetail.ashx", user.url), riddleRequest, &riddleResponse)
+	err := hDo(user, "GET", fmt.Sprintf("%s_MyRiddleDetail.ashx", user.url), riddleRequest, &riddleResponse)
 	if err != nil {
 		return nil, 0, 0, fmt.Errorf("查询开奖明细存在服务器错误：%s", err.Error())
 	}
