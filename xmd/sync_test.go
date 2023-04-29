@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -13,17 +15,18 @@ func TestCache_Sync(t *testing.T) {
 		log.Fatalf("sql.Open() fail : %s \n", err.Error())
 	}
 
-	origin := "..."
-	url := "..."
-	cookie := "..."
-	unix := "..."
-	keyCode := "..."
-	deviceId := "..."
-	userId := "..."
-	token := "..."
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("os.Getwd() fail : %s \n", err.Error())
+	}
 
-	userBase := NewUserBase(true, 0, origin, url, cookie, unix, keyCode, deviceId, userId, token)
-	histories, err := hGetHistories(1440*7, userBase)
+	dir0, _ := filepath.Split(dir)
+	cache, err := NewCache(dir0)
+	if err != nil {
+		log.Fatalf("NewCache() fail : %s \n", err.Error())
+	}
+
+	histories, err := hGetHistories(1440*7, cache.user)
 	if err != nil {
 		log.Fatalf("hGetHistories() fail : %s \n", err.Error())
 	}

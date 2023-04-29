@@ -55,20 +55,6 @@ type Cache struct {
 	hGolds    []HGold
 }
 
-func NewCache(user UserBase) (*Cache, error) {
-	cache := &Cache{
-		user: user,
-
-		issue:  -1,
-		result: -1,
-
-		histories: make([]IssueResult, 0),
-		hGolds:    make([]HGold, 0),
-	}
-
-	return cache, nil
-}
-
 func (o *Cache) Sync(size int) error {
 	items, err := hGetHistories(size, o.user)
 	if err != nil {

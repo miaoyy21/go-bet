@@ -61,13 +61,19 @@ func analysis(cache *Cache) error {
 
 	if float64(c0)/1000 < 0.15 {
 		if time.Now().Hour() < 18 {
-			log.Printf("第【%s】期：覆盖率【%.2f%%】不足15%%，仅进行2万基本投注 >>>>>>>>>> \n", nextIssue, float64(c0)/10)
-			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 21000); err != nil {
+			log.Printf("第【%s】期：覆盖率【%.2f%%】不足15%%，仅进行 20,040 基本投注 >>>>>>>>>> \n", nextIssue, float64(c0)/10)
+			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 20040); err != nil {
 				return err
 			}
+
+			return nil
 		}
 
-		log.Printf("第【%s】期：覆盖率【%.2f%%】不足15%%，不进行投注 >>>>>>>>>> \n", nextIssue, float64(c0)/10)
+		log.Printf("第【%s】期：覆盖率【%.2f%%】不足15%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, float64(c0)/10)
+		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
+			return err
+		}
+
 		return nil
 	}
 
@@ -98,8 +104,8 @@ func analysis(cache *Cache) error {
 	// 不足2万
 	if total < 20000 {
 		if time.Now().Hour() < 18 {
-			log.Printf("第【%s】期：投注金额不足2万，进行不足至2.1万 ********** \n", nextIssue)
-			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(21000-total)); err != nil {
+			log.Printf("第【%s】期：投注金额不足2万，进行不足至 20,040  ********** \n", nextIssue)
+			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(20040-total)); err != nil {
 				return err
 			}
 		}
