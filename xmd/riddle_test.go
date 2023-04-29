@@ -23,14 +23,14 @@ func TestRiddleDetail(t *testing.T) {
 	}
 
 	user := cache.user
-	for i := 0; i <= 20; i++ {
-		issue := strconv.Itoa(1698694 - i)
+	for i := 0; i <= 10; i++ {
+		issue := strconv.Itoa(1698739 - i)
 
 		_, num, rate, err := RiddleDetail(user, issue)
 		if err != nil {
 			t.Fatalf("期数【%s】，出现错误【%s】\n", issue, err.Error())
 		}
 
-		log.Printf("期数【%s】：中奖数字【%02d】，实际赔率【%-7.2f】\n", issue, num, rate)
+		log.Printf("期数【%s】：中奖数字【%02d】，实际赔率【%-6.4f】\n", issue, num, rate)
 	}
 }
