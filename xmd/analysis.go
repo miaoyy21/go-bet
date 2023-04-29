@@ -31,21 +31,39 @@ func analysis(cache *Cache) error {
 		}
 	}
 
-	rts, _, _, err := RiddleDetail(cache.user, nextIssue)
+	spaces := SpaceFn(cache)
+	rts, _, rx, err := RiddleDetail(cache.user, nextIssue)
 	if err != nil {
 		return err
 	}
 
-	spaces := SpaceFn(cache)
+	// 返奖率小于0.95
+	if rx < 0.95 {
+		if time.Now().Hour() < 18 {
+			log.Printf("第【%s】期：预估返奖率【%.2f%%】不足95%%，进行投注 20,040 >>>>>>>>>> \n", nextIssue, rx*100)
+			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 20040); err != nil {
+				return err
+			}
+
+			return nil
+		}
+
+		log.Printf("第【%s】期：预估返奖率【%.2f%%】不足95%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, rx*100)
+		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
+			return err
+		}
+
+		return nil
+	}
 
 	// 输出
 	if len(latest) == 0 {
-		log.Printf("第【✊ %d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, surplus)
+		log.Printf("第【✊ %d】期：开奖结果【%d】，下一期预估返奖率【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, surplus)
 	} else {
 		if _, exists := latest[cache.result]; exists {
-			log.Printf("第【👍 %d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, surplus)
+			log.Printf("第【👍 %d】期：开奖结果【%d】，下一期预估返奖率【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, surplus)
 		} else {
-			log.Printf("第【👀 %d】期：开奖结果【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, surplus)
+			log.Printf("第【👀 %d】期：开奖结果【%d】，下一期预估返奖率【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, surplus)
 		}
 	}
 
@@ -61,7 +79,7 @@ func analysis(cache *Cache) error {
 
 	if float64(c0)/1000 < 0.15 {
 		if time.Now().Hour() < 18 {
-			log.Printf("第【%s】期：覆盖率【%.2f%%】不足15%%，仅进行 20,040 基本投注 >>>>>>>>>> \n", nextIssue, float64(c0)/10)
+			log.Printf("第【%s】期：覆盖率【%.2f%%】不足15%%，进行投注 20,040 >>>>>>>>>> \n", nextIssue, float64(c0)/10)
 			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 20040); err != nil {
 				return err
 			}
