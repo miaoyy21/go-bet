@@ -40,6 +40,11 @@ type IssueResult struct {
 	result int
 }
 
+type HGold struct {
+	Time string
+	Gold int
+}
+
 type Cache struct {
 	user UserBase
 
@@ -47,6 +52,7 @@ type Cache struct {
 	result int // 最新开奖结果
 
 	histories []IssueResult // 每期存在数据库的开奖记录
+	hGolds    []HGold
 }
 
 func NewCache(user UserBase) (*Cache, error) {
@@ -57,6 +63,7 @@ func NewCache(user UserBase) (*Cache, error) {
 		result: -1,
 
 		histories: make([]IssueResult, 0),
+		hGolds:    make([]HGold, 0),
 	}
 
 	return cache, nil

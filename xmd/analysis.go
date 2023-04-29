@@ -3,6 +3,7 @@ package xmd
 import (
 	"log"
 	"strconv"
+	"time"
 )
 
 var latest = make(map[int]struct{})
@@ -18,6 +19,16 @@ func analysis(cache *Cache) error {
 	surplus, err := hGetGold(cache.user)
 	if err != nil {
 		return err
+	}
+
+	// 添加
+	if time.Now().Minute() == 0 {
+		cache.hGolds = append(cache.hGolds, HGold{Time: time.Now().Format("2006-01-02 15:04"), Gold: surplus})
+
+		log.Printf("输出每小时的金额情况如下：\n")
+		for _, hGold := range cache.hGolds {
+			log.Printf("【%s】：【% 9d】\n", hGold.Time, hGold.Gold)
+		}
 	}
 
 	rts, _, _, err := RiddleDetail(cache.user, nextIssue)

@@ -13,14 +13,16 @@ func TestCache_Sync(t *testing.T) {
 		log.Fatalf("sql.Open() fail : %s \n", err.Error())
 	}
 
-	url := "http://manorapp.pceggs.com/IFS/Manor28/Manor28"
-	unix := "1680814387"
-	keyCode := "5e6e725a5abd96b9ec0b3bc929a4b4fd"
-	deviceId := "0E6EE3CC-8184-4CD7-B163-50AE8AD4516F"
-	userId := "31591499"
-	token := "cbj7s576p3se6c87194kwqo1c1w2cq87sau8lc2s"
+	origin := "..."
+	url := "..."
+	cookie := "..."
+	unix := "..."
+	keyCode := "..."
+	deviceId := "..."
+	userId := "..."
+	token := "..."
 
-	userBase := NewUserBase(true, 0, url, unix, keyCode, deviceId, userId, token)
+	userBase := NewUserBase(true, 0, origin, url, cookie, unix, keyCode, deviceId, userId, token)
 	histories, err := hGetHistories(1440*7, userBase)
 	if err != nil {
 		log.Fatalf("hGetHistories() fail : %s \n", err.Error())
