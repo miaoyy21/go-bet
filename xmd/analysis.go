@@ -39,8 +39,9 @@ func analysis(cache *Cache) error {
 
 	// 返奖率小于0.95
 	if rx < 0.975 {
+		latest = make(map[int]struct{})
 		if time.Now().Hour() < 18 {
-			log.Printf("第【%s】期：预估返奖率【%.2f%%】不足97.5%%，进行投注 20,000 >>>>>>>>>> \n", nextIssue, rx*100)
+			log.Printf("️⭐️⭐️⭐️ 第【%s】期：预估返奖率【%.2f%%】不足97.5%%，进行投注 20,000 >>>>>>>>>> \n", nextIssue, rx*100)
 			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 20000); err != nil {
 				return err
 			}
@@ -48,7 +49,7 @@ func analysis(cache *Cache) error {
 			return nil
 		}
 
-		log.Printf("第【%s】期：预估返奖率【%.2f%%】不足97.5%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, rx*100)
+		log.Printf("⭐️⭐️⭐️ 第【%s】期：预估返奖率【%.2f%%】不足97.5%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, rx*100)
 		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
 			return err
 		}
@@ -58,12 +59,12 @@ func analysis(cache *Cache) error {
 
 	// 输出
 	if len(latest) == 0 {
-		log.Printf("第【✊ %d】期：开奖结果【%d】，下一期预估返奖率【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, surplus)
+		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下一期预估返奖率【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, surplus)
 	} else {
 		if _, exists := latest[cache.result]; exists {
-			log.Printf("第【👍 %d】期：开奖结果【%d】，下一期预估返奖率【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, surplus)
+			log.Printf("⭐️⭐️⭐️ 第【👍 %d】期：开奖结果【%d】，下一期预估返奖率【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, surplus)
 		} else {
-			log.Printf("第【👀 %d】期：开奖结果【%d】，下一期预估返奖率【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, surplus)
+			log.Printf("⭐️⭐️⭐️ 第【👀 %d】期：开奖结果【%d】，下一期预估返奖率【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, surplus)
 		}
 	}
 
