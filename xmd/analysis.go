@@ -49,13 +49,34 @@ func analysis(cache *Cache) error {
 		}
 	}
 
+	// 先初步看看赔率系数，是不是值得投注
+	var c0 int
+	for _, result := range SN28 {
+		if rts[result] < 1000.0*1.05/float64(stds[result]) {
+			continue
+		}
+
+		c0 = c0 + stds[result]
+	}
+
+	if float64(c0)/1000 < 0.15 {
+		if time.Now().Hour() < 18 {
+			log.Printf("第【%s】期：覆盖率【%.2f%%】不足15%%，仅进行2万基本投注 >>>>>>>>>> \n", nextIssue, float64(c0)/10)
+			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 21000); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}
+
 	latest = make(map[int]struct{})
 	total, coverage := 0, 0
 	for _, result := range SN28 {
 		r0 := 1000.0 / float64(stds[result])
 		r1 := rts[result]
-		if r1 < r0*1.05 {
-			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，间隔次数【%-4d】，投注金额【    -】\n", nextIssue, result, r0, r1, spaces[result])
+		if r1 < r0*1.025 {
+			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-4.2f】，间隔次数【%-4d】，投注金额【    -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
 			continue
 		}
 
@@ -63,7 +84,7 @@ func analysis(cache *Cache) error {
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
 		}
-		log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，间隔次数【%-4d】，投注金额【% 5d】\n", nextIssue, result, r0, r1, spaces[result], betGold)
+		log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-4.2f】，间隔次数【%-4d】，投注金额【% 5d】\n", nextIssue, result, r0, r1, r1/r0, spaces[result], betGold)
 
 		latest[result] = struct{}{}
 		total = total + betGold
@@ -74,11 +95,12 @@ func analysis(cache *Cache) error {
 	log.Printf("第【%s】期：投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, surplus, float64(coverage)/10)
 
 	// 不足2万
-	if total < 20000 && time.Now().Hour() < 18 {
-		log.Printf("第【%s】期：投注金额不足2万，进行不足至2.1万 ********** \n", nextIssue)
-
-		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(21000-total)); err != nil {
-			return err
+	if total < 20000 {
+		if time.Now().Hour() < 18 {
+			log.Printf("第【%s】期：投注金额不足2万，进行不足至2.1万 ********** \n", nextIssue)
+			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(21000-total)); err != nil {
+				return err
+			}
 		}
 	}
 
