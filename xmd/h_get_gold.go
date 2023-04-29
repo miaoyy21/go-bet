@@ -36,7 +36,7 @@ func hGetGold(user UserBase) (gold int, err error) {
 	var userBaseResponse UserBaseResponse
 
 	// 执行查询开奖历史
-	err = hDo("GET", "http://manorapp.pceggs.com/IFS/Manor28/Manor28_UserBase.ashx", userBaseRequest, &userBaseResponse)
+	err = hDo("GET", fmt.Sprintf("%s_UserBase.ashx", user.url), userBaseRequest, &userBaseResponse)
 	if err != nil {
 		return
 	}

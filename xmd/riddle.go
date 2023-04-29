@@ -29,20 +29,20 @@ type QRiddleDetail struct {
 	Msg string `json:"msg"`
 }
 
-func RiddleDetail(userBase UserBase, issue string) (map[int]float64, int, float64, error) {
+func RiddleDetail(user UserBase, issue string) (map[int]float64, int, float64, error) {
 	riddleRequest := &QRiddleDetailRequest{
 		Issue:    issue,
-		Unix:     userBase.unix,
-		Keycode:  userBase.code,
+		Unix:     user.unix,
+		Keycode:  user.code,
 		PType:    "3",
-		DeviceId: userBase.device,
-		Userid:   userBase.id,
-		Token:    userBase.token,
+		DeviceId: user.device,
+		Userid:   user.id,
+		Token:    user.token,
 	}
 
 	var riddleResponse QRiddleDetail
 
-	err := hDo("GET", "http://manorapp.pceggs.com/IFS/Manor28/Manor28_MyRiddleDetail.ashx", riddleRequest, &riddleResponse)
+	err := hDo("GET", fmt.Sprintf("%s_MyRiddleDetail.ashx", user.url), riddleRequest, &riddleResponse)
 	if err != nil {
 		return nil, 0, 0, fmt.Errorf("查询开奖明细存在服务器错误：%s", err.Error())
 	}

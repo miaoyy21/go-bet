@@ -39,7 +39,7 @@ func hPostBet(nextIssue string, betGold int, result int, user UserBase) error {
 	}
 
 	var betResponse XBet
-	err := hDo("GET", "http://manorapp.pceggs.com/IFS/Manor28/Manor28_Betting_1.ashx", betRequest, &betResponse)
+	err := hDo("GET", fmt.Sprintf("%s_Betting_1.ashx", user.url), betRequest, &betResponse)
 	if err != nil {
 		return fmt.Errorf("下期开奖期数【%s】，执行押注[% 5d]，出现错误：%s", nextIssue, result, err.Error())
 	}

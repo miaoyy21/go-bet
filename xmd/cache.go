@@ -9,6 +9,7 @@ type UserBase struct {
 	isDebug bool
 
 	gold   int
+	url    string
 	unix   string
 	code   string
 	device string
@@ -16,11 +17,12 @@ type UserBase struct {
 	token  string
 }
 
-func NewUserBase(debug bool, gold int, unix string, code string, device string, id string, token string) UserBase {
+func NewUserBase(debug bool, gold int, url string, unix string, code string, device string, id string, token string) UserBase {
 	return UserBase{
 		isDebug: debug,
 
 		gold:   gold,
+		url:    url,
 		unix:   unix,
 		code:   code,
 		device: device,

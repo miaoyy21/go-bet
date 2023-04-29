@@ -47,7 +47,7 @@ func hGetHistories(pageSize int, user UserBase) ([]QHistoryItem, error) {
 	var hisResponse QHistory
 
 	// 执行查询开奖历史
-	err := hDo("GET", "http://manorapp.pceggs.com/IFS/Manor28/Manor28_Analyse_History.ashx", hisRequest, &hisResponse)
+	err := hDo("GET", fmt.Sprintf("%s_Analyse_History.ashx", user.url), hisRequest, &hisResponse)
 	if err != nil {
 		return nil, fmt.Errorf("查询开奖历史存在服务器错误：%s", err.Error())
 	}

@@ -9,13 +9,14 @@ import (
 func TestRiddleDetail(t *testing.T) {
 	calc()
 
+	url := "http://manorapp.pceggs.com/IFS/Manor28/Manor28"
 	unix := "1682729340"
 	keyCode := "81cabab20f55ccf81bcf170c91e264a3"
 	deviceId := "0E6EE3CC-8184-4CD7-B163-50AE8AD4516F"
 	userId := "31591499"
 	token := "o787oj82qisa3d7fu2ur9r1uct9bo5s8fpfacw41"
 
-	userBase := NewUserBase(true, 0, unix, keyCode, deviceId, userId, token)
+	userBase := NewUserBase(true, 0, url, unix, keyCode, deviceId, userId, token)
 
 	for i := 0; i <= 20; i++ {
 		issue := strconv.Itoa(1697574 - i)

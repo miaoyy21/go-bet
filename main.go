@@ -11,6 +11,7 @@ import (
 type Config struct {
 	IsDebug  bool   `json:"is_debug"`
 	Gold     int    `json:"gold"`
+	URL      string `json:"url"`
 	UserId   string `json:"user_id"`
 	Token    string `json:"token"`
 	Unix     string `json:"unix"`
@@ -37,7 +38,7 @@ func main() {
 		log.Fatalf("json.Decode() fail : %s\n", err.Error())
 	}
 
-	user := xmd.NewUserBase(conf.IsDebug, conf.Gold, conf.Unix, conf.KeyCode, conf.DeviceId, conf.UserId, conf.Token)
+	user := xmd.NewUserBase(conf.IsDebug, conf.Gold, conf.URL, conf.Unix, conf.KeyCode, conf.DeviceId, conf.UserId, conf.Token)
 	cache, err := xmd.NewCache(user)
 	if err != nil {
 		log.Fatalf("xmd.NewCache() fail :: %s\n", err.Error())
