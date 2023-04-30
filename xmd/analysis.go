@@ -49,26 +49,26 @@ func analysis(cache *Cache) error {
 		}
 	}
 
-	// 返奖率小于0.95
+	// 返奖率小于0.975
 	if rx < 0.975 {
-		latest = make(map[int]struct{})
-		if cache.isExtra && time.Now().Hour() < 16 {
-			log.Printf("️第【%s】期：预估返奖率【%.2f%%】不足97.5%%，进行投注 20,000 >>>>>>>>>> \n", nextIssue, rx*100)
-			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 20000); err != nil {
-				return err
-			}
-
-			xBetGold = 20000
-			return nil
-		}
-
-		log.Printf("第【%s】期：预估返奖率【%.2f%%】不足97.5%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, rx*100)
-		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
-			return err
-		}
-
-		xBetGold = 1000
-		return nil
+		//latest = make(map[int]struct{})
+		//if cache.isExtra && time.Now().Hour() < 16 {
+		//	log.Printf("️第【%s】期：预估返奖率【%.2f%%】不足97.5%%，进行投注 20,000 >>>>>>>>>> \n", nextIssue, rx*100)
+		//	if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 20000); err != nil {
+		//		return err
+		//	}
+		//
+		//	xBetGold = 20000
+		//	return nil
+		//}
+		//
+		//log.Printf("第【%s】期：预估返奖率【%.2f%%】不足97.5%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, rx*100)
+		//if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
+		//	return err
+		//}
+		//
+		//xBetGold = 1000
+		//return nil
 	}
 
 	// 先初步看看赔率系数，是不是值得投注
@@ -81,18 +81,18 @@ func analysis(cache *Cache) error {
 		c0 = c0 + stds[result]
 	}
 
-	if c0 == 0 {
-		log.Printf("第【%s】期：赔率超过5%%的覆盖率【0%%】，仅投注 1,000 >>>>>>>>>> \n", nextIssue)
-		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
-			return err
+	if float64(c0)/1000 <= 0.10 {
+		if cache.isExtra && time.Now().Hour() < 16 {
+			log.Printf("第【%s】期：赔率超过5%%的覆盖率【0%%】，仅投注 20,000 >>>>>>>>>> \n", nextIssue)
+			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(20000)); err != nil {
+				return err
+			}
+
+			xBetGold = 20000
+			return nil
 		}
 
-		xBetGold = 1000
-		return nil
-	}
-
-	if float64(c0)/1000 < 0.15 && cache.isExtra && time.Now().Hour() > 16 {
-		log.Printf("第【%s】期：赔率超过5%%的覆盖率【%.2f%%】不足15%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, float64(c0)/10)
+		log.Printf("第【%s】期：赔率超过5%%的覆盖率【0%%】，仅投注 1,000 >>>>>>>>>> \n", nextIssue)
 		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
 			return err
 		}
