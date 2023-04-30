@@ -54,6 +54,7 @@ type Cache struct {
 	db      *sql.DB
 	user    UserBase
 	isExtra bool
+	rx      float64
 
 	issue  int // 最新期数
 	result int // 最新开奖结果

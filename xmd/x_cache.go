@@ -10,18 +10,19 @@ import (
 )
 
 type Config struct {
-	IsDebug    bool   `json:"is_debug"`
-	IsExtra    bool   `json:"is_extra"`
-	DataSource string `json:"datasource"`
-	Gold       int    `json:"gold"`
-	Origin     string `json:"origin"`
-	URL        string `json:"url"`
-	Cookie     string `json:"cookie"`
-	UserId     string `json:"user_id"`
-	Token      string `json:"token"`
-	Unix       string `json:"unix"`
-	KeyCode    string `json:"key_code"`
-	DeviceId   string `json:"device_id"`
+	IsDebug    bool    `json:"is_debug"`
+	IsExtra    bool    `json:"is_extra"`
+	Rx         float64 `json:"rx"`
+	DataSource string  `json:"datasource"`
+	Gold       int     `json:"gold"`
+	Origin     string  `json:"origin"`
+	URL        string  `json:"url"`
+	Cookie     string  `json:"cookie"`
+	UserId     string  `json:"user_id"`
+	Token      string  `json:"token"`
+	Unix       string  `json:"unix"`
+	KeyCode    string  `json:"key_code"`
+	DeviceId   string  `json:"device_id"`
 }
 
 func NewCache(dir string) (*Cache, error) {
@@ -62,6 +63,7 @@ func NewCache(dir string) (*Cache, error) {
 		db:      db,
 		user:    user,
 		isExtra: conf.IsExtra,
+		rx:      conf.Rx,
 
 		issue:  -1,
 		result: -1,
@@ -102,5 +104,6 @@ func (o *Cache) Reload() (bool, error) {
 	o.md5 = h.Sum(nil)
 	o.user = user
 	o.isExtra = conf.IsExtra
+	o.rx = conf.Rx
 	return true, nil
 }
