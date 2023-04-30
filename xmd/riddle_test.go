@@ -24,7 +24,7 @@ func TestRiddleDetail(t *testing.T) {
 
 	user := cache.user
 	for i := 0; i <= 10; i++ {
-		issue := strconv.Itoa(1700093 - i)
+		issue := strconv.Itoa(1700174 - i)
 
 		_, rate, err := RiddleDetail(user, issue)
 		if err != nil {
