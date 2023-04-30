@@ -25,8 +25,8 @@ func analysis(cache *Cache) error {
 	}
 
 	if xSurplus > 0 {
-		query := fmt.Sprintf("%s INTO logs(issue, time, gold, win_gold) VALUES (?,?,?,?)", "INSERT")
-		if _, err := cache.db.Exec(query, cache.issue, time.Now().Format("2006-01-02 15:04"), surplus, surplus-xSurplus); err != nil {
+		query := fmt.Sprintf("%s INTO logs(issue, time, bet_gold, win_gold, gold) VALUES (?,?,?,?,?)", "INSERT")
+		if _, err := cache.db.Exec(query, cache.issue, time.Now().Format("2006-01-02 15:04"), xBetGold, surplus-xSurplus, surplus); err != nil {
 			return err
 		}
 	}

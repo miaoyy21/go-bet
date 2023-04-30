@@ -5,16 +5,19 @@ import (
 	"go-bet/xmd"
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
-	log.Printf("当前版本 2023.04.30 13:38\n")
+	log.Printf("当前版本 2023.04.30 13:47\n")
 
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("%s \n", err.Error())
 	}
 
+	log.Println("延迟3秒启动...")
+	time.Sleep(3 * time.Second)
 	cache, err := xmd.NewCache(dir)
 	if err != nil {
 		log.Fatalf("getCache() fail : %s\n", err.Error())
