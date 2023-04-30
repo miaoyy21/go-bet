@@ -59,15 +59,15 @@ func analysis(cache *Cache) error {
 	// 返奖率小于0.95
 	if rx < 0.95 {
 		latest = make(map[int]struct{})
-		if cache.IsExtra() {
-			log.Printf("️第【%s】期：预估返奖率【%.2f%%】不足95%%，进行投注 20,000 >>>>>>>>>> \n", nextIssue, rx*100)
-			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 20000); err != nil {
-				return err
-			}
-
-			xBetGold = 20000
-			return nil
-		}
+		//if cache.IsExtra() {
+		//	log.Printf("️第【%s】期：预估返奖率【%.2f%%】不足95%%，进行投注 20,000 >>>>>>>>>> \n", nextIssue, rx*100)
+		//	if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 20000); err != nil {
+		//		return err
+		//	}
+		//
+		//	xBetGold = 20000
+		//	return nil
+		//}
 
 		log.Printf("第【%s】期：预估返奖率【%.2f%%】不足95%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, rx*100)
 		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
@@ -88,15 +88,16 @@ func analysis(cache *Cache) error {
 	}
 
 	if !c0 {
-		if cache.IsExtra() {
-			log.Printf("第【%s】期：赔率超过5%%的覆盖率【0%%】，仅投注 20,000 >>>>>>>>>> \n", nextIssue)
-			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(20000)); err != nil {
-				return err
-			}
-
-			xBetGold = 20000
-			return nil
-		}
+		latest = make(map[int]struct{})
+		//if cache.IsExtra() {
+		//	log.Printf("第【%s】期：赔率超过5%%的覆盖率【0%%】，仅投注 20,000 >>>>>>>>>> \n", nextIssue)
+		//	if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(20000)); err != nil {
+		//		return err
+		//	}
+		//
+		//	xBetGold = 20000
+		//	return nil
+		//}
 
 		log.Printf("第【%s】期：赔率超过5%%的覆盖率【0%%】，仅投注 1,000 >>>>>>>>>> \n", nextIssue)
 		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
@@ -134,14 +135,14 @@ func analysis(cache *Cache) error {
 
 	// 不足2万
 	if total < 20000 {
-		if cache.IsExtra() {
-			log.Printf("第【%s】期：投注金额不足，进行不足至 20,000  ********** \n", nextIssue)
-			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(20000-total)); err != nil {
-				return err
-			}
-
-			xBetGold = 20000
-		}
+		//if cache.IsExtra() {
+		//	log.Printf("第【%s】期：投注金额不足，进行不足至 20,000  ********** \n", nextIssue)
+		//	if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(20000-total)); err != nil {
+		//		return err
+		//	}
+		//
+		//	xBetGold = 20000
+		//}
 	}
 
 	return nil
