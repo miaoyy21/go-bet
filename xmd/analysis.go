@@ -81,7 +81,6 @@ func analysis(cache *Cache) error {
 	}
 
 	if !c0 {
-
 		if cache.isExtra && time.Now().Hour() < 16 {
 			log.Printf("第【%s】期：赔率超过5%%的覆盖率【0%%】，仅投注 20,000 >>>>>>>>>> \n", nextIssue)
 			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(20000)); err != nil {
@@ -106,9 +105,16 @@ func analysis(cache *Cache) error {
 	for _, result := range SN28 {
 		r0 := 1000.0 / float64(stds[result])
 		r1 := rts[result]
-		if r1 < r0 {
-			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-4.2f】，间隔次数【%-4d】，投注金额【    -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
-			continue
+		if time.Now().Hour() < 16 {
+			if r1 < r0 {
+				log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-4.2f】，间隔次数【%-4d】，投注金额【    -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
+				continue
+			}
+		} else {
+			if r1 > r0 {
+				log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-4.2f】，间隔次数【%-4d】，投注金额【    -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
+				continue
+			}
 		}
 
 		betGold := int(float64(cache.user.gold) * float64(stds[result]) / 1000)
