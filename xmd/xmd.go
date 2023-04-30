@@ -32,6 +32,14 @@ func Run(cache *Cache) {
 	for {
 		select {
 		case <-ticker.C:
+			if ok, err := cache.Reload(); err != nil {
+				log.Println(err.Error())
+			} else {
+				if ok {
+					log.Println("配置文件变化，重新加载配置文件完成 ...")
+				}
+			}
+
 			if err := analysis(cache); err != nil {
 				log.Println(err.Error())
 			}

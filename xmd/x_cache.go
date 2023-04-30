@@ -1,6 +1,8 @@
 package xmd
 
 import (
+	"bytes"
+	"crypto/md5"
 	"database/sql"
 	"encoding/json"
 	"os"
@@ -23,15 +25,19 @@ type Config struct {
 }
 
 func NewCache(dir string) (*Cache, error) {
-
-	file, err := os.Open(filepath.Join(dir, "config.json"))
+	bs, err := os.ReadFile(filepath.Join(dir, "config.json"))
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+
+	// MD5
+	h := md5.New()
+	if _, err := h.Write(bs); err != nil {
+		return nil, err
+	}
 
 	var conf Config
-	if err := json.NewDecoder(file).Decode(&conf); err != nil {
+	if err := json.Unmarshal(bs, &conf); err != nil {
 		return nil, err
 	}
 
@@ -50,6 +56,9 @@ func NewCache(dir string) (*Cache, error) {
 		conf.Unix, conf.KeyCode, conf.DeviceId, conf.UserId, conf.Token,
 	)
 	cache := &Cache{
+		dir: dir,
+		md5: h.Sum(nil),
+
 		db:      db,
 		user:    user,
 		isExtra: conf.IsExtra,
@@ -62,4 +71,36 @@ func NewCache(dir string) (*Cache, error) {
 	}
 
 	return cache, nil
+}
+
+func (o *Cache) Reload() (bool, error) {
+	bs, err := os.ReadFile(filepath.Join(o.dir, "config.json"))
+	if err != nil {
+		return false, err
+	}
+
+	// MD5
+	h := md5.New()
+	if _, err := h.Write(bs); err != nil {
+		return false, err
+	}
+
+	if bytes.Equal(h.Sum(nil), o.md5) {
+		return false, nil
+	}
+
+	var conf Config
+	if err := json.Unmarshal(bs, &conf); err != nil {
+		return false, err
+	}
+
+	user := NewUserBase(
+		conf.IsDebug, conf.Gold, conf.Origin, conf.URL, conf.Cookie,
+		conf.Unix, conf.KeyCode, conf.DeviceId, conf.UserId, conf.Token,
+	)
+
+	o.md5 = h.Sum(nil)
+	o.user = user
+	o.isExtra = conf.IsExtra
+	return true, nil
 }

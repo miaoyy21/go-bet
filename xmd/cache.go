@@ -48,6 +48,9 @@ type HGold struct {
 }
 
 type Cache struct {
+	dir string
+	md5 []byte
+
 	db      *sql.DB
 	user    UserBase
 	isExtra bool

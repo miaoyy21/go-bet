@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	log.Printf("当前版本 2023.04.30 22:18\n")
+	log.Printf("当前版本 2023.04.30 23:25\n")
 
 	dir, err := os.Getwd()
 	if err != nil {
@@ -20,7 +20,7 @@ func main() {
 	time.Sleep(3 * time.Second)
 	cache, err := xmd.NewCache(dir)
 	if err != nil {
-		log.Fatalf("getCache() fail : %s\n", err.Error())
+		log.Fatalf("xmd.NewCache() fail : %s\n", err.Error())
 	}
 
 	xmd.Run(cache)
