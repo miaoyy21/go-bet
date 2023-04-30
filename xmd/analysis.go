@@ -72,16 +72,16 @@ func analysis(cache *Cache) error {
 	}
 
 	// 先初步看看赔率系数，是不是值得投注
-	var c0 int
+	var c0 bool
 	for _, result := range SN28 {
-		if rts[result] < 1000.0*1.05/float64(stds[result]) {
-			continue
+		if rts[result] > 1000.0*1.10/float64(stds[result]) {
+			c0 = true
+			break
 		}
-
-		c0 = c0 + stds[result]
 	}
 
-	if float64(c0)/1000 <= 0.10 {
+	if !c0 {
+
 		if cache.isExtra && time.Now().Hour() < 16 {
 			log.Printf("第【%s】期：赔率超过5%%的覆盖率【0%%】，仅投注 20,000 >>>>>>>>>> \n", nextIssue)
 			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(20000)); err != nil {
