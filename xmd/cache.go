@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"sort"
 	"strconv"
+	"time"
 )
 
 type UserBase struct {
@@ -56,6 +57,10 @@ type Cache struct {
 
 	histories []IssueResult // 每期存在数据库的开奖记录
 	hGolds    []HGold
+}
+
+func (o *Cache) IsExtra() bool {
+	return o.isExtra && time.Now().Hour() < 16
 }
 
 func (o *Cache) Sync(size int) error {
