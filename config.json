@@ -4,11 +4,11 @@
   "datasource": "root:root@tcp(localhost:3306)/bet?charset=utf8mb4&collation=utf8mb4_general_ci&loc=Local&parseTime=true",
   "gold": 10000,
   "origin": "http://5.7.com",
-  "url": "http://5.7.com/IFS/Manor28/Manor28",
+  "url": "http://5.7.com/a/b/c",
   "cookie": "*",
-  "user_id": "31591409",
-  "token": "o787oj82qisa3d7fu2ur9r1uct9bo5s8fpfacw01",
+  "user_id": "33521409",
+  "token": "o787oj82qisa3d7fu2ur9r1uct9bo5xs8fpfacw01",
   "unix": "1682778504",
-  "key_code": "7a61f9a5c86b40e526ffb6c153d38f24",
-  "device_id": "0E6EE3CC-8184-4CD7-B163-50AE8AD4516F"
+  "key_code": "7a61f9a5c86b40e526ffb6c153d3s8f24",
+  "device_id": "0E6EE3CC-8184-4CD7-B163-50AsE8AD4516F"
 }
