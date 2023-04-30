@@ -27,7 +27,7 @@ func analysis(cache *Cache) error {
 	}
 
 	if xSurplus > 0 {
-		query := fmt.Sprintf("%s INTO logs(time, issue, result, basic,  rx, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?)", "INSERT")
+		query := fmt.Sprintf("%s INTO logs(time, issue, result, user_gold,  rx, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?)", "INSERT")
 		if _, err := cache.db.Exec(query,
 			time.Now().Format("2006-01-02 15:04"), cache.issue, cache.result, xUserGold,
 			xRx, xBetGold, surplus-xSurplus, surplus,
