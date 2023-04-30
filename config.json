@@ -1,12 +1,13 @@
 {
   "is_debug": true,
+  "is_extra": true,
   "datasource": "root:root@tcp(localhost:3306)/bet?charset=utf8mb4&collation=utf8mb4_general_ci&loc=Local&parseTime=true",
   "gold": 10000,
-  "origin": "http://manorapp.pceggs.com",
-  "url": "http://manorapp.pceggs.com/IFS/Manor28/Manor28",
-  "cookie": "Hm_lvt_f8f6a0064a3e891522bdf044119d462a=1682001475,1682252733,1682319534,1682510129; ckurl.pceggs.com=ckurl=http://www.pceggs.com/game/gameindex/gameindex.aspx?gameid=4; CLIENTKEY=5264-2039-2396; CLIENTKEY_ShowLogin=7347-5638-4467; .ADWASPX7A5C561934E_PCEGGS=E287F97433D261B7D92452A79F551F7B37AC36D104FBC791F33A1230233155F5BB3B16F5EE8E39BA8CFD4FDF3DEBF8DE83C3DBCD767DAF1A6F806527946C6CBE40DC8E076C6693DBF1E15AD6230F31BEB2141C959ADBFEF741E6D5AFE2ACFBEF87CC0715CFF88B5AC21D757B50165AD91E38B50BBAB4582C247F33FCB30422D1BA888D7D; Hm_lpvt_f8f6a0064a3e891522bdf044119d462a",
-  "user_id": "31591499",
-  "token": "o787oj82qisa3d7fu2ur9r1uct9bo5s8fpfacw41",
+  "origin": "http://5.7.com",
+  "url": "http://5.7.com/IFS/Manor28/Manor28",
+  "cookie": "*",
+  "user_id": "31591409",
+  "token": "o787oj82qisa3d7fu2ur9r1uct9bo5s8fpfacw01",
   "unix": "1682778504",
   "key_code": "7a61f9a5c86b40e526ffb6c153d38f24",
   "device_id": "0E6EE3CC-8184-4CD7-B163-50AE8AD4516F"

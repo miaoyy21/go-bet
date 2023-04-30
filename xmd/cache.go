@@ -47,8 +47,9 @@ type HGold struct {
 }
 
 type Cache struct {
-	db   *sql.DB
-	user UserBase
+	db      *sql.DB
+	user    UserBase
+	isExtra bool
 
 	issue  int // 最新期数
 	result int // 最新开奖结果

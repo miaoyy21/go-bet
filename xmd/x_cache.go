@@ -3,13 +3,13 @@ package xmd
 import (
 	"database/sql"
 	"encoding/json"
-	"log"
 	"os"
 	"path/filepath"
 )
 
 type Config struct {
 	IsDebug    bool   `json:"is_debug"`
+	IsExtra    bool   `json:"is_extra"`
 	DataSource string `json:"datasource"`
 	Gold       int    `json:"gold"`
 	Origin     string `json:"origin"`
@@ -23,10 +23,6 @@ type Config struct {
 }
 
 func NewCache(dir string) (*Cache, error) {
-	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/bet?charset=utf8mb4&collation=utf8mb4_general_ci&loc=Local&parseTime=true")
-	if err != nil {
-		log.Fatalf("sql.Open() fail : %s \n", err.Error())
-	}
 
 	file, err := os.Open(filepath.Join(dir, "config.json"))
 	if err != nil {
@@ -39,13 +35,24 @@ func NewCache(dir string) (*Cache, error) {
 		return nil, err
 	}
 
+	// MySQL
+	db, err := sql.Open("mysql", conf.DataSource)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
 	user := NewUserBase(
 		conf.IsDebug, conf.Gold, conf.Origin, conf.URL, conf.Cookie,
 		conf.Unix, conf.KeyCode, conf.DeviceId, conf.UserId, conf.Token,
 	)
 	cache := &Cache{
-		db:   db,
-		user: user,
+		db:      db,
+		user:    user,
+		isExtra: conf.IsExtra,
 
 		issue:  -1,
 		result: -1,
