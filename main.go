@@ -1,13 +1,14 @@
 package main
 
 import (
+	_ "github.com/go-sql-driver/mysql"
 	"go-bet/xmd"
 	"log"
 	"os"
 )
 
 func main() {
-	log.Printf("当前版本 2023.04.30 01:42\n")
+	log.Printf("当前版本 2023.04.30 13:10\n")
 
 	dir, err := os.Getwd()
 	if err != nil {

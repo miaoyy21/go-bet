@@ -1,12 +1,14 @@
 package xmd
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"time"
 )
 
 var latest = make(map[int]struct{})
+var xSurplus int
 
 func analysis(cache *Cache) error {
 	if err := cache.Sync(200); err != nil {
@@ -21,40 +23,18 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
-	// 添加
-	if time.Now().Minute() == 0 {
-		cache.hGolds = append(cache.hGolds, HGold{Time: time.Now().Format("2006-01-02 15:04"), Gold: surplus})
-
-		log.Printf("输出每小时的金额情况如下：\n")
-		for _, hGold := range cache.hGolds {
-			log.Printf("【%s】：【% 9d】\n", hGold.Time, hGold.Gold)
+	if xSurplus > 0 {
+		query := fmt.Sprintf("%s INTO logs(issue, time, gold, win_gold) VALUES (?,?,?,?)", "INSERT")
+		if _, err := cache.db.Exec(query, cache.issue, time.Now().Format("2006-01-02 15:04"), surplus, surplus-xSurplus); err != nil {
+			return err
 		}
 	}
+	xSurplus = surplus
 
 	spaces := SpaceFn(cache)
 	rts, _, rx, err := RiddleDetail(cache.user, nextIssue)
 	if err != nil {
 		return err
-	}
-
-	// 返奖率小于0.95
-	if rx < 0.975 {
-		latest = make(map[int]struct{})
-		if time.Now().Hour() < 18 {
-			log.Printf("️⭐️⭐️⭐️ 第【%s】期：预估返奖率【%.2f%%】不足97.5%%，进行投注 20,000 >>>>>>>>>> \n", nextIssue, rx*100)
-			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 20000); err != nil {
-				return err
-			}
-
-			return nil
-		}
-
-		log.Printf("⭐️⭐️⭐️ 第【%s】期：预估返奖率【%.2f%%】不足97.5%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, rx*100)
-		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
-			return err
-		}
-
-		return nil
 	}
 
 	// 输出
@@ -68,6 +48,26 @@ func analysis(cache *Cache) error {
 		}
 	}
 
+	// 返奖率小于0.95
+	if rx < 0.975 {
+		latest = make(map[int]struct{})
+		if time.Now().Hour() < 16 {
+			log.Printf("️第【%s】期：预估返奖率【%.2f%%】不足97.5%%，进行投注 20,000 >>>>>>>>>> \n", nextIssue, rx*100)
+			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 20000); err != nil {
+				return err
+			}
+
+			return nil
+		}
+
+		log.Printf("第【%s】期：预估返奖率【%.2f%%】不足97.5%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, rx*100)
+		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
+			return err
+		}
+
+		return nil
+	}
+
 	// 先初步看看赔率系数，是不是值得投注
 	var c0 int
 	for _, result := range SN28 {
@@ -78,7 +78,7 @@ func analysis(cache *Cache) error {
 		c0 = c0 + stds[result]
 	}
 
-	if float64(c0)/1000 < 0.15 && time.Now().Hour() > 18 {
+	if float64(c0)/1000 < 0.15 && time.Now().Hour() > 16 {
 		log.Printf("第【%s】期：覆盖率【%.2f%%】不足15%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, float64(c0)/10)
 		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, 1000); err != nil {
 			return err
@@ -113,7 +113,7 @@ func analysis(cache *Cache) error {
 
 	// 不足2万
 	if total < 20000 {
-		if time.Now().Hour() < 18 {
+		if time.Now().Hour() < 16 {
 			log.Printf("第【%s】期：投注金额不足，进行不足至 20,000  ********** \n", nextIssue)
 			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, float64(20000-total)); err != nil {
 				return err

@@ -1,6 +1,7 @@
 package xmd
 
 import (
+	"database/sql"
 	"sort"
 	"strconv"
 )
@@ -46,6 +47,7 @@ type HGold struct {
 }
 
 type Cache struct {
+	db   *sql.DB
 	user UserBase
 
 	issue  int // 最新期数

@@ -1,5 +1,6 @@
 {
   "is_debug": true,
+  "datasource": "root:root@tcp(localhost:3306)/bet?charset=utf8mb4&collation=utf8mb4_general_ci&loc=Local&parseTime=true",
   "gold": 10000,
   "origin": "http://manorapp.pceggs.com",
   "url": "http://manorapp.pceggs.com/IFS/Manor28/Manor28",
