@@ -10,6 +10,7 @@ import (
 var latest = make(map[int]struct{})
 var xSurplus int
 var xBetGold int
+var xRx float64
 
 func analysis(cache *Cache) error {
 	if err := cache.Sync(200); err != nil {
@@ -25,18 +26,19 @@ func analysis(cache *Cache) error {
 	}
 
 	if xSurplus > 0 {
-		query := fmt.Sprintf("%s INTO logs(issue, time, bet_gold, win_gold, gold) VALUES (?,?,?,?,?)", "INSERT")
-		if _, err := cache.db.Exec(query, cache.issue, time.Now().Format("2006-01-02 15:04"), xBetGold, surplus-xSurplus, surplus); err != nil {
+		query := fmt.Sprintf("%s INTO logs(issue, time, rx, bet_gold, win_gold, gold) VALUES (?,?,?,?,?,?)", "INSERT")
+		if _, err := cache.db.Exec(query, cache.issue, time.Now().Format("2006-01-02 15:04"), xRx, xBetGold, surplus-xSurplus, surplus); err != nil {
 			return err
 		}
 	}
 	xSurplus = surplus
 
 	spaces := SpaceFn(cache)
-	rts, _, rx, err := RiddleDetail(cache.user, nextIssue)
+	rts, rx, err := RiddleDetail(cache.user, nextIssue)
 	if err != nil {
 		return err
 	}
+	xRx = rx
 
 	// 输出
 	if len(latest) == 0 {

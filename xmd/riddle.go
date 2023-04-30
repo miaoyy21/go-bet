@@ -3,7 +3,6 @@ package xmd
 import (
 	"fmt"
 	"strconv"
-	"strings"
 )
 
 type QRiddleDetailRequest struct {
@@ -29,7 +28,7 @@ type QRiddleDetail struct {
 	Msg string `json:"msg"`
 }
 
-func RiddleDetail(user UserBase, issue string) (map[int]float64, int, float64, error) {
+func RiddleDetail(user UserBase, issue string) (map[int]float64, float64, error) {
 	riddleRequest := &QRiddleDetailRequest{
 		Issue:    issue,
 		Unix:     user.unix,
@@ -44,35 +43,30 @@ func RiddleDetail(user UserBase, issue string) (map[int]float64, int, float64, e
 
 	err := hDo(user, "GET", fmt.Sprintf("%s_MyRiddleDetail.ashx", user.url), riddleRequest, &riddleResponse)
 	if err != nil {
-		return nil, 0, 0, fmt.Errorf("查询开奖明细存在服务器错误：%s", err.Error())
+		return nil, 0, fmt.Errorf("查询开奖明细存在服务器错误：%s", err.Error())
 	}
 
 	if riddleResponse.Status != 0 {
-		return nil, 0, 0, fmt.Errorf("查询开奖明细存在返回错误：(%d) %s", riddleResponse.Status, riddleResponse.Msg)
+		return nil, 0, fmt.Errorf("查询开奖明细存在返回错误：(%d) %s", riddleResponse.Status, riddleResponse.Msg)
 	}
 
 	var rate float64
-	var num int
 
 	rts := make(map[int]float64)
 	for _, riddle := range riddleResponse.Data.MyRiddle {
 		n, err := strconv.Atoi(riddle.Num)
 		if err != nil {
-			return nil, 0, 0, err
+			return nil, 0, err
 		}
 
 		r0, err := strconv.ParseFloat(riddle.Rate, 64)
 		if err != nil {
-			return nil, 0, 0, err
-		}
-
-		if !strings.EqualFold(riddle.Gmoney, "0") {
-			num = n
+			return nil, 0, err
 		}
 
 		rts[n] = r0
 		rate = rate + r0/(1000.0/float64(stds[n]))
 	}
 
-	return rts, num, rate / 28.0, nil
+	return rts, rate / 28.0, nil
 }
