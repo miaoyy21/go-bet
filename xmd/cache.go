@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"sort"
 	"strconv"
-	"time"
 )
 
 type UserBase struct {
@@ -64,7 +63,7 @@ type Cache struct {
 }
 
 func (o *Cache) IsExtra() bool {
-	return o.isExtra && time.Now().Hour() < 16
+	return o.isExtra
 }
 
 func (o *Cache) Sync(size int) error {
