@@ -1,40 +1,12 @@
 package xmd
 
 import (
+	"crypto/md5"
 	"database/sql"
-	"sort"
-	"strconv"
+	"encoding/json"
+	"os"
+	"path/filepath"
 )
-
-type UserBase struct {
-	isDebug bool
-
-	gold   int
-	origin string
-	url    string
-	cookie string
-	unix   string
-	code   string
-	device string
-	id     string
-	token  string
-}
-
-func NewUserBase(debug bool, gold int, origin string, url string, cookie string, unix string, code string, device string, id string, token string) UserBase {
-	return UserBase{
-		isDebug: debug,
-
-		gold:   gold,
-		origin: origin,
-		url:    url,
-		cookie: cookie,
-		unix:   unix,
-		code:   code,
-		device: device,
-		id:     id,
-		token:  token,
-	}
-}
 
 type IssueResult struct {
 	issue  int
@@ -62,38 +34,56 @@ type Cache struct {
 	hGolds    []HGold
 }
 
-func (o *Cache) IsExtra() bool {
-	return o.isExtra
+func NewCache(dir string) (*Cache, error) {
+	bs, err := os.ReadFile(filepath.Join(dir, "config.json"))
+	if err != nil {
+		return nil, err
+	}
+
+	// MD5
+	h := md5.New()
+	if _, err := h.Write(bs); err != nil {
+		return nil, err
+	}
+
+	var conf Config
+	if err := json.Unmarshal(bs, &conf); err != nil {
+		return nil, err
+	}
+
+	// MySQL
+	db, err := sql.Open("mysql", conf.DataSource)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	user := NewUserBase(
+		conf.IsDebug, conf.Gold, conf.Origin, conf.URL, conf.Cookie,
+		conf.Unix, conf.KeyCode, conf.DeviceId, conf.UserId, conf.Token,
+	)
+	cache := &Cache{
+		dir: dir,
+		md5: h.Sum(nil),
+
+		db:      db,
+		user:    user,
+		isExtra: conf.IsExtra,
+		rx:      conf.Rx,
+
+		issue:  -1,
+		result: -1,
+
+		histories: make([]IssueResult, 0),
+		hGolds:    make([]HGold, 0),
+	}
+
+	return cache, nil
 }
 
-func (o *Cache) Sync(size int) error {
-	items, err := hGetHistories(size, o.user)
-	if err != nil {
-		return err
-	}
-
-	sort.Slice(items, func(i, j int) bool {
-		return items[i].Issue <= items[j].Issue
-	})
-
-	histories := make([]IssueResult, 0, len(items))
-	for _, item := range items {
-		issue, err := strconv.Atoi(item.Issue)
-		if err != nil {
-			return err
-		}
-
-		result, err := strconv.Atoi(item.Result)
-		if err != nil {
-			return err
-		}
-
-		o.issue = issue
-		o.result = result
-
-		histories = append(histories, IssueResult{issue: issue, result: result})
-	}
-	o.histories = histories
-
-	return nil
+func (o *Cache) IsExtra() bool {
+	return o.isExtra
 }
