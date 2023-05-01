@@ -26,7 +26,7 @@ FROM (
 ) TT
 ORDER BY TT.result ASC
 
--- 按照返奖率统计输赢情况
+-- 按照返奖率统计指定日期输赢情况
 SELECT '[0, 0.85]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-01 %' AND rx <= 0.85
 UNION ALL
 SELECT '(0.85, 0.90]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-01 %' AND rx > 0.85 AND rx <= 0.90
@@ -47,5 +47,9 @@ SELECT '(1.20, 1.25]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,
 UNION ALL
 SELECT '(1.25, 5]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-01 %' AND rx > 1.25
 
-
+-- 按照统计指定日期的每个小时输赢情况
+SELECT LEFT(time,13),CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate
+FROM logs
+WHERE time LIKE '2023-05-01 %'
+GROUP BY LEFT(time,13);
 
