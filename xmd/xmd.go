@@ -32,11 +32,21 @@ func Run(cache *Cache) {
 	for {
 		select {
 		case <-ticker.C:
+			// 配置文件是否变化
 			if ok, err := cache.Reload(); err != nil {
 				log.Println(err.Error())
 			} else {
 				if ok {
 					log.Println("配置文件变化，重新加载配置文件完成 ...")
+				}
+			}
+
+			// 基础投注是否变化
+			if ok, err := cache.Update(); err != nil {
+				log.Println(err.Error())
+			} else {
+				if ok {
+					log.Printf("由于本时内中奖比率变化量达到设定标准，基础投注变为【%d】 ... \n", cache.user.gold)
 				}
 			}
 
