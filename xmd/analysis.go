@@ -20,12 +20,13 @@ func analysis(cache *Cache) error {
 
 	nextIssue := strconv.Itoa(cache.issue + 1)
 
-	// 当前账户余额
+	// 当前账户可用余额
 	surplus, err := hGetGold(cache.user)
 	if err != nil {
 		return err
 	}
 
+	// 保存投注相关参数
 	if xSurplus > 0 {
 		query := fmt.Sprintf("%s INTO logs(time, issue, result, user_gold,  rx, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?)", "INSERT")
 		if _, err := cache.db.Exec(query,
@@ -38,6 +39,7 @@ func analysis(cache *Cache) error {
 	xSurplus = surplus
 	xUserGold = cache.user.gold
 
+	// 计算每个数字的间隔期数和当前赔率
 	spaces := SpaceFn(cache)
 	rts, rx, err := RiddleDetail(cache.user, nextIssue)
 	if err != nil {
@@ -45,7 +47,7 @@ func analysis(cache *Cache) error {
 	}
 	xRx = rx
 
-	// 输出
+	// 显示当前中奖情况
 	if len(latest) == 0 {
 		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下一期预估返奖率【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, surplus)
 	} else {
@@ -56,7 +58,7 @@ func analysis(cache *Cache) error {
 		}
 	}
 
-	// 返奖率小于0.95
+	// 本期返奖率大于设定的返奖率时，才进行投注
 	if rx <= cache.rx {
 		latest = make(map[int]struct{})
 		if cache.IsExtra() {
@@ -78,15 +80,16 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
-	// 先初步看看赔率系数，是不是值得投注
+	// 本期是否存在当前赔率大于标准赔率10%的数字
 	var c0 bool
 	for _, result := range SN28 {
-		if rts[result] > 1000.0*1.10/float64(stds[result]) {
+		if rts[result] >= 1000.0*1.10/float64(stds[result]) {
 			c0 = true
 			break
 		}
 	}
 
+	// 当本期存在当前赔率大于标准赔率10%的数字时，才进行投注
 	if !c0 {
 		latest = make(map[int]struct{})
 		if cache.IsExtra() {
@@ -108,6 +111,7 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
+	// 仅投注当前赔率大于标准赔率的数字
 	latest = make(map[int]struct{})
 	total, coverage := 0, 0
 	for _, result := range SN28 {
@@ -129,11 +133,12 @@ func analysis(cache *Cache) error {
 		coverage = coverage + stds[result]
 	}
 
+	// 显示投注的汇总结果
 	surplus = surplus - total
 	xBetGold = total
 	log.Printf("第【%s】期：投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, surplus, float64(coverage)/10)
 
-	// 不足2万
+	// 如果处于活动奖励期间（每日投注金额超过2万达到指定的次数），按照活动要求不足2万投注金额
 	if total < 20000 {
 		if cache.IsExtra() {
 			log.Printf("第【%s】期：投注金额不足，进行不足至 20,000  ********** \n", nextIssue)
