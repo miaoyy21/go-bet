@@ -141,7 +141,7 @@ func analysis(cache *Cache) error {
 	// 如果处于活动奖励期间（每日投注金额超过2万达到指定的次数），按照活动要求不足2万投注金额
 	if total < 20000 {
 		if cache.IsExtra() {
-			log.Printf("第【%s】期：投注金额不足，进行不足至 20,000  ********** \n", nextIssue)
+			log.Printf("第【%s】期：投注金额不足，进行不足至 20,000  >>>>>>>>>> \n", nextIssue)
 			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, rts, float64(20000-total)); err != nil {
 				return err
 			}
