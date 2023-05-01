@@ -26,37 +26,23 @@ FROM (
 ) TT
 ORDER BY TT.result ASC
 
+SELECT '[0, 0.85]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM bet.logs WHERE time LIKE '2023-05-01 %' AND rx <= 0.85
+UNION ALL
+SELECT '(0.85, 0.90]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM bet.logs WHERE time LIKE '2023-05-01 %' AND rx > 0.85 AND rx <= 0.90
+UNION ALL
+SELECT '(0.90, 0.95]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM bet.logs WHERE time LIKE '2023-05-01 %' AND rx > 0.90 AND rx <= 0.95
+UNION ALL
+SELECT '(0.95, 1.00]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM bet.logs WHERE time LIKE '2023-05-01 %' AND rx > 0.95 AND rx <= 1.00
+UNION ALL
+SELECT '(1.00, 1.05]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM bet.logs WHERE time LIKE '2023-05-01 %' AND rx > 1.00 AND rx <= 1.05
+UNION ALL
+SELECT '(1.05, 1.10]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM bet.logs WHERE time LIKE '2023-05-01 %' AND rx > 1.05 AND rx <= 1.10
+UNION ALL
+SELECT '(1.10, 1.15]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM bet.logs WHERE time LIKE '2023-05-01 %' AND rx > 1.10 AND rx <= 1.15
+UNION ALL
+SELECT '(1.15, 1.20]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM bet.logs WHERE time LIKE '2023-05-01 %' AND rx > 1.15 AND rx <= 1.20
+UNION ALL
+SELECT '(1.20, 1.25]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM bet.logs WHERE time LIKE '2023-05-01 %' AND rx > 1.20 AND rx <= 1.25
+UNION ALL
+SELECT '(1.25, 5]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM bet.logs WHERE time LIKE '2023-05-01 %' AND rx > 1.25
 
-SELECT '[0, 0.95]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx <= 0.95
-union all
-SELECT '(0.95, 0.96]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 0.95 and rx <= 0.96
-union all
-SELECT '(0.96, 0.97]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 0.96 and rx <= 0.97
-union all
-SELECT '(0.97, 0.98]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 0.97 and rx <= 0.98
-union all
-SELECT '(0.98, 0.99]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 0.98 and rx <= 0.99
-union all
-SELECT '(0.99, 1.00]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 0.99 and rx <= 1.00
-union all
-SELECT '(1.00, 1.01]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.00 and rx <= 1.01
-union all
-SELECT '(1.01, 1.02]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.01 and rx <= 1.02
-union all
-SELECT '(1.02, 1.03]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.02 and rx <= 1.03
-union all
-SELECT '(1.03, 1.04]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.03 and rx <= 1.04
-union all
-SELECT '(1.04, 1.05]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.04 and rx <= 1.05
-union all
-SELECT '(1.05, 1.06]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.05 and rx <= 1.06
-union all
-SELECT '(1.06, 1.07]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.06 and rx <= 1.07
-union all
-SELECT '(1.07, 1.08]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.07 and rx <= 1.08
-union all
-SELECT '(1.08, 1.09]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.08 and rx <= 1.09
-union all
-SELECT '(1.09, 1.10]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.09 and rx <= 1.10
-union all
-SELECT '(1.10, ∞]' as xxx, sum(win_gold) FROM bet.logs where time like '2023-05-01 %' and bet_gold <> 1000 and rx > 1.10
