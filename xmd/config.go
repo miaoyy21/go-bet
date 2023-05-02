@@ -4,6 +4,7 @@ type Config struct {
 	IsDebug    bool    `json:"is_debug"`
 	IsExtra    bool    `json:"is_extra"`
 	Rx         float64 `json:"rx"`
+	Ex         float64 `json:"ex"`
 	DataSource string  `json:"datasource"`
 	Gold       int     `json:"gold"`
 	Origin     string  `json:"origin"`

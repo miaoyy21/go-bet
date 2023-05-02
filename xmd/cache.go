@@ -26,6 +26,7 @@ type Cache struct {
 	user    UserBase
 	isExtra bool
 	rx      float64
+	ex      float64
 
 	issue  int // 最新期数
 	result int // 最新开奖结果
@@ -73,6 +74,7 @@ func NewCache(dir string) (*Cache, error) {
 		user:    user,
 		isExtra: conf.IsExtra,
 		rx:      conf.Rx,
+		ex:      conf.Ex,
 
 		issue:  -1,
 		result: -1,

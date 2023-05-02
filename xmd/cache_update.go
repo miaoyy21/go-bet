@@ -26,11 +26,10 @@ func (o *Cache) Update() (bool, error) {
 	}
 
 	// 中奖比率超过3倍
-	delta := 1.35
 	if rate > 0 {
-		o.user.gold = int(math.Ceil(float64(o.user.gold) * delta))
+		o.user.gold = int(math.Ceil(float64(o.user.gold) * o.ex))
 	} else {
-		o.user.gold = int(math.Ceil(float64(o.user.gold) / delta))
+		o.user.gold = int(math.Ceil(float64(o.user.gold) / o.ex))
 	}
 
 	return true, nil

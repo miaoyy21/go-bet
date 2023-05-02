@@ -65,8 +65,8 @@ func RiddleDetail(user UserBase, issue string) (map[int]float64, float64, error)
 		}
 
 		rts[n] = r0
-		rate = rate + r0/(1000.0/float64(stds[n]))
+		rate = rate + (float64(stds[n])/1000)*(r0/(1000.0/float64(stds[n])))
 	}
 
-	return rts, rate / 28.0, nil
+	return rts, rate, nil
 }
