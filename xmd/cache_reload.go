@@ -38,5 +38,6 @@ func (o *Cache) Reload() (bool, error) {
 	o.user = user
 	o.isExtra = conf.IsExtra
 	o.rx = conf.Rx
+	o.ex = conf.Ex
 	return true, nil
 }
