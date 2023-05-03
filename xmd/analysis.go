@@ -122,7 +122,7 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
-	if fails >= 3 {
+	if fails >= 2 {
 		xDx = cache.dx
 	}
 
