@@ -25,8 +25,10 @@ type Cache struct {
 	db      *sql.DB
 	user    UserBase
 	isExtra bool
+	wx      float64
 	rx      float64
 	ex      float64
+	dx      float64
 
 	issue  int // 最新期数
 	result int // 最新开奖结果
@@ -73,8 +75,10 @@ func NewCache(dir string) (*Cache, error) {
 		db:      db,
 		user:    user,
 		isExtra: conf.IsExtra,
+		wx:      conf.Wx,
 		rx:      conf.Rx,
 		ex:      conf.Ex,
+		dx:      conf.Dx,
 
 		issue:  -1,
 		result: -1,

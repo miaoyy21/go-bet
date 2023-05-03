@@ -3,6 +3,7 @@ package xmd
 import (
 	"fmt"
 	"log"
+	"math"
 	"strconv"
 	"time"
 )
@@ -11,7 +12,11 @@ var latest = make(map[int]struct{})
 var xSurplus int
 var xBetGold int
 var xRx float64
+var xDx float64
 var xUserGold int
+
+var wins int
+var fails int
 
 func analysis(cache *Cache) error {
 	if err := cache.Sync(200); err != nil {
@@ -28,10 +33,10 @@ func analysis(cache *Cache) error {
 
 	// 保存投注相关参数
 	if xSurplus > 0 {
-		query := fmt.Sprintf("%s INTO logs(time, issue, result, user_gold,  rx, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?)", "INSERT")
+		query := fmt.Sprintf("%s INTO logs(time, issue, result, user_gold,  rx, dx0, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?,?)", "INSERT")
 		if _, err := cache.db.Exec(query,
 			time.Now().Format("2006-01-02 15:04"), cache.issue, cache.result, xUserGold,
-			xRx, xBetGold, surplus-xSurplus, surplus,
+			xRx, xDx, xBetGold, surplus-xSurplus, surplus,
 		); err != nil {
 			return err
 		}
@@ -52,11 +57,18 @@ func analysis(cache *Cache) error {
 		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
 	} else {
 		if _, exists := latest[cache.result]; exists {
+			wins++
+			fails = 0
+
 			log.Printf("⭐️⭐️⭐️ 第【👍 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
 		} else {
+			wins = 0
+			fails++
+
 			log.Printf("⭐️⭐️⭐️ 第【👀 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
 		}
 	}
+	xDx = math.Pow(cache.dx, float64(fails))
 
 	// 本期返奖率大于设定的返奖率时，才进行投注
 	if rx <= cache.rx {
@@ -80,10 +92,10 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
-	// 本期是否存在当前赔率大于标准赔率10%的数字
+	// 本期是否存在当前赔率大于标准赔率的倍数的数字
 	var c0 bool
 	for _, result := range SN28 {
-		if rts[result] >= 1000.0*1.10/float64(stds[result]) {
+		if rts[result] >= 1000.0*cache.wx/float64(stds[result]) {
 			c0 = true
 			break
 		}
@@ -93,7 +105,7 @@ func analysis(cache *Cache) error {
 	if !c0 {
 		latest = make(map[int]struct{})
 		if cache.IsExtra() {
-			log.Printf("第【%s】期：不存在实际赔率超过10%%的数字，仅投注 20,000 >>>>>>>>>> \n", nextIssue)
+			log.Printf("第【%s】期：不存在实际赔率超过%.2f%%的数字，仅投注 20,000 >>>>>>>>>> \n", nextIssue, cache.wx*100-100)
 			if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, rts, float64(20000)); err != nil {
 				return err
 			}
@@ -102,7 +114,7 @@ func analysis(cache *Cache) error {
 			return nil
 		}
 
-		log.Printf("第【%s】期：不存在实际赔率超过10%%的数字，仅投注 1,000 >>>>>>>>>> \n", nextIssue)
+		log.Printf("第【%s】期：不存在实际赔率超过%.2f%%的数字，仅投注 1,000 >>>>>>>>>> \n", nextIssue, cache.wx*100-100)
 		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, rts, 1000); err != nil {
 			return err
 		}
@@ -122,7 +134,7 @@ func analysis(cache *Cache) error {
 			continue
 		}
 
-		betGold := int(float64(cache.user.gold) * float64(stds[result]) / 1000)
+		betGold := int(xDx * float64(cache.user.gold) * float64(stds[result]) / 1000)
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
 		}
