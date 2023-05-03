@@ -3,7 +3,6 @@ package xmd
 import (
 	"fmt"
 	"log"
-	"math"
 	"strconv"
 	"time"
 )
@@ -53,6 +52,7 @@ func analysis(cache *Cache) error {
 	xRx = rx
 
 	// 显示当前中奖情况
+	xDx = 1.0
 	if len(latest) == 0 {
 		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
 	} else {
@@ -68,7 +68,6 @@ func analysis(cache *Cache) error {
 			log.Printf("⭐️⭐️⭐️ 第【👀 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
 		}
 	}
-	xDx = math.Pow(cache.dx, float64(fails))
 
 	// 本期返奖率大于设定的返奖率时，才进行投注
 	if rx <= cache.rx {
@@ -121,6 +120,10 @@ func analysis(cache *Cache) error {
 
 		xBetGold = 1000
 		return nil
+	}
+
+	if fails >= 3 {
+		xDx = cache.dx
 	}
 
 	// 仅投注当前赔率大于标准赔率的数字
