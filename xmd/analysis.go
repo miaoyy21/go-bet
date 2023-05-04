@@ -3,6 +3,7 @@ package xmd
 import (
 	"fmt"
 	"log"
+	"math"
 	"strconv"
 	"time"
 )
@@ -122,9 +123,7 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
-	if fails >= 3 {
-		xDx = cache.dx
-	}
+	xDx = math.Pow(cache.dx, float64(fails))
 
 	// 仅投注当前赔率大于标准赔率的数字
 	latest = make(map[int]struct{})
