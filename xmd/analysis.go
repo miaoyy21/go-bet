@@ -3,7 +3,6 @@ package xmd
 import (
 	"fmt"
 	"log"
-	"math"
 	"strconv"
 	"time"
 )
@@ -12,7 +11,6 @@ var latest = make(map[int]struct{})
 var xSurplus int
 var xBetGold int
 var xRx float64
-var xDx float64
 var xUserGold int
 
 var wins int
@@ -33,10 +31,10 @@ func analysis(cache *Cache) error {
 
 	// 保存投注相关参数
 	if xSurplus > 0 {
-		query := fmt.Sprintf("%s INTO logs(time, issue, result, user_gold,  rx, dx0, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?,?)", "INSERT")
+		query := fmt.Sprintf("%s INTO logs(time, issue, result, user_gold,  rx, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?)", "INSERT")
 		if _, err := cache.db.Exec(query,
 			time.Now().Format("2006-01-02 15:04"), cache.issue, cache.result, xUserGold,
-			xRx, xDx, xBetGold, surplus-xSurplus, surplus,
+			xRx, xBetGold, surplus-xSurplus, surplus,
 		); err != nil {
 			return err
 		}
@@ -53,7 +51,6 @@ func analysis(cache *Cache) error {
 	xRx = rx
 
 	// 显示当前中奖情况
-	xDx = 1.0
 	if len(latest) == 0 {
 		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
 	} else {
@@ -123,8 +120,6 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
-	xDx = math.Pow(cache.dx, float64(fails))
-
 	// 仅投注当前赔率大于标准赔率的数字
 	latest = make(map[int]struct{})
 	total, coverage := 0, 0
@@ -136,7 +131,7 @@ func analysis(cache *Cache) error {
 			continue
 		}
 
-		betGold := int(xDx * float64(cache.user.gold) * float64(stds[result]) / 1000)
+		betGold := int(float64(cache.user.gold) * float64(stds[result]) / 1000)
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
 		}

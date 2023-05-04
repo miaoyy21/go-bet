@@ -10,7 +10,6 @@ type TempData struct {
 	Surplus  int
 	BetGold  int
 	Rx       float64
-	Dx       float64
 	UserGold int
 
 	Wins  int
@@ -23,7 +22,6 @@ func tempSave() error {
 		Surplus:  xSurplus,
 		BetGold:  xBetGold,
 		Rx:       xRx,
-		Dx:       xDx,
 		UserGold: xUserGold,
 
 		Wins:  wins,
@@ -58,7 +56,6 @@ func tempLoad() error {
 	xSurplus = data.Surplus
 	xBetGold = data.BetGold
 	xRx = data.Rx
-	xDx = data.Dx
 	xUserGold = data.UserGold
 	wins = data.Wins
 	fails = data.Fails
