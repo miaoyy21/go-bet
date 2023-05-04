@@ -22,11 +22,21 @@ func Run(cache *Cache) {
 	}
 	calc()
 
+	// 加载前一次保存的全局变量
+	if err := tempLoad(); err != nil {
+		log.Println(err.Error())
+	}
+
 	sec := 53.5
 	dua := time.Now().Sub(time.Now().Truncate(time.Minute))
 	log.Printf("%.2f秒后[%s]，将运行小鸡竞猜游戏 ...", sec-dua.Seconds(), time.Now().Add(time.Second*time.Duration(sec-dua.Seconds())).Format("2006-01-02 15:04:05"))
 	time.Sleep(time.Second * time.Duration(sec-dua.Seconds()))
 	if err := analysis(cache); err != nil {
+		log.Println(err.Error())
+	}
+
+	// 保存全局变量
+	if err := tempSave(); err != nil {
 		log.Println(err.Error())
 	}
 
@@ -56,6 +66,11 @@ func Run(cache *Cache) {
 			}
 
 			if err := analysis(cache); err != nil {
+				log.Println(err.Error())
+			}
+
+			// 保存全局变量
+			if err := tempSave(); err != nil {
 				log.Println(err.Error())
 			}
 		}
