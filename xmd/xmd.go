@@ -13,7 +13,6 @@ func Run(cache *Cache) {
 	log.Printf("当前设置当不存在超过实际赔率%.2f%%的数字时，仅进行全部投注 ...\n", cache.wx*100-100)
 	log.Printf("当前设置当返奖率不超过%.2f%%时，仅进行全部投注 ...\n", cache.rx*100)
 	log.Printf("当前设置本时内中奖比率变化量达到设定标准时，基础投注变为%.2f...\n", cache.ex)
-	log.Printf("当前设置连续投注失败时，本期投注倍率变为前期的%.2f倍...\n", cache.dx)
 	log.Printf("当前设置投注基数为 %d ...\n", cache.user.gold)
 	if cache.user.isDebug {
 		log.Println("当前设置为调试模式，不发送投注请求 ...")
@@ -25,7 +24,7 @@ func Run(cache *Cache) {
 		log.Println(err.Error())
 	}
 
-	sec := 53.5
+	sec := 53.75
 	dua := time.Now().Sub(time.Now().Truncate(time.Minute))
 	log.Printf("%.2f秒后[%s]，将运行小鸡竞猜游戏 ...", sec-dua.Seconds(), time.Now().Add(time.Second*time.Duration(sec-dua.Seconds())).Format("2006-01-02 15:04:05"))
 	time.Sleep(time.Second * time.Duration(sec-dua.Seconds()))

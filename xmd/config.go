@@ -6,7 +6,6 @@ type Config struct {
 	Wx         float64 `json:"wx"`
 	Rx         float64 `json:"rx"`
 	Ex         float64 `json:"ex"`
-	Dx         float64 `json:"dx"`
 	DataSource string  `json:"datasource"`
 	Gold       int     `json:"gold"`
 	Origin     string  `json:"origin"`
