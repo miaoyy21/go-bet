@@ -31,7 +31,7 @@ func hDo(user UserBase, method string, url string, s interface{}, t interface{})
 	req.Header.Set("Cookie", fmt.Sprintf("%s=%d", user.cookie, time.Now().Unix()))
 	req.Header.Set("Origin", user.origin)
 	req.Header.Set("Pragma", user.origin)
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36")
+	req.Header.Set("User-Agent", user.agent)
 
 	// Response
 	resp, err := http.DefaultClient.Do(req)

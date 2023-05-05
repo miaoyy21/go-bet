@@ -12,6 +12,7 @@ type Config struct {
 	Origin     string  `json:"origin"`
 	URL        string  `json:"url"`
 	Cookie     string  `json:"cookie"`
+	Agent      string  `json:"agent"`
 	UserId     string  `json:"user_id"`
 	Token      string  `json:"token"`
 	Unix       string  `json:"unix"`

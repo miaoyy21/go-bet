@@ -7,6 +7,7 @@ type UserBase struct {
 	origin string
 	url    string
 	cookie string
+	agent  string
 	unix   string
 	code   string
 	device string
@@ -14,7 +15,7 @@ type UserBase struct {
 	token  string
 }
 
-func NewUserBase(debug bool, gold int, origin string, url string, cookie string, unix string, code string, device string, id string, token string) UserBase {
+func NewUserBase(debug bool, gold int, origin string, url string, cookie string, agent string, unix string, code string, device string, id string, token string) UserBase {
 	return UserBase{
 		isDebug: debug,
 
@@ -22,6 +23,7 @@ func NewUserBase(debug bool, gold int, origin string, url string, cookie string,
 		origin: origin,
 		url:    url,
 		cookie: cookie,
+		agent:  agent,
 		unix:   unix,
 		code:   code,
 		device: device,
