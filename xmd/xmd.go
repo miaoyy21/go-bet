@@ -29,17 +29,17 @@ func Run(cache *Cache) {
 		log.Println(err.Error())
 	}
 
-	fn, ok := Fns[cache.fn]
-	if !ok {
-		log.Printf("没有实现的投注模式 %q \n", cache.fn)
-	}
-
 	sec := 53.5
 	dua := time.Now().Sub(time.Now().Truncate(time.Minute))
 	log.Printf("%.2f秒后[%s]，将运行小鸡竞猜游戏 ...", sec-dua.Seconds(), time.Now().Add(time.Second*time.Duration(sec-dua.Seconds())).Format("2006-01-02 15:04:05"))
 	time.Sleep(time.Second * time.Duration(sec-dua.Seconds()))
-	if err := fn(cache); err != nil {
-		log.Println(err.Error())
+
+	if fn, ok := Fns[cache.fn]; !ok {
+		log.Printf("没有实现的投注模式 %q \n", cache.fn)
+	} else {
+		if err := fn(cache); err != nil {
+			log.Println(err.Error())
+		}
 	}
 
 	// 保存全局变量
@@ -72,8 +72,12 @@ func Run(cache *Cache) {
 				}
 			}
 
-			if err := fn(cache); err != nil {
-				log.Println(err.Error())
+			if fn, ok := Fns[cache.fn]; !ok {
+				log.Printf("没有实现的投注模式 %q \n", cache.fn)
+			} else {
+				if err := fn(cache); err != nil {
+					log.Println(err.Error())
+				}
 			}
 
 			// 保存全局变量

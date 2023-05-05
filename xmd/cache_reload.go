@@ -38,6 +38,7 @@ func (o *Cache) Reload() (bool, error) {
 	o.md5 = h.Sum(nil)
 	o.user = user
 	o.isExtra = conf.IsExtra
+	o.fn = conf.Fn
 	o.wx = conf.Wx
 	o.rx = conf.Rx
 	o.ex = conf.Ex
