@@ -29,10 +29,9 @@ func Run(cache *Cache) {
 		log.Println(err.Error())
 	}
 
-	sec := 53.5
 	dua := time.Now().Sub(time.Now().Truncate(time.Minute))
-	log.Printf("%.2f秒后[%s]，将运行小鸡竞猜游戏 ...", sec-dua.Seconds(), time.Now().Add(time.Second*time.Duration(sec-dua.Seconds())).Format("2006-01-02 15:04:05"))
-	time.Sleep(time.Second * time.Duration(sec-dua.Seconds()))
+	log.Printf("%.2f秒后[%s]，将运行小鸡竞猜游戏 ...", cache.secs-dua.Seconds(), time.Now().Add(time.Second*time.Duration(cache.secs-dua.Seconds())).Format("2006-01-02 15:04:05"))
+	time.Sleep(time.Second * time.Duration(cache.secs-dua.Seconds()))
 
 	if fn, ok := Fns[cache.fn]; !ok {
 		log.Printf("没有实现的投注模式 %q \n", cache.fn)
