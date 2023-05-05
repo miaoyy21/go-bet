@@ -7,9 +7,14 @@ import (
 )
 
 var SN28 = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27}
+var Fns = map[string]func(cache *Cache) error{
+	"A1": analysisA1,
+	"A2": analysisA2,
+}
 
 func Run(cache *Cache) {
 	log.Printf("当前设置活动状态（%t） ...\n", cache.isExtra)
+	log.Printf("当前投注模式 %q ...\n", cache.fn)
 	log.Printf("当前设置当不存在超过实际赔率%.2f%%的数字时，仅进行全部投注 ...\n", cache.wx*100-100)
 	log.Printf("当前设置当返奖率不超过%.2f%%时，仅进行全部投注 ...\n", cache.rx*100)
 	log.Printf("当前设置本时内中奖比率变化量达到设定标准时，基础投注变为%.2f...\n", cache.ex)
@@ -24,11 +29,16 @@ func Run(cache *Cache) {
 		log.Println(err.Error())
 	}
 
+	fn, ok := Fns[cache.fn]
+	if !ok {
+		log.Printf("没有实现的投注模式 %q \n", cache.fn)
+	}
+
 	sec := 53.5
 	dua := time.Now().Sub(time.Now().Truncate(time.Minute))
 	log.Printf("%.2f秒后[%s]，将运行小鸡竞猜游戏 ...", sec-dua.Seconds(), time.Now().Add(time.Second*time.Duration(sec-dua.Seconds())).Format("2006-01-02 15:04:05"))
 	time.Sleep(time.Second * time.Duration(sec-dua.Seconds()))
-	if err := analysis(cache); err != nil {
+	if err := fn(cache); err != nil {
 		log.Println(err.Error())
 	}
 
@@ -62,7 +72,7 @@ func Run(cache *Cache) {
 				}
 			}
 
-			if err := analysis(cache); err != nil {
+			if err := fn(cache); err != nil {
 				log.Println(err.Error())
 			}
 
