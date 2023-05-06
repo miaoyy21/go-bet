@@ -71,12 +71,12 @@ func analysisA1(cache *Cache) error {
 			return nil
 		}
 
-		log.Printf("第【%s】期：预估返奖率【%.2f%%】不足%.2f%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, rx*100, cache.rx*100)
-		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, rts, 1000); err != nil {
-			return err
-		}
-
-		xBetGold = 1000
+		//log.Printf("第【%s】期：预估返奖率【%.2f%%】不足%.2f%%，仅投注 1,000 >>>>>>>>>> \n", nextIssue, rx*100, cache.rx*100)
+		//if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, rts, 1000); err != nil {
+		//	return err
+		//}
+		//
+		//xBetGold = 1000
 		return nil
 	}
 
@@ -102,12 +102,12 @@ func analysisA1(cache *Cache) error {
 			return nil
 		}
 
-		log.Printf("第【%s】期：不存在实际赔率超过%.2f%%的数字，仅投注 1,000 >>>>>>>>>> \n", nextIssue, cache.wx*100-100)
-		if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, rts, 1000); err != nil {
-			return err
-		}
-
-		xBetGold = 1000
+		//log.Printf("第【%s】期：不存在实际赔率超过%.2f%%的数字，仅投注 1,000 >>>>>>>>>> \n", nextIssue, cache.wx*100-100)
+		//if _, err := bet28(cache, nextIssue, surplus, SN28, spaces, rts, 1000); err != nil {
+		//	return err
+		//}
+		//
+		//xBetGold = 1000
 		return nil
 	}
 
