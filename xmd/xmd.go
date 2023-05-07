@@ -17,7 +17,6 @@ func Run(cache *Cache) {
 	log.Printf("当前投注模式 %q ...\n", cache.fn)
 	log.Printf("当前设置当不存在超过实际赔率%.2f%%的数字时，仅进行全部投注 ...\n", cache.wx*100-100)
 	log.Printf("当前设置当返奖率不超过%.2f%%时，仅进行全部投注 ...\n", cache.rx*100)
-	log.Printf("当前设置本时内中奖比率变化量达到设定标准时，基础投注变为%.2f...\n", cache.ex)
 	log.Printf("当前设置投注基数为 %d ...\n", cache.user.gold)
 	if cache.user.isDebug {
 		log.Println("当前设置为调试模式，不发送投注请求 ...")

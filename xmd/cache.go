@@ -29,7 +29,6 @@ type Cache struct {
 	fn      string
 	wx      float64
 	rx      float64
-	ex      float64
 
 	issue  int // 最新期数
 	result int // 最新开奖结果
@@ -80,7 +79,6 @@ func NewCache(dir string) (*Cache, error) {
 		fn:      conf.Fn,
 		wx:      conf.Wx,
 		rx:      conf.Rx,
-		ex:      conf.Ex,
 
 		issue:  -1,
 		result: -1,
