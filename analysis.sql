@@ -1,32 +1,36 @@
 
 -- 按照返奖率统计指定日期输赢情况
-SELECT '[0, 0.95]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx <= 0.95
+SELECT '[0, 0.850]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx <= 0.850
 UNION ALL
-SELECT '(0.95, 0.96]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 0.95 AND rx <= 0.96
+SELECT '(0.850, 0.875]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 0.850 AND rx <= 0.875
 UNION ALL
-SELECT '(0.96, 0.97]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 0.96 AND rx <= 0.97
+SELECT '(0.875, 0.900]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 0.875 AND rx <= 0.900
 UNION ALL
-SELECT '(0.97, 0.98]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 0.97 AND rx <= 0.98
+SELECT '(0.900, 0.925]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 0.900 AND rx <= 0.925
 UNION ALL
-SELECT '(0.98, 0.99]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 0.98 AND rx <= 0.99
+SELECT '(0.925, 0.950]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 0.925 AND rx <= 0.950
 UNION ALL
-SELECT '(0.99, 1.00]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 0.99 AND rx <= 1.00
+SELECT '(0.950, 0.975]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 0.950 AND rx <= 0.975
 UNION ALL
-SELECT '(1.00, 1.01]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 1.00 AND rx <= 1.01
+SELECT '(0.975, 1.000]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 0.975 AND rx <= 1.000
 UNION ALL
-SELECT '(1.01, 1.02]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 1.01 AND rx <= 1.02
+SELECT '(1.000, 1.025]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 1.000 AND rx <= 1.025
 UNION ALL
-SELECT '(1.02, 1.03]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 1.02 AND rx <= 1.03
+SELECT '(1.025, 1.050]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 1.025 AND rx <= 1.050
 UNION ALL
-SELECT '(1.03, 1.04]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 1.03 AND rx <= 1.04
+SELECT '(1.050, 1.075]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 1.050 AND rx <= 1.075
 UNION ALL
-SELECT '(1.04, 1.05]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 1.04 AND rx <= 1.05
+SELECT '(1.075, 1.100]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 1.075 AND rx <= 1.100
 UNION ALL
-SELECT '(1.05, 5.00]' AS scope, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000 AND rx > 1.05;
+SELECT '(1.100, 1.125]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 1.100 AND rx <= 1.125
+UNION ALL
+SELECT '(1.125, 1.150]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 1.125 AND rx <= 1.150
+UNION ALL
+SELECT '(1.150, 5.00]' AS scope, COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate FROM logs WHERE time LIKE '2023-05-06 %' AND bet_gold > 1000 AND rx > 1.150;
 
 -- 按照统计指定日期的每个小时输赢情况
-SELECT LEFT(time,13),CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate
+SELECT LEFT(time,13),COUNT(1) AS qn, CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate
 FROM logs
-WHERE time LIKE '2023-05-05 %' AND bet_gold <> 1000
+WHERE time LIKE '2023-05-07 %' AND bet_gold > 1000
 GROUP BY LEFT(time,13);
 
