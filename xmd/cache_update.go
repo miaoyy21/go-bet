@@ -1,10 +1,12 @@
 package xmd
 
+import "time"
+
 func (o *Cache) Update() (bool, error) {
-	//if time.Now().Minute() < 59 {
-	//	return false, nil
-	//}
-	//
+	if time.Now().Minute() < 59 {
+		return false, nil
+	}
+
 	//var rate float64
 	//
 	//// 统计本时内中奖比率

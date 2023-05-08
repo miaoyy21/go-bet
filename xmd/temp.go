@@ -6,26 +6,24 @@ import (
 )
 
 type TempData struct {
+	Issue    int
 	Latest   map[int]struct{}
+	Rts      map[int]float64
 	Surplus  int
 	BetGold  int
 	Rx       float64
 	UserGold int
-
-	Wins  int
-	Fails int
 }
 
 func tempSave() error {
 	data := &TempData{
+		Issue:    issue,
 		Latest:   latest,
+		Rts:      xRts,
 		Surplus:  xSurplus,
 		BetGold:  xBetGold,
 		Rx:       xRx,
 		UserGold: xUserGold,
-
-		Wins:  wins,
-		Fails: fails,
 	}
 
 	bs, err := json.MarshalIndent(data, "", "\t")
@@ -52,13 +50,13 @@ func tempLoad() error {
 		return err
 	}
 
+	issue = data.Issue
 	latest = data.Latest
+	xRts = data.Rts
 	xSurplus = data.Surplus
 	xBetGold = data.BetGold
 	xRx = data.Rx
 	xUserGold = data.UserGold
-	wins = data.Wins
-	fails = data.Fails
 
 	return nil
 }

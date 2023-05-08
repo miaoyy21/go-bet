@@ -21,15 +21,17 @@ func analysisA1(cache *Cache) error {
 	}
 
 	// 保存投注相关参数
-	if xSurplus > 0 {
-		query := fmt.Sprintf("INSERT INTO logs_%s(time, issue, result, user_gold,  rx, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?)", cache.user.id)
+	if xSurplus > 0 && cache.issue == issue {
+		xRt := xRts[cache.result] / (1000.0 / float64(stds[cache.result]))
+		query := fmt.Sprintf("INSERT INTO logs_%s(time, issue, result, user_gold,  rx, rt, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?,?)", cache.user.id)
 		if _, err := cache.db.Exec(query,
 			time.Now().Format("2006-01-02 15:04"), cache.issue, cache.result, xUserGold,
-			xRx, xBetGold, surplus-xSurplus, surplus,
+			xRx, xRt, xBetGold, surplus-xSurplus, surplus,
 		); err != nil {
 			return err
 		}
 	}
+	issue = cache.issue + 1
 	xSurplus = surplus
 	xUserGold = cache.user.gold
 
@@ -39,6 +41,7 @@ func analysisA1(cache *Cache) error {
 	if err != nil {
 		return err
 	}
+	xRts = rts
 	xRx = rx
 
 	// 显示当前中奖情况
@@ -46,14 +49,8 @@ func analysisA1(cache *Cache) error {
 		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
 	} else {
 		if _, exists := latest[cache.result]; exists {
-			wins++
-			fails = 0
-
 			log.Printf("⭐️⭐️⭐️ 第【👍 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
 		} else {
-			wins = 0
-			fails++
-
 			log.Printf("⭐️⭐️⭐️ 第【👀 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
 		}
 	}
