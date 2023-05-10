@@ -33,6 +33,7 @@ func analysisA2(cache *Cache) error {
 	}
 	issue = cache.issue + 1
 	xSurplus = surplus
+	xBetGold = 0
 	xUserGold = cache.user.gold
 
 	// 计算每个数字的间隔期数和当前赔率

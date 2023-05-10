@@ -34,3 +34,8 @@ FROM logs
 WHERE time LIKE '2023-05-07 %' AND bet_gold > 1000
 GROUP BY LEFT(time,13);
 
+-- 查询未投注的期数中奖情况
+SELECT SUM(CASE WHEN rt < 1.0 THEN 1 ELSE 0 END) AS ln1,SUM(CASE WHEN rt > 1.0 THEN 1 ELSE 0 END) AS gn1
+FROM logs
+WHERE time LIKE '2023-05-10 %' AND win_gold = 0;
+
