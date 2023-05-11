@@ -78,7 +78,7 @@ func analysisA1(cache *Cache) error {
 	// 本期是否存在当前赔率大于标准赔率的倍数的数字
 	var c0 bool
 	for _, result := range SN28 {
-		if rts[result] >= 1000.0*cache.wx/float64(stds[result]) {
+		if rts[result] >= 1000.0*cache.wx/float64(stds[result]) && result >= 6 && result <= 21 {
 			c0 = true
 			break
 		}
