@@ -8,6 +8,13 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xmd/analysis_a1.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/analysis_a1.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/analysis_a2.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/analysis_a2.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/cache.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/cache.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/cache_reload.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/cache_reload.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/xmd.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/xmd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/xmd_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/xmd_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/zzz_test.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +70,7 @@
       <recent name="$PROJECT_DIR$/xmk" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.zzz_test.go">
+  <component name="RunManager" selected="Go Test.xmd_test.go">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="go-bet" />
       <working_directory value="$PROJECT_DIR$" />
@@ -119,9 +126,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.xmd_test.go" />
         <item itemvalue="Go Test.zzz_test.go" />
         <item itemvalue="Go Test.riddle_test.go" />
-        <item itemvalue="Go Test.xmd_test.go" />
         <item itemvalue="Go Test.sync_test.go" />
         <item itemvalue="Go Build.go build main.go" />
       </list>

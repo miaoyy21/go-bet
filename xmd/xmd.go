@@ -13,7 +13,6 @@ var Fns = map[string]func(cache *Cache) error{
 }
 
 func Run(cache *Cache) {
-	log.Printf("当前设置活动状态（%t） ...\n", cache.isExtra)
 	log.Printf("当前投注模式 %q ...\n", cache.fn)
 	log.Printf("当前设置当不存在超过实际赔率%.2f%%的数字时，仅进行全部投注 ...\n", cache.wx*100-100)
 	log.Printf("当前设置当返奖率不超过%.2f%%时，仅进行全部投注 ...\n", cache.rx*100)

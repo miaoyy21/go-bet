@@ -22,13 +22,12 @@ type Cache struct {
 	dir string
 	md5 []byte
 
-	db      *sql.DB
-	user    UserBase
-	isExtra bool
-	secs    float64
-	fn      string
-	wx      float64
-	rx      float64
+	db   *sql.DB
+	user UserBase
+	secs float64
+	fn   string
+	wx   float64
+	rx   float64
 
 	issue  int // 最新期数
 	result int // 最新开奖结果
@@ -72,13 +71,12 @@ func NewCache(dir string) (*Cache, error) {
 		dir: dir,
 		md5: h.Sum(nil),
 
-		db:      db,
-		user:    user,
-		isExtra: conf.IsExtra,
-		secs:    conf.Secs,
-		fn:      conf.Fn,
-		wx:      conf.Wx,
-		rx:      conf.Rx,
+		db:   db,
+		user: user,
+		secs: conf.Secs,
+		fn:   conf.Fn,
+		wx:   conf.Wx,
+		rx:   conf.Rx,
 
 		issue:  -1,
 		result: -1,
@@ -88,8 +86,4 @@ func NewCache(dir string) (*Cache, error) {
 	}
 
 	return cache, nil
-}
-
-func (o *Cache) IsExtra() bool {
-	return o.isExtra
 }

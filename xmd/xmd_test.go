@@ -7,6 +7,7 @@ import (
 	"math"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestCache_Sync2(t *testing.T) {
@@ -72,6 +73,8 @@ func TestCache_Sync2(t *testing.T) {
 		}
 	}
 	log.Printf("所选取的结果：%s \n", fmtInt(target))
+
+	log.Println(time.Now().Format("2006-01-02 15:04:05.999"))
 }
 
 func fmtF64(fs []float64) string {

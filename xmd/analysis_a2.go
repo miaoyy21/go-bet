@@ -25,7 +25,7 @@ func analysisA2(cache *Cache) error {
 		xRt := xRts[cache.result] / (1000.0 / float64(stds[cache.result]))
 		query := fmt.Sprintf("INSERT INTO logs_%s(time, issue, result, user_gold,  rx, rt, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?,?)", cache.user.id)
 		if _, err := cache.db.Exec(query,
-			time.Now().Format("2006-01-02 15:04"), cache.issue, cache.result, xUserGold,
+			time.Now().Format("2006-01-02 15:04:05.999"), cache.issue, cache.result, xUserGold,
 			xRx, xRt, xBetGold, surplus-xSurplus, surplus,
 		); err != nil {
 			return err
