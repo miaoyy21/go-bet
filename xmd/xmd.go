@@ -14,8 +14,8 @@ var Fns = map[string]func(cache *Cache) error{
 
 func Run(cache *Cache) {
 	log.Printf("当前投注模式 %q ...\n", cache.fn)
-	log.Printf("当前设置当不存在超过实际赔率%.2f%%的数字时，仅进行全部投注 ...\n", cache.wx*100-100)
-	log.Printf("当前设置当返奖率不超过%.2f%%时，仅进行全部投注 ...\n", cache.rx*100)
+	log.Printf("当前设置仅投注实际赔率超过标准倍率%.2f%%的数字 ...\n", cache.wx*100-100)
+	log.Printf("当前设置仅当返奖率超过%.2f%%时，才进行投注 ...\n", cache.rx*100)
 	log.Printf("当前设置投注基数为 %d ...\n", cache.user.gold)
 	if cache.user.isDebug {
 		log.Println("当前设置为调试模式，不发送投注请求 ...")
@@ -57,15 +57,6 @@ func Run(cache *Cache) {
 			} else {
 				if ok {
 					log.Println("配置文件变化，重新加载配置文件完成 ...")
-				}
-			}
-
-			// 基础投注是否变化
-			if ok, err := cache.Update(); err != nil {
-				log.Println(err.Error())
-			} else {
-				if ok {
-					log.Printf("由于本时内中奖比率变化量达到设定标准，基础投注变为【%d】 ... \n", cache.user.gold)
 				}
 			}
 
