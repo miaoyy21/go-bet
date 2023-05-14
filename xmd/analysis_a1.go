@@ -3,7 +3,6 @@ package xmd
 import (
 	"fmt"
 	"log"
-	"math"
 	"strconv"
 	"time"
 )
@@ -78,9 +77,6 @@ func analysisA1(cache *Cache) error {
 		}
 
 		betGold := int(float64(cache.user.gold) * float64(stds[result]) / 1000)
-		if cache.money <= 1<<27 {
-			betGold = int(float64(betGold) * math.Pow(0.6667, 27.0-math.Log2(float64(cache.money))))
-		}
 
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
