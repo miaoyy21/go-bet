@@ -29,8 +29,9 @@ type Cache struct {
 	wx   float64
 	rx   float64
 
-	issue  int // 最新期数
-	result int // 最新开奖结果
+	issue  int   // 最新期数
+	result int   // 最新开奖结果
+	money  int64 // 累计金币
 
 	histories []IssueResult // 每期存在数据库的开奖记录
 	hGolds    []HGold
@@ -80,6 +81,7 @@ func NewCache(dir string) (*Cache, error) {
 
 		issue:  -1,
 		result: -1,
+		money:  -1,
 
 		histories: make([]IssueResult, 0),
 		hGolds:    make([]HGold, 0),

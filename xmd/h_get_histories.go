@@ -8,6 +8,7 @@ import (
 type QHistoryItem struct {
 	Issue  string `json:"issue"`
 	Result string `json:"lresult"`
+	Money  string `json:"tmoney"`
 }
 
 type QHistoryData struct {

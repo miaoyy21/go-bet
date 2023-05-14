@@ -3,6 +3,7 @@ package xmd
 import (
 	"sort"
 	"strconv"
+	"strings"
 )
 
 func (o *Cache) Sync(size int) error {
@@ -27,8 +28,15 @@ func (o *Cache) Sync(size int) error {
 			return err
 		}
 
+		sMoney := strings.ReplaceAll(item.Money, ",", "")
+		money, err := strconv.ParseInt(sMoney, 10, 64)
+		if err != nil {
+			return err
+		}
+
 		o.issue = issue
 		o.result = result
+		o.money = money
 
 		histories = append(histories, IssueResult{issue: issue, result: result})
 	}
