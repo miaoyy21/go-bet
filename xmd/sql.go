@@ -35,12 +35,13 @@ func sqlQuery(db *sql.DB, query string, args ...interface{}) ([]map[string]int, 
 		entry := make(map[string]int)
 		for i, col := range columns {
 			if values[i] != nil {
-				value, err := strconv.Atoi(string(values[i]))
+				sValue := string(values[i])
+				iValue, err := strconv.Atoi(sValue)
 				if err != nil {
 					return nil, err
 				}
 
-				entry[col] = value
+				entry[col] = iValue
 			}
 		}
 
