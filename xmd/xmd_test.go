@@ -39,7 +39,12 @@ func TestCache_Sync2(t *testing.T) {
 
 		rate := 1.0
 		if sn >= 4 {
-			rate = math.Pow(1.25, sr)
+			rate = math.Trunc(math.Pow(1.5, sr)*100) / 100
+			if rate < 0.1 {
+				rate = 0.1
+			} else if rate > 5 {
+				rate = 5
+			}
 		}
 
 		uQuery := fmt.Sprintf("UPDATE logs_%s SET rz = ? WHERE issue = ?", userId)
