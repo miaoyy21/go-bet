@@ -35,31 +35,11 @@ func TestCache_Sync2(t *testing.T) {
 	for i, r := range res {
 		ris := r["issue"]
 
-		var wnRate int
-		var wRate sql.NullFloat64
-		wQuery := fmt.Sprintf("SELECT COUNT(1) AS nn,IFNULL(CONVERT(SUM(win_gold * IFNULL(rz,1.0))/AVG(user_gold * IFNULL(rz,1.0)),DECIMAL(13,2)),1.0) AS rate FROM logs_%s WHERE issue >= ? - 10 and issue < ?", userId)
-		if err := db.QueryRow(wQuery, ris, ris).Scan(&wnRate, &wRate); err != nil {
-			t.Fatalf("db.QueryRow(%d) 1 fail :: %s \n", ris, err.Error())
-		}
-
-		var fnRate int
-		var fRate sql.NullFloat64
-		fQuery := fmt.Sprintf("SELECT COUNT(1) AS nn,SUM(ABS(win_gold * rz)) AS rate FROM logs_%s WHERE issue >= ? - 10 and issue < ? and win_gold < 0", userId)
-		if err := db.QueryRow(fQuery, ris, ris).Scan(&fnRate, &fRate); err != nil {
-			t.Fatalf("db.QueryRow(%d) 2 fail :: %s \n", ris, err.Error())
-		}
-
-		rate := 1.0
-		if i > 10 && wnRate+fnRate >= 8 {
-			if !fRate.Valid {
-				if wRate.Valid {
-					rate = wRate.Float64
-				}
-			} else {
-				if wRate.Valid {
-					rate = wRate.Float64 / fRate.Float64
-				}
-			}
+		var sn int
+		var sr float64
+		query := fmt.Sprintf("SELECT COUNT(1) AS nn,IFNULL(CONVERT(SUM(win_gold * IFNULL(rz,1.0))/AVG(user_gold * IFNULL(rz,1.0)),DECIMAL(13,2)),1.0) AS rate FROM logs_%s WHERE issue >= ? - 10 and issue < ?", userId)
+		if err := db.QueryRow(query, ris, ris).Scan(&sn, &sr); err != nil {
+			t.Fatalf("db.QueryRow(%d) fail :: %s \n", ris, err.Error())
 		}
 
 		rate = math.Trunc(rate*100) / 100
