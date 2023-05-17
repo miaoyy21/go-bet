@@ -19,3 +19,4 @@ go-bet_windows_386
 config.json
 
 .idea
+xmd/test.go
