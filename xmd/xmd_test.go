@@ -11,7 +11,7 @@ import (
 func TestCache_Sync2(t *testing.T) {
 
 	dbHost, dbPass := "www.nsmei.com", "envl11a3ANsxZNCFQA0GO9HLObf8gi5"
-	userId := "31591499"
+	userId := "31783106"
 	dt := "2023-05-16"
 
 	// MySQL
@@ -37,16 +37,14 @@ func TestCache_Sync2(t *testing.T) {
 
 		var sn int
 		var sr float64
-		query := fmt.Sprintf("SELECT COUNT(1) AS nn,IFNULL(CONVERT(SUM(win_gold * IFNULL(rz,1.0))/AVG(user_gold * IFNULL(rz,1.0)),DECIMAL(13,2)),1.0) AS rate FROM logs_%s WHERE issue >= ? - 10 and issue < ?", userId)
-		if err := db.QueryRow(query, ris, ris).Scan(&sn, &sr); err != nil {
+		qs := fmt.Sprintf("SELECT COUNT(1) AS nn,IFNULL(CONVERT(SUM(win_gold * IFNULL(rz,1.0))/AVG(user_gold * IFNULL(rz,1.0)),DECIMAL(13,2)),1.0) AS rate FROM logs_%s WHERE issue >= ? - 10 and issue < ?", userId)
+		if err := db.QueryRow(qs, ris, ris).Scan(&sn, &sr); err != nil {
 			t.Fatalf("db.QueryRow(%d) fail :: %s \n", ris, err.Error())
 		}
 
-		rate = math.Trunc(rate*100) / 100
-		if rate < 0.1 {
-			rate = 0.1
-		} else if rate > 10 {
-			rate = 10
+		rate := 1.0
+		if sn >= 8 {
+			rate = math.Pow(1.25, sr)
 		}
 
 		uQuery := fmt.Sprintf("UPDATE logs_%s SET rz = ? WHERE issue = ?", userId)
