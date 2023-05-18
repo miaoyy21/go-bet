@@ -20,3 +20,4 @@ config.json
 
 .idea
 xmd/test.go
+build.sh
