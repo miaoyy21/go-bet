@@ -25,7 +25,6 @@ type Cache struct {
 	db   *sql.DB
 	user UserBase
 	secs float64
-	fn   string
 	wx   float64
 	rx   float64
 
@@ -74,7 +73,6 @@ func NewCache(dir string) (*Cache, error) {
 		db:   db,
 		user: user,
 		secs: conf.Secs,
-		fn:   conf.Fn,
 		wx:   conf.Wx,
 		rx:   conf.Rx,
 

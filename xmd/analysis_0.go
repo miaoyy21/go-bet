@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func analysisA1(cache *Cache) error {
+func analysis(cache *Cache) error {
 	if err := cache.Sync(200); err != nil {
 		return err
 	}

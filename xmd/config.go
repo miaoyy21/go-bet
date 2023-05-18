@@ -3,7 +3,6 @@ package xmd
 type Config struct {
 	IsDebug    bool    `json:"is_debug"`
 	Secs       float64 `json:"secs"`
-	Fn         string  `json:"fn"`
 	Wx         float64 `json:"wx"`
 	Rx         float64 `json:"rx"`
 	DataSource string  `json:"datasource"`
