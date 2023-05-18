@@ -32,18 +32,18 @@ func TestCache_Sync2(t *testing.T) {
 
 		var sn int
 		var sr float64
-		qs := fmt.Sprintf("SELECT COUNT(1) AS nn,IFNULL(CONVERT(SUM(win_gold * IFNULL(rz,1.0))/AVG(user_gold * IFNULL(rz,1.0))/AVG(IFNULL(rz,1.0)),DECIMAL(13,2)),1.0) AS rate FROM logs_%s WHERE issue >= ? - 5 and issue < ?", userId)
+		qs := fmt.Sprintf("SELECT COUNT(1) AS nn,IFNULL(CONVERT(SUM(win_gold * IFNULL(rz,1.0))/AVG(user_gold * IFNULL(rz,1.0))/AVG(IFNULL(rz,1.0)),DECIMAL(13,2)),1.0) AS rate FROM logs_%s WHERE issue >= ? - 20 and issue < ?", userId)
 		if err := db.QueryRow(qs, ris, ris).Scan(&sn, &sr); err != nil {
 			t.Fatalf("db.QueryRow(%d) fail :: %s \n", ris, err.Error())
 		}
 
 		rate := 1.0
-		if sn >= 4 {
-			rate = math.Trunc(math.Pow(1.5, sr)*100) / 100
-			if rate < 0.1 {
-				rate = 0.1
-			} else if rate > 5 {
-				rate = 5
+		if sn >= 16 {
+			rate = math.Trunc(math.Pow(1.25, sr)*100) / 100
+			if rate < 0.25 {
+				rate = 0.25
+			} else if rate > 2 {
+				rate = 2
 			}
 		}
 
