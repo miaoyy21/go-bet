@@ -23,10 +23,10 @@ func analysis(cache *Cache) error {
 	// 保存投注相关参数
 	if xSurplus > 0 && cache.issue == issue {
 		xRt := xRts[cache.result] / (1000.0 / float64(stds[cache.result]))
-		query := fmt.Sprintf("INSERT INTO logs_%s(time, issue, result, user_gold,  rx, rt, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?,?)", cache.user.id)
+		query := fmt.Sprintf("INSERT INTO logs_%s(time, issue, result, user_gold,  exp, dev, rt, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?,?,?)", cache.user.id)
 		if _, err := cache.db.Exec(query,
 			time.Now().Format("2006-01-02 15:04:05.999"), cache.issue, cache.result, xUserGold,
-			xRx, xRt, xBetGold, surplus-xSurplus, surplus,
+			xExp, xDev, xRt, xBetGold, surplus-xSurplus, surplus,
 		); err != nil {
 			return err
 		}
@@ -38,30 +38,31 @@ func analysis(cache *Cache) error {
 
 	// 计算每个数字的间隔期数和当前赔率
 	spaces := SpaceFn(cache)
-	rts, rx, err := RiddleDetail(cache.user, nextIssue)
+	rts, exp, dev, err := RiddleDetail(cache.user, nextIssue)
 	if err != nil {
 		return err
 	}
 	xRts = rts
-	xRx = rx
+	xExp = exp
+	xDev = dev
 
 	// 显示当前中奖情况
 	if len(latest) == 0 {
-		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
+		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
 	} else {
 		if _, exists := latest[cache.result]; exists {
-			log.Printf("⭐️⭐️⭐️ 第【👍 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
+			log.Printf("⭐️⭐️⭐️ 第【👍 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
 		} else {
-			log.Printf("⭐️⭐️⭐️ 第【👀 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, rx*100, cache.user.gold, surplus)
+			log.Printf("⭐️⭐️⭐️ 第【👀 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
 		}
 	}
 
 	// 本期返奖率大于设定的返奖率时，才进行投注
-	if rx <= cache.rx {
+	if exp <= cache.rx {
 		latest = make(map[int]struct{})
 
 		xBetGold = 0
-		log.Printf("第【%s】期：预估返奖率【%.2f%%】不足%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, rx*100, cache.rx*100)
+		log.Printf("第【%s】期：预估返奖率【%.2f%%】不足%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, exp*100, cache.rx*100)
 		return nil
 	}
 

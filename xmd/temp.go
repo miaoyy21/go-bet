@@ -22,7 +22,7 @@ func tempSave() error {
 		Rts:      xRts,
 		Surplus:  xSurplus,
 		BetGold:  xBetGold,
-		Rx:       xRx,
+		Rx:       xExp,
 		UserGold: xUserGold,
 	}
 
@@ -55,7 +55,7 @@ func tempLoad() error {
 	xRts = data.Rts
 	xSurplus = data.Surplus
 	xBetGold = data.BetGold
-	xRx = data.Rx
+	xExp = data.Rx
 	xUserGold = data.UserGold
 
 	return nil
