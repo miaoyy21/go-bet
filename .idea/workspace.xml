@@ -6,18 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8a987aa5-ee73-4bca-85a0-82cea81b8678" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_0.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/analysis_fn.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_z0.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_z1.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_z2.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_z3.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_z4.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_z5.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_z6.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_z7.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_z8.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/analysis_z9.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/riddle.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/riddle.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

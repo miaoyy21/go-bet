@@ -19,7 +19,7 @@ type QRiddleDetailRequest struct {
 type QRiddleDetail struct {
 	Status int `json:"status"`
 	Data   struct {
-		MyRiddle []struct {
+		Riddle []struct {
 			Num    string `json:"num"`
 			Rate   string `json:"rate"`
 			Tmoney string `json:"tmoney"`
@@ -53,7 +53,7 @@ func RiddleDetail(user UserBase, issue string) (map[int]float64, float64, float6
 
 	var exp float64
 	rts := make(map[int]float64)
-	for _, riddle := range riddleResponse.Data.MyRiddle {
+	for _, riddle := range riddleResponse.Data.Riddle {
 		n, err := strconv.Atoi(riddle.Num)
 		if err != nil {
 			return nil, 0, 0, err
