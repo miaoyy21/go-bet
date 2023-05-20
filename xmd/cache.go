@@ -26,7 +26,7 @@ type Cache struct {
 	user UserBase
 	secs float64
 	wx   float64
-	rx   float64
+	exp  float64
 
 	issue  int // 最新期数
 	result int // 最新开奖结果
@@ -74,7 +74,7 @@ func NewCache(dir string) (*Cache, error) {
 		user: user,
 		secs: conf.Secs,
 		wx:   conf.Wx,
-		rx:   conf.Rx,
+		exp:  conf.Exp,
 
 		issue:  -1,
 		result: -1,

@@ -11,7 +11,8 @@ type TempData struct {
 	Rts      map[int]float64
 	Surplus  int
 	BetGold  int
-	Rx       float64
+	Exp      float64
+	Dev      float64
 	UserGold int
 }
 
@@ -22,7 +23,8 @@ func tempSave() error {
 		Rts:      xRts,
 		Surplus:  xSurplus,
 		BetGold:  xBetGold,
-		Rx:       xExp,
+		Exp:      xExp,
+		Dev:      xDev,
 		UserGold: xUserGold,
 	}
 
@@ -55,7 +57,8 @@ func tempLoad() error {
 	xRts = data.Rts
 	xSurplus = data.Surplus
 	xBetGold = data.BetGold
-	xExp = data.Rx
+	xExp = data.Exp
+	xDev = data.Dev
 	xUserGold = data.UserGold
 
 	return nil

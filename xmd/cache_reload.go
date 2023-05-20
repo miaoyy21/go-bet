@@ -38,10 +38,10 @@ func (o *Cache) Reload() (bool, error) {
 	o.md5 = h.Sum(nil)
 	o.user = user
 	o.wx = conf.Wx
-	o.rx = conf.Rx
+	o.exp = conf.Exp
 
 	log.Printf("当前设置仅投注实际赔率超过标准倍率%.2f%%的数字 ...\n", o.wx*100-100)
-	log.Printf("当前设置仅当返奖率超过%.2f%%时，才进行投注 ...\n", o.rx*100)
+	log.Printf("当前设置仅当返奖率超过%.2f%%时，才进行投注 ...\n", o.exp*100)
 	log.Printf("当前设置投注基数为 %d ...\n", o.user.gold)
 	return true, nil
 }
