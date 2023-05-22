@@ -11,6 +11,8 @@ import (
 type IssueResult struct {
 	issue  int
 	result int
+	money  int
+	member int
 }
 
 type HGold struct {
@@ -30,6 +32,8 @@ type Cache struct {
 
 	issue  int // 最新期数
 	result int // 最新开奖结果
+	money  int // 最新投注金额
+	member int // 最新参与人数
 
 	histories []IssueResult // 每期存在数据库的开奖记录
 	hGolds    []HGold
@@ -78,6 +82,8 @@ func NewCache(dir string) (*Cache, error) {
 
 		issue:  -1,
 		result: -1,
+		money:  -1,
+		member: -1,
 
 		histories: make([]IssueResult, 0),
 		hGolds:    make([]HGold, 0),

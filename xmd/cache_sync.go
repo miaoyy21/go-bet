@@ -1,8 +1,8 @@
 package xmd
 
 import (
-	"sort"
 	"strconv"
+	"strings"
 )
 
 func (o *Cache) Sync(size int) error {
@@ -11,12 +11,8 @@ func (o *Cache) Sync(size int) error {
 		return err
 	}
 
-	sort.Slice(items, func(i, j int) bool {
-		return items[i].Issue <= items[j].Issue
-	})
-
 	histories := make([]IssueResult, 0, len(items))
-	for _, item := range items {
+	for i, item := range items {
 		issue, err := strconv.Atoi(item.Issue)
 		if err != nil {
 			return err
@@ -27,10 +23,29 @@ func (o *Cache) Sync(size int) error {
 			return err
 		}
 
-		o.issue = issue
-		o.result = result
+		money, err := strconv.Atoi(strings.ReplaceAll(item.Money, ",", ""))
+		if err != nil {
+			return err
+		}
 
-		histories = append(histories, IssueResult{issue: issue, result: result})
+		member := item.Member
+
+		// 最新结果
+		if i == 0 {
+			o.issue = issue
+			o.result = result
+			o.money = money
+			o.member = member
+		}
+
+		histories = append(histories,
+			IssueResult{
+				issue:  issue,
+				result: result,
+				money:  money,
+				member: member,
+			},
+		)
 	}
 	o.histories = histories
 

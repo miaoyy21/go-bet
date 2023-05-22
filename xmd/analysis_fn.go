@@ -23,9 +23,9 @@ func analysis(cache *Cache) error {
 	// 保存投注相关参数
 	if xSurplus > 0 && cache.issue == issue {
 		xRt := xRts[cache.result] / (1000.0 / float64(stds[cache.result]))
-		query := fmt.Sprintf("INSERT INTO logs_%s(time, issue, result, user_gold,  exp, dev, rt, bet_gold, win_gold, gold) VALUES (?,?,?,?, ?,?,?,?,?,?)", cache.user.id)
+		query := fmt.Sprintf("INSERT INTO logs_%s(time, issue, result, money, member, user_gold,  exp, dev, rt, bet_gold, win_gold, gold) VALUES (?,?,?,?,?,?, ?,?,?,?,?,?)", cache.user.id)
 		if _, err := cache.db.Exec(query,
-			time.Now().Format("2006-01-02 15:04:05.999"), cache.issue, cache.result, xUserGold,
+			time.Now().Format("2006-01-02 15:04:05.999"), cache.issue, cache.result, cache.money, cache.member, xUserGold,
 			xExp, xDev, xRt, xBetGold, surplus-xSurplus, surplus,
 		); err != nil {
 			return err

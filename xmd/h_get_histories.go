@@ -9,6 +9,7 @@ type QHistoryItem struct {
 	Issue  string `json:"issue"`
 	Result string `json:"lresult"`
 	Money  string `json:"tmoney"`
+	Member int    `json:"tmember"`
 }
 
 type QHistoryData struct {

@@ -3,12 +3,12 @@ package xmd
 func SpaceFn(cache *Cache) map[int]int {
 	spaces := make(map[int]int)
 
-	for i := len(cache.histories) - 1; i >= 0; i-- {
-		if _, ok := spaces[cache.histories[i].result]; ok {
+	for i, item := range cache.histories {
+		if _, ok := spaces[item.result]; ok {
 			continue
 		}
 
-		spaces[cache.histories[i].result] = len(cache.histories) - i
+		spaces[item.result] = i + 1
 	}
 
 	return spaces

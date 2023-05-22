@@ -8,10 +8,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xmd/analysis_fn.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/analysis_fn.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xmd/cache.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/cache.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/cache_reload.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/cache_reload.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/temp.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/temp.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmd/xmd.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/xmd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/cache_sync.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/cache_sync.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/fn.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/fn.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/h_get_histories.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/h_get_histories.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
