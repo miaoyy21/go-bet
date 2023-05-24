@@ -27,7 +27,6 @@ type Cache struct {
 	db   *sql.DB
 	user UserBase
 	secs float64
-	wx   float64
 	exp  float64
 
 	issue  int // 最新期数
@@ -77,7 +76,6 @@ func NewCache(dir string) (*Cache, error) {
 		db:   db,
 		user: user,
 		secs: conf.Secs,
-		wx:   conf.Wx,
 		exp:  conf.Exp,
 
 		issue:  -1,

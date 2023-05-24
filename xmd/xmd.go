@@ -9,7 +9,6 @@ import (
 var SN28 = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27}
 
 func Run(cache *Cache) {
-	log.Printf("当前设置仅投注实际赔率超过标准倍率%.2f%%的数字 ...\n", cache.wx*100-100)
 	log.Printf("当前设置仅当返奖率超过%.2f%%时，才进行投注 ...\n", cache.exp*100)
 	log.Printf("当前设置投注基数为 %d ...\n", cache.user.gold)
 	if cache.user.isDebug {
