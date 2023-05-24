@@ -48,21 +48,21 @@ func analysis(cache *Cache) error {
 
 	// 显示当前中奖情况
 	if len(latest) == 0 {
-		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
+		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下期预估期望返奖【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
 	} else {
 		if _, exists := latest[cache.result]; exists {
-			log.Printf("⭐️⭐️⭐️ 第【👍 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
+			log.Printf("⭐️⭐️⭐️ 第【👍 %d】期：开奖结果【%d】，下期预估期望返奖【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
 		} else {
-			log.Printf("⭐️⭐️⭐️ 第【👀 %d】期：开奖结果【%d】，下期预估返奖率【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
+			log.Printf("⭐️⭐️⭐️ 第【👀 %d】期：开奖结果【%d】，下期预估期望返奖【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
 		}
 	}
 
-	// 本期返奖率大于设定的返奖率时，才进行投注
+	// 本期期望返奖大于设定的期望返奖时，才进行投注
 	if exp <= cache.exp {
 		latest = make(map[int]struct{})
 
 		xBetGold = 0
-		log.Printf("第【%s】期：预估返奖率【%.2f%%】不足%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, exp*100, cache.exp*100)
+		log.Printf("第【%s】期：预估期望返奖【%.2f%%】不足%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, exp*100, cache.exp*100)
 		return nil
 	}
 
