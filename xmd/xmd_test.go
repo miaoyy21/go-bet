@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestCache_Sync2(t *testing.T) {
+func TestRun(t *testing.T) {
 	// MySQL
 	ds := fmt.Sprintf("root:%s@tcp(%s:3306)/bet?charset=utf8mb4&collation=utf8mb4_general_ci&loc=Local&parseTime=true", dbPass, dbHost)
 	db, err := sql.Open("mysql", ds)
