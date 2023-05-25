@@ -27,7 +27,7 @@ type Cache struct {
 	db   *sql.DB
 	user UserBase
 	secs float64
-	exp  float64
+	dev  float64
 
 	issue  int // 最新期数
 	result int // 最新开奖结果
@@ -76,7 +76,7 @@ func NewCache(dir string) (*Cache, error) {
 		db:   db,
 		user: user,
 		secs: conf.Secs,
-		exp:  conf.Exp,
+		dev:  conf.Dev,
 
 		issue:  -1,
 		result: -1,

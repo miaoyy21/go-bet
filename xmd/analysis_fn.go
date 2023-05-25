@@ -58,11 +58,11 @@ func analysis(cache *Cache) error {
 	}
 
 	// 本期期望返奖大于设定的期望返奖时，才进行投注
-	if exp <= cache.exp {
+	if dev <= cache.dev {
 		latest = make(map[int]struct{})
 
 		xBetGold = 0
-		log.Printf("第【%s】期：预估期望返奖【%.2f%%】不足%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, exp*100, cache.exp*100)
+		log.Printf("第【%s】期：赔率标准方差【%.2f】不足%.2f，放弃投注 >>>>>>>>>> \n", nextIssue, dev, cache.dev)
 		return nil
 	}
 
