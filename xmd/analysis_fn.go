@@ -66,6 +66,23 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
+	// 调整系数
+	if cache.money < 2<<24 {
+		// 33,554,432
+		xUserGold = int(float64(xUserGold) * 0.4)
+	} else if cache.money < 2<<25 {
+		// 67,108,864
+		xUserGold = int(float64(xUserGold) * 0.6)
+	} else if cache.money < 2<<26 {
+		// 134,217,728
+		xUserGold = int(float64(xUserGold) * 0.8)
+	} else {
+		// 268,435,456
+		if cache.money > 2<<27 {
+			xUserGold = int(float64(xUserGold) * 1.3)
+		}
+	}
+
 	// 仅投注当前赔率大于标准赔率的数字
 	latest = make(map[int]struct{})
 	total, coverage := 0, 0
@@ -77,7 +94,7 @@ func analysis(cache *Cache) error {
 			continue
 		}
 
-		betGold := int(float64(cache.user.gold) * float64(stds[result]) / 1000)
+		betGold := int(float64(xUserGold) * float64(stds[result]) / 1000)
 
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
