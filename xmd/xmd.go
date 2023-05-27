@@ -2,7 +2,6 @@ package xmd
 
 import (
 	"log"
-	"math"
 	"time"
 )
 
@@ -60,30 +59,4 @@ func Run(cache *Cache) {
 			}
 		}
 	}
-}
-
-func bet28(cache *Cache, issue string, surplus int, ns []int, spaces map[int]int, rts map[int]float64, std float64) (map[int]struct{}, error) {
-	var total, coverage int
-	if std <= 0 {
-		return nil, nil
-	}
-
-	bets := make(map[int]struct{})
-	for _, result := range ns {
-		r0 := 1000.0 / float64(stds[result])
-		r1 := rts[result]
-
-		betGold := int(math.Ceil(std * float64(stds[result]) / 1000))
-		if err := hPostBet(issue, betGold, result, cache.user); err != nil {
-			return nil, err
-		}
-		log.Printf("第【%s】期：竞猜数字【❤️ %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-4.2f】，间隔次数【%-4d】，投注金额【% 5d】\n", issue, result, r0, r1, r1/r0, spaces[result], betGold)
-
-		bets[result] = struct{}{}
-		total = total + betGold
-		coverage = coverage + stds[result]
-	}
-	log.Printf("第【%s】期：投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", issue, total, surplus-total, float64(coverage)/10)
-
-	return bets, nil
 }
