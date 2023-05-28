@@ -39,3 +39,13 @@ SELECT SUM(CASE WHEN rt < 1.0 THEN 1 ELSE 0 END) AS ln1,SUM(CASE WHEN rt > 1.0 T
 FROM logs
 WHERE time LIKE '2023-05-10 %' AND win_gold = 0;
 
+
+
+SELECT RIGHT(LEFT(time,13),2),COUNT(1) AS qn,CONVERT(SUM(win_gold)/AVG(user_gold),DECIMAL(13,2)) AS rate
+FROM logs
+WHERE bet_gold > 1000
+GROUP BY RIGHT(LEFT(time,13),2)
+ORDER BY RIGHT(LEFT(time,13),2);
+
+SELECT * FROM logs WHERE ABS(win_gold) > 1000000;
+

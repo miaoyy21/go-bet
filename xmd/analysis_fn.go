@@ -66,22 +66,36 @@ func analysis(cache *Cache) error {
 		return nil
 	}
 
-	// 调整系数
+	// 投注金额 系数设定
 	if cache.money < 2<<24 {
 		// 33,554,432
 		xUserGold = int(float64(xUserGold) * 0.4)
 	} else if cache.money < 2<<25 {
 		// 67,108,864
-		xUserGold = int(float64(xUserGold) * 0.6)
+		xUserGold = int(float64(xUserGold) * 0.7)
 	} else if cache.money < 2<<26 {
 		// 134,217,728
-		xUserGold = int(float64(xUserGold) * 0.8)
+		xUserGold = int(float64(xUserGold) * 0.9)
 	} else {
 		// 268,435,456
 		if cache.money > 2<<27 {
-			xUserGold = int(float64(xUserGold) * 1.3)
+			xUserGold = int(float64(xUserGold) * 1.25)
 		}
 	}
+
+	// 赔率标准方差 系数设定
+	if dev > 1.1 {
+		xUserGold = int(float64(xUserGold) * 1.35)
+	} else if dev > 1.05 {
+		xUserGold = int(float64(xUserGold) * 1.30)
+	} else if dev > 1.0 {
+		xUserGold = int(float64(xUserGold) * 1.20)
+	} else if dev > 0.95 {
+		xUserGold = int(float64(xUserGold) * 1.05)
+	}
+
+	// 以万为单位进行投注
+	xUserGold = xUserGold / 10000 * 10000
 
 	// 仅投注当前赔率大于标准赔率的数字
 	latest = make(map[int]struct{})
