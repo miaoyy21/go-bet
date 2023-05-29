@@ -30,7 +30,7 @@ func (o *Cache) Reload() (bool, error) {
 	if bytes.Equal(h.Sum(nil), o.md5) {
 		// 动态调整投注基数
 		if hrs := time.Now().Hour(); hrs >= 9 && hrs <= 13 {
-			o.user.gold = conf.Gold / 2
+			o.user.gold = conf.Gold / 3
 		}
 
 		return false, nil
