@@ -95,7 +95,9 @@ func analysis(cache *Cache) error {
 	}
 
 	// 以万为单位进行投注
-	xUserGold = xUserGold / 10000 * 10000
+	if xUserGold > 100000 {
+		xUserGold = xUserGold / 10000 * 10000
+	}
 
 	// 仅投注当前赔率大于标准赔率的数字
 	latest = make(map[int]struct{})

@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 func (o *Cache) Reload() (bool, error) {
@@ -21,13 +22,18 @@ func (o *Cache) Reload() (bool, error) {
 		return false, err
 	}
 
-	if bytes.Equal(h.Sum(nil), o.md5) {
-		return false, nil
-	}
-
 	var conf Config
 	if err := json.Unmarshal(bs, &conf); err != nil {
 		return false, err
+	}
+
+	if bytes.Equal(h.Sum(nil), o.md5) {
+		// 动态调整投注基数
+		if hrs := time.Now().Hour(); hrs >= 9 && hrs <= 13 {
+			o.user.gold = conf.Gold / 2
+		}
+
+		return false, nil
 	}
 
 	user := NewUserBase(
