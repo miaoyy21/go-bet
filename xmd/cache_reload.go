@@ -1,13 +1,11 @@
 package xmd
 
 import (
-	"bytes"
 	"crypto/md5"
 	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 func (o *Cache) Reload() (bool, error) {
@@ -27,14 +25,14 @@ func (o *Cache) Reload() (bool, error) {
 		return false, err
 	}
 
-	if bytes.Equal(h.Sum(nil), o.md5) {
-		// 动态调整投注基数
-		if hrs := time.Now().Hour(); hrs >= 9 && hrs <= 13 {
-			o.user.gold = conf.Gold / 3
-		}
-
-		return false, nil
-	}
+	//if bytes.Equal(h.Sum(nil), o.md5) {
+	//	// 动态调整投注基数
+	//	if hrs := time.Now().Hour(); hrs >= 9 && hrs <= 13 {
+	//		o.user.gold = conf.Gold / 3
+	//	}
+	//
+	//	return false, nil
+	//}
 
 	user := NewUserBase(
 		conf.IsDebug, conf.Gold, conf.Origin, conf.URL, conf.Cookie, conf.Agent,
