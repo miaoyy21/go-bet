@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	log.Printf("当前版本 2023.05.30 01:00\n")
+	log.Printf("当前版本 2023.05.30 07:15\n")
 
 	dir, err := os.Getwd()
 	if err != nil {
