@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 func (o *Cache) Reload() (bool, error) {
@@ -29,11 +28,11 @@ func (o *Cache) Reload() (bool, error) {
 
 	if bytes.Equal(h.Sum(nil), o.md5) {
 		// 动态调整投注基数
-		if hrs := time.Now().Hour(); hrs == 12 || hrs == 13 || hrs == 18 {
-			o.user.gold = conf.Gold / 4
-		} else {
-			o.user.gold = conf.Gold
-		}
+		//if hrs := time.Now().Hour(); hrs == 12 || hrs == 13 || hrs == 18 {
+		//	o.user.gold = conf.Gold / 4
+		//} else {
+		//	o.user.gold = conf.Gold
+		//}
 
 		return false, nil
 	}
