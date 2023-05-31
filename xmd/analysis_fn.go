@@ -67,31 +67,32 @@ func analysis(cache *Cache) error {
 	}
 
 	// 投注金额 系数设定
-	if cache.money < 2<<24 {
+	if cache.money < 2<<23 {
+		// 16,777,216
+		xUserGold = int(float64(xUserGold) * 0.2)
+	} else if cache.money < 2<<24 {
 		// 33,554,432
 		xUserGold = int(float64(xUserGold) * 0.4)
 	} else if cache.money < 2<<25 {
 		// 67,108,864
-		xUserGold = int(float64(xUserGold) * 0.7)
+		xUserGold = int(float64(xUserGold) * 0.6)
 	} else if cache.money < 2<<26 {
 		// 134,217,728
-		xUserGold = int(float64(xUserGold) * 0.9)
+		xUserGold = int(float64(xUserGold) * 0.8)
 	} else {
 		// 268,435,456
 		if cache.money > 2<<27 {
-			xUserGold = int(float64(xUserGold) * 1.25)
+			xUserGold = int(float64(xUserGold) * 1.2)
 		}
 	}
 
 	// 赔率标准方差 系数设定
 	if dev > 1.1 {
-		xUserGold = int(float64(xUserGold) * 1.35)
-	} else if dev > 1.05 {
 		xUserGold = int(float64(xUserGold) * 1.30)
-	} else if dev > 1.0 {
+	} else if dev > 1.05 {
 		xUserGold = int(float64(xUserGold) * 1.20)
-	} else if dev > 0.95 {
-		xUserGold = int(float64(xUserGold) * 1.05)
+	} else if dev > 1.00 {
+		xUserGold = int(float64(xUserGold) * 1.10)
 	}
 
 	// 以万为单位进行投注
