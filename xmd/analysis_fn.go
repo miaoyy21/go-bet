@@ -75,10 +75,10 @@ func analysis(cache *Cache) error {
 		xUserGold = int(float64(xUserGold) * 0.4)
 	} else if cache.money < 2<<25 {
 		// 67,108,864
-		xUserGold = int(float64(xUserGold) * 0.6)
+		xUserGold = int(float64(xUserGold) * 0.7)
 	} else if cache.money < 2<<26 {
 		// 134,217,728
-		xUserGold = int(float64(xUserGold) * 0.8)
+		xUserGold = int(float64(xUserGold) * 0.9)
 	} else {
 		// 268,435,456
 		if cache.money > 2<<27 {
@@ -106,12 +106,24 @@ func analysis(cache *Cache) error {
 	for _, result := range SN28 {
 		r0 := 1000.0 / float64(stds[result])
 		r1 := rts[result]
-		if r1 < r0 {
+
+		var rx float64
+		if r1/r0 >= 1.0 {
+			rx = 1.0
+		} else if r1/r0 >= 0.99 {
+			rx = 0.75
+		} else if r1/r0 >= 0.98 {
+			rx = 0.50
+		} else if r1/r0 >= 0.97 {
+			rx = 0.25
+		}
+
+		if rx <= 0.1 {
 			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【     -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
 			continue
 		}
 
-		betGold := int(float64(xUserGold) * float64(stds[result]) / 1000)
+		betGold := int(rx * float64(xUserGold) * float64(stds[result]) / 1000)
 
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
