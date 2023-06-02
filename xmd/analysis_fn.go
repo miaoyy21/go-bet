@@ -3,6 +3,7 @@ package xmd
 import (
 	"fmt"
 	"log"
+	"math"
 	"strconv"
 	"time"
 )
@@ -110,20 +111,15 @@ func analysis(cache *Cache) error {
 		var rx float64
 		if r1/r0 >= 1.0 {
 			rx = 1.0
-		} else if r1/r0 >= 0.99 {
-			rx = 0.75
-		} else if r1/r0 >= 0.98 {
-			rx = 0.50
-		} else if r1/r0 >= 0.97 {
-			rx = 0.25
-		}
-
-		if rx <= 0.1 {
-			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【     -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
-			continue
+		} else {
+			rx = 1.0 - float64(10000-int(math.Floor(r1*10000/r0)))*0.0025
 		}
 
 		betGold := int(rx * float64(xUserGold) * float64(stds[result]) / 1000)
+		if betGold <= 0 {
+			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【     -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
+			continue
+		}
 
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
