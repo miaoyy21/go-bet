@@ -132,7 +132,7 @@ func analysis(cache *Cache) error {
 
 		latest[result] = struct{}{}
 		total = total + betGold
-		coverage = coverage + stds[result]
+		coverage = coverage + int(float64(stds[result])*rx)
 	}
 
 	// 显示投注的汇总结果
