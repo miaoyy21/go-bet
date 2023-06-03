@@ -3,7 +3,6 @@ package xmd
 import (
 	"fmt"
 	"log"
-	"math"
 	"strconv"
 	"time"
 )
@@ -112,7 +111,7 @@ func analysis(cache *Cache) error {
 		if r1/r0 >= 1.0 {
 			rx = 1.0
 		} else {
-			rx = 1.0 - float64(10000-int(math.Floor(r1*10000/r0)))*0.01
+			rx = (r1/r0 - 0.99) * 100
 		}
 
 		betGold := int(rx * float64(xUserGold) * float64(stds[result]) / 1000)
