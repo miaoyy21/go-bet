@@ -1,7 +1,7 @@
 package xmd
 
 var issue int
-var latest = make(map[int]struct{})
+var latest = make(map[int]int)
 var xRts = make(map[int]float64)
 var xSurplus int
 var xBetGold int

@@ -3,6 +3,7 @@ package xmd
 import (
 	"fmt"
 	"log"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -37,7 +38,6 @@ func analysis(cache *Cache) error {
 	xUserGold = cache.user.gold
 
 	// 计算每个数字的间隔期数和当前赔率
-	spaces := SpaceFn(cache)
 	rts, exp, dev, err := RiddleDetail(cache.user, nextIssue)
 	if err != nil {
 		return err
@@ -59,7 +59,7 @@ func analysis(cache *Cache) error {
 
 	// 本期期望返奖大于设定的期望返奖时，才进行投注
 	if dev <= cache.dev {
-		latest = make(map[int]struct{})
+		latest = make(map[int]int)
 
 		xBetGold = 0
 		log.Printf("第【%s】期：赔率标准方差【%.2f】不足%.2f，放弃投注 >>>>>>>>>> \n", nextIssue, dev, cache.dev)
@@ -101,8 +101,10 @@ func analysis(cache *Cache) error {
 	}
 
 	// 仅投注当前赔率大于标准赔率的数字
-	latest = make(map[int]struct{})
-	total, coverage := 0, 0
+	latest = make(map[int]int)
+	coverage := 0
+
+	//spaces := SpaceFn(cache)
 	for _, result := range SN28 {
 		r0 := 1000.0 / float64(stds[result])
 		r1 := rts[result]
@@ -116,24 +118,48 @@ func analysis(cache *Cache) error {
 
 		betGold := int(rx * float64(xUserGold) * float64(stds[result]) / 1000)
 		if betGold <= 0 {
-			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【     -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
+			//log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【     -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
 			continue
 		}
 
+		latest[result] = betGold
+		coverage = coverage + int(float64(stds[result])*rx)
+	}
+
+	if float64(coverage) < 125 {
+		latest = make(map[int]int)
+
+		xBetGold = 0
+		log.Printf("第【%s】期：覆盖率【%.2f%%】不足%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, float64(coverage)/10, 12.5)
+		return nil
+	} else if float64(coverage) > 875 {
+		latest = make(map[int]int)
+
+		xBetGold = 0
+		log.Printf("第【%s】期：覆盖率【%.2f%%】超过%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, float64(coverage)/10, 87.5)
+		return nil
+	}
+
+	total := 0
+	rs := make([]int, 0, len(latest))
+	for result, betGold := range latest {
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
 		}
-		log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【% 6d】\n", nextIssue, result, r0, r1, r1/r0, spaces[result], betGold)
 
-		latest[result] = struct{}{}
+		//r0 := 1000.0 / float64(stds[result])
+		//r1 := rts[result]
+		//log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【% 6d】\n", nextIssue, result, r0, r1, r1/r0, spaces[result], betGold)
+
+		rs = append(rs, result)
 		total = total + betGold
-		coverage = coverage + int(float64(stds[result])*rx)
 	}
+	sort.Ints(rs)
 
 	// 显示投注的汇总结果
 	surplus = surplus - total
 	xBetGold = total
-	log.Printf("第【%s】期：投注金额【%d】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, surplus, float64(coverage)/10)
+	log.Printf("第【%s】期：投注金额【%d】，投注数字【%s】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, fmtIntSlice(rs), surplus, float64(coverage)/10)
 
 	return nil
 }

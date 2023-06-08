@@ -7,7 +7,7 @@ import (
 
 type TempData struct {
 	Issue    int
-	Latest   map[int]struct{}
+	Latest   map[int]int
 	Rts      map[int]float64
 	Surplus  int
 	BetGold  int
