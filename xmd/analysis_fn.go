@@ -62,7 +62,7 @@ func analysis(cache *Cache) error {
 		latest = make(map[int]int)
 
 		xBetGold = 0
-		log.Printf("第【%s】期：赔率标准方差【%.2f】不足%.2f，放弃投注 >>>>>>>>>> \n", nextIssue, dev, cache.dev)
+		log.Printf("第【%s】期：赔率标准方差【%.2f】不足%.3f，放弃投注 >>>>>>>>>> \n", nextIssue, dev, cache.dev)
 		return nil
 	}
 
@@ -153,6 +153,7 @@ func analysis(cache *Cache) error {
 
 		rs = append(rs, result)
 		total = total + betGold
+		time.Sleep(25 * time.Millisecond)
 	}
 	sort.Ints(rs)
 
