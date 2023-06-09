@@ -119,17 +119,18 @@ func analysis(cache *Cache) error {
 		coverage = coverage + int(float64(stds[result])*rx)
 	}
 
-	if float64(coverage) < 125 {
+	o1, o2 := 150, 850
+	if coverage < o1 {
 		latest = make(map[int]int)
 
 		xBetGold = 0
-		log.Printf("第【%s】期：覆盖率【%.2f%%】不足%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, float64(coverage)/10, 12.5)
+		log.Printf("第【%s】期：覆盖率【%.2f%%】不足%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, float64(coverage)/10, float64(o1)/10)
 		return nil
-	} else if float64(coverage) > 875 {
+	} else if coverage > o2 {
 		latest = make(map[int]int)
 
 		xBetGold = 0
-		log.Printf("第【%s】期：覆盖率【%.2f%%】超过%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, float64(coverage)/10, 87.5)
+		log.Printf("第【%s】期：覆盖率【%.2f%%】超过%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, float64(coverage)/10, float64(o2)/10)
 		return nil
 	}
 
