@@ -113,6 +113,8 @@ func analysis(cache *Cache) error {
 			continue
 		}
 
+		//log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【% 6d】\n", nextIssue, result, r0, r1, r1/r0, spaces[result], betGold)
+
 		latest[result] = betGold
 		coverage = coverage + int(float64(stds[result])*rx)
 	}
@@ -137,10 +139,6 @@ func analysis(cache *Cache) error {
 		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
 			return err
 		}
-
-		//r0 := 1000.0 / float64(stds[result])
-		//r1 := rts[result]
-		//log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【% 6d】\n", nextIssue, result, r0, r1, r1/r0, spaces[result], betGold)
 
 		rs = append(rs, result)
 		total = total + betGold
