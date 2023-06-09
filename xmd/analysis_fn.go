@@ -57,15 +57,6 @@ func analysis(cache *Cache) error {
 		}
 	}
 
-	// 本期期望返奖大于设定的期望返奖时，才进行投注
-	if dev <= cache.dev {
-		latest = make(map[int]int)
-
-		xBetGold = 0
-		log.Printf("第【%s】期：赔率标准方差【%.2f】不足%.3f，放弃投注 >>>>>>>>>> \n", nextIssue, dev, cache.dev)
-		return nil
-	}
-
 	// 投注金额 系数设定
 	if cache.money < 2<<23 {
 		// 16,777,216

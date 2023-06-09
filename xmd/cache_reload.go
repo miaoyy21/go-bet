@@ -44,9 +44,7 @@ func (o *Cache) Reload() (bool, error) {
 
 	o.md5 = h.Sum(nil)
 	o.user = user
-	o.dev = conf.Dev
 
-	log.Printf("当前设置仅赔率标准方差大于%.3f时，才进行投注 ...\n", o.dev)
 	log.Printf("当前设置投注基数为 %d ...\n", o.user.gold)
 	return true, nil
 }
