@@ -2,6 +2,7 @@ package xmd
 
 import (
 	"log"
+	"strings"
 	"time"
 )
 
@@ -59,6 +60,12 @@ func Run(cache *Cache) {
 			// 保存全局变量
 			if err := tempSave(); err != nil {
 				log.Println(err.Error())
+			}
+
+			// strings.EqualFold(time.Now().Format("15:04"), "01:10")
+			if strings.EqualFold(cache.user.id, "31806030") {
+				log.Println("执行 【签到抽奖】 ...")
+				signIn(cache)
 			}
 		}
 	}
