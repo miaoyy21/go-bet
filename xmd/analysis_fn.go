@@ -143,7 +143,6 @@ func analysis(cache *Cache) error {
 
 		rs = append(rs, result)
 		total = total + betGold
-		time.Sleep(15 * time.Millisecond)
 	}
 	sort.Ints(rs)
 
