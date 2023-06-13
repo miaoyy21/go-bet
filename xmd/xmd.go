@@ -62,8 +62,7 @@ func Run(cache *Cache) {
 				log.Println(err.Error())
 			}
 
-			//strings.EqualFold(time.Now().Format("15:04"), "01:10")
-			if strings.EqualFold(cache.user.id, "31806030") {
+			if strings.EqualFold(time.Now().Format("15:04"), "00:05") {
 				log.Println("执行 【签到抽奖】 ...")
 				signIn(cache)
 			}
