@@ -65,7 +65,7 @@ func NewCache(dir string) (*Cache, error) {
 	}
 
 	user := NewUserBase(
-		conf.IsDebug, conf.Gold, conf.Origin, conf.URL, conf.Cookie, conf.Agent,
+		conf.IsDebug, conf.Gold, conf.Website, conf.Origin, conf.URL, conf.Cookie, conf.Agent,
 		conf.Unix, conf.KeyCode, conf.DeviceId, conf.UserId, conf.Token,
 	)
 	cache := &Cache{

@@ -46,7 +46,7 @@ func signIn(cache *Cache) {
 		return
 	}
 
-	url := fmt.Sprintf("%s/activity2022/ttqdcj/ashx/ttqdcj.ashx", cache.user.origin)
+	url := fmt.Sprintf("%s/activity2022/ttqdcj/ashx/ttqdcj.ashx", cache.user.website)
 	req, err := http.NewRequest("POST", url, buf)
 	if err != nil {
 		log.Printf("%s 【签到抽奖】失败2 >>> %s \n", cache.user.id, err.Error())

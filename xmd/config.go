@@ -5,6 +5,7 @@ type Config struct {
 	Secs       float64 `json:"secs"`
 	DataSource string  `json:"datasource"`
 	Gold       int     `json:"gold"`
+	Website    string  `json:"website"`
 	Origin     string  `json:"origin"`
 	URL        string  `json:"url"`
 	Cookie     string  `json:"cookie"`
