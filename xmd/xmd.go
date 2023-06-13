@@ -2,7 +2,6 @@ package xmd
 
 import (
 	"log"
-	"strings"
 	"time"
 )
 
@@ -63,10 +62,10 @@ func Run(cache *Cache) {
 			}
 
 			// strings.EqualFold(time.Now().Format("15:04"), "01:10")
-			if strings.EqualFold(cache.user.id, "31806030") {
-				log.Println("执行 【签到抽奖】 ...")
-				signIn(cache)
-			}
+			//if strings.EqualFold(cache.user.id, "31806030") {
+			//	log.Println("执行 【签到抽奖】 ...")
+			//	signIn(cache)
+			//}
 		}
 	}
 }
