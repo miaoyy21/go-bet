@@ -95,7 +95,6 @@ func analysis(cache *Cache) error {
 	latest = make(map[int]int)
 	coverage := 0
 
-	//spaces := SpaceFn(cache)
 	for _, result := range SN28 {
 		r0 := 1000.0 / float64(stds[result])
 		r1 := rts[result]
