@@ -5,7 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8a987aa5-ee73-4bca-85a0-82cea81b8678" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/000.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/001.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/002.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/003.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/004.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xmd/cache_reload.go" beforeDir="false" afterPath="$PROJECT_DIR$/xmd/cache_reload.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +23,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Go File" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -37,6 +45,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultGoTemplateProperty": "Go File",
+    "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
