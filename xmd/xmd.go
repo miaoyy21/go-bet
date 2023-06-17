@@ -17,13 +17,15 @@ func Run(cache *Cache) {
 	log.Printf("%.2f秒后[%s]，将运行小鸡竞猜游戏 ...", cache.secs-dua.Seconds(), time.Now().Add(time.Second*time.Duration(cache.secs-dua.Seconds())).Format("2006-01-02 15:04:05"))
 	time.Sleep(time.Second * time.Duration(cache.secs-dua.Seconds()))
 
-	if _, err := cache.Reload(); err != nil {
-		log.Println(err.Error())
-	}
+	go func() {
+		if _, err := cache.Reload(); err != nil {
+			log.Println(err.Error())
+		}
 
-	if err := analysis(cache); err != nil {
-		log.Println(err.Error())
-	}
+		if err := analysis(cache); err != nil {
+			log.Println(err.Error())
+		}
+	}()
 
 	ticker := time.NewTicker(time.Minute)
 	defer ticker.Stop()
