@@ -99,38 +99,16 @@ func analysis(cache *Cache) error {
 		r0 := 1000.0 / float64(stds[result])
 		r1 := rts[result]
 
-		var rx float64
-		if r1/r0 >= 1.0 {
-			rx = 1.0
-		} else {
-			rx = (r1/r0 - 0.99) * 100
-		}
-
-		betGold := int(rx * float64(xUserGold) * float64(stds[result]) / 1000)
+		betGold := int(float64(xUserGold) * float64(stds[result]) / 1000)
 		if betGold <= 0 {
-			//log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【     -】\n", nextIssue, result, r0, r1, r1/r0, spaces[result])
+			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，投注金额【     -】\n", nextIssue, result, r0, r1, r1/r0)
 			continue
 		}
 
-		//log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，间隔次数【%-4d】，投注金额【% 6d】\n", nextIssue, result, r0, r1, r1/r0, spaces[result], betGold)
+		log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，投注金额【% 6d】\n", nextIssue, result, r0, r1, r1/r0, betGold)
 
 		latest[result] = betGold
-		coverage = coverage + int(float64(stds[result])*rx)
-	}
-
-	o1, o2 := 150, 850
-	if coverage < o1 {
-		latest = make(map[int]int)
-
-		xBetGold = 0
-		log.Printf("第【%s】期：覆盖率【%.2f%%】不足%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, float64(coverage)/10, float64(o1)/10)
-		return nil
-	} else if coverage > o2 {
-		latest = make(map[int]int)
-
-		xBetGold = 0
-		log.Printf("第【%s】期：覆盖率【%.2f%%】超过%.2f%%，放弃投注 >>>>>>>>>> \n", nextIssue, float64(coverage)/10, float64(o2)/10)
-		return nil
+		coverage = coverage + int(float64(stds[result]))
 	}
 
 	total := 0

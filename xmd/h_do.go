@@ -3,9 +3,7 @@ package xmd
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"time"
 )
 
 func hDo(user UserBase, method string, url string, s interface{}, t interface{}) error {
@@ -28,9 +26,9 @@ func hDo(user UserBase, method string, url string, s interface{}, t interface{})
 	req.Header.Set("Cache-Control", "no-cache")
 	req.Header.Set("Connection", "keep-alive")
 	req.Header.Set("Content-Type", "application/json;charset=UTF-8")
-	req.Header.Set("Cookie", fmt.Sprintf("%s=%d", user.cookie, time.Now().Unix()))
+	req.Header.Set("Cookie", user.cookie)
 	req.Header.Set("Origin", user.origin)
-	req.Header.Set("Pragma", user.origin)
+	req.Header.Set("Pragma", "no-cache")
 	req.Header.Set("User-Agent", user.agent)
 
 	// Response
