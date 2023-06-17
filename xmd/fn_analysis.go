@@ -38,7 +38,7 @@ func analysis(cache *Cache) error {
 		if r1/r0 >= 1.0 {
 			rx = 1.0
 		} else {
-			rx = (r1/r0 - 0.99) * 100
+			rx = (r1/r0 - 0.975) * 100
 		}
 
 		if rx <= 0.01 {
@@ -62,7 +62,7 @@ func analysis(cache *Cache) error {
 	// 确定投注模式ID
 	modeId, modeName := parseModeId(bets)
 	if modeId <= 0 {
-		log.Printf("第【%s】期：无法确定投注模式ID【%d】 >>>>>>>>>> \n", nextIssue, modeId)
+		log.Printf("第【%s】期：无法确定投注模式【%s】 >>>>>>>>>> \n", nextIssue, modeName)
 		return nil
 	}
 
