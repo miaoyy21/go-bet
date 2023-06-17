@@ -2,7 +2,6 @@ package xmd
 
 import (
 	"crypto/md5"
-	"database/sql"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -24,7 +23,6 @@ type Cache struct {
 	dir string
 	md5 []byte
 
-	db   *sql.DB
 	user UserBase
 	secs float64
 
@@ -54,25 +52,14 @@ func NewCache(dir string) (*Cache, error) {
 		return nil, err
 	}
 
-	// MySQL
-	db, err := sql.Open("mysql", conf.DataSource)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := db.Ping(); err != nil {
-		return nil, err
-	}
-
 	user := NewUserBase(
-		conf.IsDebug, conf.Gold, conf.Website, conf.Origin, conf.URL, conf.Cookie, conf.Agent,
+		conf.IsDebug, conf.Origin, conf.URL, conf.Cookie, conf.Agent,
 		conf.Unix, conf.KeyCode, conf.DeviceId, conf.UserId, conf.Token,
 	)
 	cache := &Cache{
 		dir: dir,
 		md5: h.Sum(nil),
 
-		db:   db,
 		user: user,
 		secs: conf.Secs,
 

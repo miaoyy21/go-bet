@@ -1,11 +1,9 @@
 package xmd
 
 import (
-	"fmt"
 	"log"
 	"sort"
 	"strconv"
-	"time"
 )
 
 func analysis(cache *Cache) error {
@@ -21,112 +19,121 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
-	// 保存投注相关参数
-	if xSurplus > 0 && cache.issue == issue {
-		xRt := xRts[cache.result] / (1000.0 / float64(stds[cache.result]))
-		query := fmt.Sprintf("INSERT INTO logs_%s(time, issue, result, money, member, user_gold,  exp, dev, rt, bet_gold, win_gold, gold) VALUES (?,?,?,?,?,?, ?,?,?,?,?,?)", cache.user.id)
-		if _, err := cache.db.Exec(query,
-			time.Now().Format("2006-01-02 15:04:05.999"), cache.issue, cache.result, cache.money, cache.member, xUserGold,
-			xExp, xDev, xRt, xBetGold, surplus-xSurplus, surplus,
-		); err != nil {
-			return err
-		}
-	}
-	issue = cache.issue + 1
-	xSurplus = surplus
-	xBetGold = 0
-	xUserGold = cache.user.gold
-
 	// 计算每个数字的间隔期数和当前赔率
-	rts, exp, dev, err := RiddleDetail(cache.user, nextIssue)
+	rts, exp, _, err := RiddleDetail(cache.user, nextIssue)
 	if err != nil {
 		return err
 	}
-	xRts = rts
-	xExp = exp
-	xDev = dev
 
 	// 显示当前中奖情况
-	if len(latest) == 0 {
-		log.Printf("⭐️⭐️⭐️ 第【✊ %d】期：开奖结果【%d】，下期预估期望返奖【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
-	} else {
-		if _, exists := latest[cache.result]; exists {
-			log.Printf("⭐️⭐️⭐️ 第【👍 %d】期：开奖结果【%d】，下期预估期望返奖【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
-		} else {
-			log.Printf("⭐️⭐️⭐️ 第【👀 %d】期：开奖结果【%d】，下期预估期望返奖【%.2f%%】，下期基础投注【%d】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, cache.user.gold, surplus)
-		}
-	}
-
-	// 投注金额 系数设定
-	if cache.money < 2<<23 {
-		// 16,777,216
-		xUserGold = int(float64(xUserGold) * 0.2)
-	} else if cache.money < 2<<24 {
-		// 33,554,432
-		xUserGold = int(float64(xUserGold) * 0.4)
-	} else if cache.money < 2<<25 {
-		// 67,108,864
-		xUserGold = int(float64(xUserGold) * 0.7)
-	} else if cache.money < 2<<26 {
-		// 134,217,728
-		xUserGold = int(float64(xUserGold) * 0.9)
-	} else {
-		// 268,435,456
-		if cache.money > 2<<27 {
-			xUserGold = int(float64(xUserGold) * 1.2)
-		}
-	}
-
-	// 赔率标准方差 系数设定
-	if dev > 1.1 {
-		xUserGold = int(float64(xUserGold) * 1.30)
-	} else if dev > 1.05 {
-		xUserGold = int(float64(xUserGold) * 1.20)
-	} else if dev > 1.00 {
-		xUserGold = int(float64(xUserGold) * 1.10)
-	}
-
-	// 以万为单位进行投注
-	if xUserGold > 100000 {
-		xUserGold = xUserGold / 10000 * 10000
-	}
+	log.Printf("⭐️⭐️⭐️ 第【%d】期：开奖结果【%d】，下期预估期望返奖【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, surplus)
 
 	// 仅投注当前赔率大于标准赔率的数字
-	latest = make(map[int]int)
-	coverage := 0
-
+	bets := make(map[int]float64)
 	for _, result := range SN28 {
 		r0 := 1000.0 / float64(stds[result])
 		r1 := rts[result]
 
-		betGold := int(float64(xUserGold) * float64(stds[result]) / 1000)
-		if betGold <= 0 {
-			log.Printf("第【%s】期：竞猜数字【👀 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，投注金额【     -】\n", nextIssue, result, r0, r1, r1/r0)
+		var rx float64
+		if r1/r0 >= 1.0 {
+			rx = 1.0
+		} else {
+			rx = (r1/r0 - 0.99) * 100
+		}
+
+		if rx <= 0.0001 {
+			log.Printf("第【%s】期：竞猜数字【   %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", nextIssue, result, r0, r1, r1/r0)
 			continue
 		}
 
-		log.Printf("第【%s】期：竞猜数字【👍 %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】，投注金额【% 6d】\n", nextIssue, result, r0, r1, r1/r0, betGold)
+		log.Printf("第【%s】期：竞猜数字【 √ %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", nextIssue, result, r0, r1, r1/r0)
 
-		latest[result] = betGold
-		coverage = coverage + int(float64(stds[result]))
+		bets[result] = rx
 	}
 
-	total := 0
-	rs := make([]int, 0, len(latest))
-	for result, betGold := range latest {
-		if err := hPostBet(nextIssue, betGold, result, cache.user); err != nil {
-			return err
-		}
-
+	// 数字排序
+	rs := make([]int, 0, len(bets))
+	for result := range bets {
 		rs = append(rs, result)
-		total = total + betGold
 	}
 	sort.Ints(rs)
+	log.Printf("第【%s】期：预投注数字【%s】 >>>>>>>>>> \n", nextIssue, fmtIntSlice(rs))
 
-	// 显示投注的汇总结果
-	surplus = surplus - total
-	xBetGold = total
-	log.Printf("第【%s】期：投注金额【%d】，投注数字【%s】，余额【%d】，覆盖率【%.2f%%】 >>>>>>>>>> \n", nextIssue, total, fmtIntSlice(rs), surplus, float64(coverage)/10)
+	// 确定投注模式ID
+	modeId := parseModeId(bets)
+	if modeId <= 0 {
+		log.Printf("第【%s】期：无法确定投注模式ID【%d】 >>>>>>>>>> \n", nextIssue, modeId)
+		return nil
+	}
+
+	// 投注成功
+	if err := hModesBetting(nextIssue, modeId, cache.user); err != nil {
+		return err
+	}
+	log.Printf("第【%s】期：投注模式ID【%d】，投注成功 >>>>>>>>>> \n", nextIssue, modeId)
 
 	return nil
+}
+
+func parseModeId(bets map[int]float64) int {
+	m1, m2, m3, m4, m5, m6, m7, m8 := 0, 0, 0, 0, 0, 0, 0, 0
+	for result := range bets {
+		if result >= 14 {
+			m1++
+		} else {
+			m2++
+		}
+
+		if result%2 == 1 {
+			m3++
+		} else {
+			m4++
+		}
+
+		if result >= 10 && result <= 17 {
+			m5++
+		} else {
+			m6++
+		}
+
+		if result%10 >= 5 && result%10 <= 9 {
+			m7++
+		} else {
+			m8++
+		}
+	}
+
+	if m1 >= m2 && m1 >= m3 && m1 >= m4 && m1 >= m5 && m1 >= m6 && m1 >= m7 && m1 >= m8 {
+		return 1
+	}
+
+	if m2 >= m1 && m2 >= m3 && m2 >= m4 && m2 >= m5 && m2 >= m6 && m2 >= m7 && m2 >= m8 {
+		return 2
+	}
+
+	if m3 >= m1 && m3 >= m2 && m3 >= m4 && m3 >= m5 && m3 >= m6 && m3 >= m7 && m3 >= m8 {
+		return 3
+	}
+
+	if m4 >= m1 && m4 >= m2 && m4 >= m3 && m4 >= m5 && m4 >= m6 && m4 >= m7 && m4 >= m8 {
+		return 4
+	}
+
+	if m5 >= m1 && m5 >= m2 && m5 >= m3 && m5 >= m4 && m5 >= m6 && m5 >= m7 && m5 >= m8 {
+		return 5
+	}
+
+	if m6 >= m1 && m6 >= m2 && m6 >= m3 && m6 >= m4 && m6 >= m5 && m6 >= m7 && m6 >= m8 {
+		return 6
+	}
+
+	if m7 >= m1 && m7 >= m2 && m7 >= m3 && m7 >= m4 && m7 >= m5 && m7 >= m6 && m7 >= m8 {
+		return 7
+	}
+
+	if m8 >= m1 && m8 >= m2 && m8 >= m3 && m8 >= m4 && m8 >= m5 && m8 >= m6 && m8 >= m7 {
+		return 8
+	}
+
+	return 0
 }

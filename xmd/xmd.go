@@ -8,16 +8,10 @@ import (
 var SN28 = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27}
 
 func Run(cache *Cache) {
-	log.Printf("当前设置投注基数为 %d ...\n", cache.user.gold)
 	if cache.user.isDebug {
 		log.Println("当前设置为调试模式，不发送投注请求 ...")
 	}
 	calc()
-
-	// 加载前一次保存的全局变量
-	if err := tempLoad(); err != nil {
-		log.Println(err.Error())
-	}
 
 	dua := time.Now().Sub(time.Now().Truncate(time.Minute))
 	log.Printf("%.2f秒后[%s]，将运行小鸡竞猜游戏 ...", cache.secs-dua.Seconds(), time.Now().Add(time.Second*time.Duration(cache.secs-dua.Seconds())).Format("2006-01-02 15:04:05"))
@@ -28,11 +22,6 @@ func Run(cache *Cache) {
 	}
 
 	if err := analysis(cache); err != nil {
-		log.Println(err.Error())
-	}
-
-	// 保存全局变量
-	if err := tempSave(); err != nil {
 		log.Println(err.Error())
 	}
 
@@ -55,16 +44,6 @@ func Run(cache *Cache) {
 			if err := analysis(cache); err != nil {
 				log.Println(err.Error())
 			}
-
-			// 保存全局变量
-			if err := tempSave(); err != nil {
-				log.Println(err.Error())
-			}
-
-			//if strings.EqualFold(time.Now().Format("15:04"), "00:05") {
-			//	log.Println("执行 【签到抽奖】 ...")
-			//	signIn(cache)
-			//}
 		}
 	}
 }

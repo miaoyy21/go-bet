@@ -21,6 +21,10 @@ type XModesBettingResponse struct {
 }
 
 func hModesBetting(issue string, modeId int, user UserBase) error {
+	if user.isDebug {
+		return nil
+	}
+
 	betRequest := XModesBettingRequest{
 		Issue:  issue,
 		ModeId: modeId,
