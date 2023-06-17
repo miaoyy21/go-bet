@@ -21,7 +21,7 @@ type XBetRequest struct {
 	Token    string `json:"token"`
 }
 
-func hPostBet(nextIssue string, betGold int, result int, user UserBase) error {
+func hBetting1(nextIssue string, betGold int, result int, user UserBase) error {
 	if user.isDebug {
 		return nil
 	}

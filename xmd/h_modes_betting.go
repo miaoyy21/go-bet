@@ -38,7 +38,7 @@ func hModesBetting(issue string, modeId int, user UserBase) error {
 	}
 
 	var betResponse XModesBettingResponse
-	err := hDo(user, "GET", fmt.Sprintf("%s_ModesBetting.ashx", user.url), betRequest, &betResponse)
+	err := hDo(user, "POST", fmt.Sprintf("%s_ModesBetting.ashx", user.url), betRequest, &betResponse)
 	if err != nil {
 		return fmt.Errorf("下期开奖期数【%s】，执行押注模式ID[%d]，出现错误：%s", issue, modeId, err.Error())
 	}

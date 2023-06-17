@@ -1,6 +1,7 @@
 package xmd
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/json"
 	"os"
@@ -22,6 +23,10 @@ func (o *Cache) Reload() (bool, error) {
 	var conf Config
 	if err := json.Unmarshal(bs, &conf); err != nil {
 		return false, err
+	}
+
+	if bytes.Equal(h.Sum(nil), o.md5) {
+		return false, nil
 	}
 
 	user := NewUserBase(

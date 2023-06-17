@@ -6,7 +6,7 @@ import (
 )
 
 func (o *Cache) Sync(size int) error {
-	items, err := hGetHistories(size, o.user)
+	items, err := hAnalyseHistory(size, o.user)
 	if err != nil {
 		return err
 	}
