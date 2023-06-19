@@ -2,6 +2,7 @@ package xmd
 
 import (
 	"fmt"
+	"log"
 )
 
 type XBet struct {
@@ -23,6 +24,7 @@ type XBetRequest struct {
 
 func hBetting1(nextIssue string, betGold int, result int, user UserBase) error {
 	if user.isDebug {
+		log.Printf("第【%s】期：<<<执行>>> 押注数字【%02d】，押注金额【% 6d】\n", nextIssue, result, betGold)
 		return nil
 	}
 
@@ -39,7 +41,7 @@ func hBetting1(nextIssue string, betGold int, result int, user UserBase) error {
 	}
 
 	var betResponse XBet
-	err := hDo(user, "GET", fmt.Sprintf("%s_Betting_1.ashx", user.url), betRequest, &betResponse)
+	err := hDo(user, "POST", fmt.Sprintf("%s_Betting_1.ashx", user.url), betRequest, &betResponse)
 	if err != nil {
 		return fmt.Errorf("下期开奖期数【%s】，执行押注[% 5d]，出现错误：%s", nextIssue, result, err.Error())
 	}

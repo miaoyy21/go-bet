@@ -1,6 +1,9 @@
 package xmd
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 type XModesBettingRequest struct {
 	Issue  string `json:"issue"`
@@ -22,6 +25,7 @@ type XModesBettingResponse struct {
 
 func hModesBetting(issue string, modeId int, user UserBase) error {
 	if user.isDebug {
+		log.Printf("第【%s】期：<<<执行>>> 投注模式ID【%d】\n", issue, modeId)
 		return nil
 	}
 
