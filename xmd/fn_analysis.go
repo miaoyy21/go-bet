@@ -76,7 +76,7 @@ func analysis(cache *Cache) error {
 	if err := hModesBetting(issue, modeId, cache.user); err != nil {
 		return err
 	}
-	log.Printf("第【%s】期：投注模式【%s】，投注成功 >>>>>>>>>> \n", issue, modeName)
+	log.Printf("第【%s】期：使用投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
 
 	// 查询用户设定的投注模式
 	mGold, err := hCustomModes(cache.user)
@@ -86,7 +86,9 @@ func analysis(cache *Cache) error {
 
 	// 投注模式之外的数字
 	extras := extraFn(modeId, mGold, x1s)
-	log.Printf("第【%s】期：额外投注【%s】，投注成功 >>>>>>>>>> \n", issue, fmtIntSlice(m2sFn(extras)))
+	if len(extras) > 0 {
+		log.Printf("第【%s】期：额外投注数字【%s】>>>>>>>>>> \n", issue, fmtIntSlice(m2sFn(extras)))
+	}
 
 	// 使用单数字投注模式，必须使用其提供的标准投注金额
 	stdBets := []int{50000, 10000, 5000, 2000, 1000, 500}
@@ -115,9 +117,8 @@ func analysis(cache *Cache) error {
 
 	// 单数字投注
 	for _, stdBet := range stdBets {
-
-		betSlice := betMaps[stdBet]
-		for _, result := range betSlice {
+		log.Printf("第【%s】期：押注金额【% 6d】，押注数字【%s】，投注成功 >>>>>>>>>> \n", issue, stdBet, fmtIntSlice(betMaps[stdBet]))
+		for _, result := range betMaps[stdBet] {
 			if err := hBetting1(issue, stdBet, result, cache.user); err != nil {
 				return err
 			}
