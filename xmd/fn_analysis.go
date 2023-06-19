@@ -88,10 +88,35 @@ func analysis(cache *Cache) error {
 	extras := extraFn(modeId, mGold, x1s)
 	log.Printf("第【%s】期：额外投注【%s】，投注成功 >>>>>>>>>> \n", issue, fmtIntSlice(m2sFn(extras)))
 
-	for result, betGold := range extras {
-		if err := hBetting1(issue, betGold, result, cache.user); err != nil {
-			return err
+	stdBets := []int{500, 1000, 2000, 5000, 10000, 50000}
+	betMaps := make(map[int][]int, 0)
+
+	for _, stdBet := range stdBets {
+		betSlice, ok := betMaps[stdBet]
+		if !ok {
+			betSlice = make([]int, 0)
 		}
+
+	BREAK:
+		for {
+			for result, betGold := range extras {
+				if betGold < stdBet {
+					break BREAK
+				}
+
+				extras[result] = betGold - stdBet
+				betSlice = append(betSlice, stdBet)
+			}
+		}
+
+		betMaps[stdBet] = betSlice
+	}
+
+	for stdBet, betSlice := range betMaps {
+		log.Printf("%d :: %v \n", stdBet, betSlice)
+		//if err := hBetting1(issue, betGold, result, cache.user); err != nil {
+		//	return err
+		//}
 	}
 
 	return nil
