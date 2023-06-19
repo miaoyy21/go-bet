@@ -91,7 +91,7 @@ func analysis(cache *Cache) error {
 	}
 
 	// 使用单数字投注模式，必须使用其提供的标准投注金额
-	stdBets := []int{50000, 10000, 5000, 2000, 1000, 500}
+	stdBets := []int{200000, 50000, 10000, 5000, 2000, 1000, 500}
 	betMaps := make(map[int][]int)
 
 	for _, stdBet := range stdBets {
@@ -117,7 +117,10 @@ func analysis(cache *Cache) error {
 
 	// 单数字投注
 	for _, stdBet := range stdBets {
-		log.Printf("第【%s】期：押注金额【% 6d】，押注数字【%s】，投注成功 >>>>>>>>>> \n", issue, stdBet, fmtIntSlice(betMaps[stdBet]))
+		if len(betMaps[stdBet]) > 0 {
+			log.Printf("第【%s】期：押注金额【%-6d】，押注数字【%s】，投注成功 >>>>>>>>>> \n", issue, stdBet, fmtIntSlice(betMaps[stdBet]))
+		}
+
 		for _, result := range betMaps[stdBet] {
 			if err := hBetting1(issue, stdBet, result, cache.user); err != nil {
 				return err
