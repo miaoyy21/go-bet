@@ -66,28 +66,29 @@ func analysis(cache *Cache) error {
 	log.Printf("第【%s】期：预投注数字【%s】 >>>>>>>>>> \n", issue, fmtIntSlice(rs))
 
 	// 确定投注模式ID
-	modeId, modeName := modeFn(bets, 400)
-	//modeId, modeName = 0, "暂时不启用模式" // TODO
-
-	// 投注成功
-	if modeId > 0 {
-		if err := hModesBetting(issue, modeId, cache.user); err != nil {
-			return err
-		}
-		log.Printf("第【%s】期：投注模式【%s】，投注成功 >>>>>>>>>> \n", issue, modeName)
-	} else {
+	modeId, modeName := modeFn(bets, 350)
+	if modeId <= 0 {
 		log.Printf("第【%s】期：无法确定投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
+		return nil
 	}
 
+	// 使用模式投注
+	if err := hModesBetting(issue, modeId, cache.user); err != nil {
+		return err
+	}
+	log.Printf("第【%s】期：投注模式【%s】，投注成功 >>>>>>>>>> \n", issue, modeName)
+
+	// 查询用户设定的投注模式
 	mGold, err := hCustomModes(cache.user)
 	if err != nil {
 		return err
 	}
 
-	// 其他的数字
+	// 投注模式之外的数字
 	extras := extraFn(modeId, mGold, x1s)
 	log.Printf("第【%s】期：额外投注【%s】，投注成功 >>>>>>>>>> \n", issue, fmtIntSlice(m2sFn(extras)))
 
+	// 使用单数字投注模式，必须使用其提供的标准投注金额
 	stdBets := []int{50000, 10000, 5000, 2000, 1000, 500}
 	betMaps := make(map[int][]int)
 
@@ -112,6 +113,7 @@ func analysis(cache *Cache) error {
 		betMaps[stdBet] = betSlice
 	}
 
+	// 单数字投注
 	for _, stdBet := range stdBets {
 
 		betSlice := betMaps[stdBet]
