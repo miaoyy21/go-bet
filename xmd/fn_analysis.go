@@ -11,7 +11,7 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
-	nextIssue := strconv.Itoa(cache.issue + 1)
+	issue := strconv.Itoa(cache.issue + 1)
 
 	// 当前账户可用余额
 	surplus, err := hGetGold(cache.user)
@@ -20,7 +20,7 @@ func analysis(cache *Cache) error {
 	}
 
 	// 计算每个数字的间隔期数和当前赔率
-	rts, exp, _, err := RiddleDetail(cache.user, nextIssue)
+	rts, exp, _, err := RiddleDetail(cache.user, issue)
 	if err != nil {
 		return err
 	}
@@ -44,14 +44,14 @@ func analysis(cache *Cache) error {
 		}
 
 		if rx <= 0.01 {
-			log.Printf("第【%s】期：竞猜数字【   %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", nextIssue, result, r0, r1, r1/r0)
+			log.Printf("第【%s】期：竞猜数字【   %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", issue, result, r0, r1, r1/r0)
 			continue
 		}
 
 		if rx >= 1.0 {
-			log.Printf("第【%s】期：竞猜数字【 H %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", nextIssue, result, r0, r1, r1/r0)
+			log.Printf("第【%s】期：竞猜数字【 H %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", issue, result, r0, r1, r1/r0)
 		} else {
-			log.Printf("第【%s】期：竞猜数字【 L %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", nextIssue, result, r0, r1, r1/r0)
+			log.Printf("第【%s】期：竞猜数字【 L %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", issue, result, r0, r1, r1/r0)
 		}
 
 		bets[result] = rx
@@ -63,7 +63,7 @@ func analysis(cache *Cache) error {
 		rs = append(rs, result)
 	}
 	sort.Ints(rs)
-	log.Printf("第【%s】期：预投注数字【%s】 >>>>>>>>>> \n", nextIssue, fmtIntSlice(rs))
+	log.Printf("第【%s】期：预投注数字【%s】 >>>>>>>>>> \n", issue, fmtIntSlice(rs))
 
 	// 确定投注模式ID
 	modeId, modeName := modeFn(bets, 400)
@@ -71,12 +71,12 @@ func analysis(cache *Cache) error {
 
 	// 投注成功
 	if modeId > 0 {
-		if err := hModesBetting(nextIssue, modeId, cache.user); err != nil {
+		if err := hModesBetting(issue, modeId, cache.user); err != nil {
 			return err
 		}
-		log.Printf("第【%s】期：投注模式【%s】，投注成功 >>>>>>>>>> \n", nextIssue, modeName)
+		log.Printf("第【%s】期：投注模式【%s】，投注成功 >>>>>>>>>> \n", issue, modeName)
 	} else {
-		log.Printf("第【%s】期：无法确定投注模式【%s】 >>>>>>>>>> \n", nextIssue, modeName)
+		log.Printf("第【%s】期：无法确定投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
 	}
 
 	mGold, err := hCustomModes(cache.user)
@@ -86,10 +86,10 @@ func analysis(cache *Cache) error {
 
 	// 其他的数字
 	extras := extraFn(modeId, mGold, x1s)
-	log.Printf("第【%s】期：额外投注【%s】，投注成功 >>>>>>>>>> \n", nextIssue, fmtIntSlice(m2sFn(extras)))
+	log.Printf("第【%s】期：额外投注【%s】，投注成功 >>>>>>>>>> \n", issue, fmtIntSlice(m2sFn(extras)))
 
 	for result, betGold := range extras {
-		if err := hBetting1(nextIssue, betGold, result, cache.user); err != nil {
+		if err := hBetting1(issue, betGold, result, cache.user); err != nil {
 			return err
 		}
 	}
