@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
 func hDo(user UserBase, method string, url string, s interface{}, t interface{}) error {
@@ -32,6 +33,7 @@ func hDo(user UserBase, method string, url string, s interface{}, t interface{})
 	req.Header.Set("User-Agent", user.agent)
 
 	// Response
+	http.DefaultClient.Timeout = 3 * time.Second
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err

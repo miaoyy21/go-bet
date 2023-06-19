@@ -35,15 +35,12 @@ func analysis(cache *Cache) error {
 		r0 := 1000.0 / float64(stds[result])
 		r1 := rts[result]
 
-		if r1/r0 >= 1.025 {
-			x1s[result] = struct{}{}
-		}
-
 		var rx float64
 		if r1/r0 >= 1.0 {
 			rx = 1.0
+			x1s[result] = struct{}{}
 		} else {
-			rx = (r1/r0 - 0.975) * 100
+			rx = (r1/r0 - 0.98) * 100.0 / 2.0
 		}
 
 		if rx <= 0.01 {
@@ -51,7 +48,11 @@ func analysis(cache *Cache) error {
 			continue
 		}
 
-		log.Printf("第【%s】期：竞猜数字【 √ %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", nextIssue, result, r0, r1, r1/r0)
+		if rx >= 1.0 {
+			log.Printf("第【%s】期：竞猜数字【 H %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", nextIssue, result, r0, r1, r1/r0)
+		} else {
+			log.Printf("第【%s】期：竞猜数字【 L %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", nextIssue, result, r0, r1, r1/r0)
+		}
 
 		bets[result] = rx
 	}
@@ -65,7 +66,8 @@ func analysis(cache *Cache) error {
 	log.Printf("第【%s】期：预投注数字【%s】 >>>>>>>>>> \n", nextIssue, fmtIntSlice(rs))
 
 	// 确定投注模式ID
-	modeId, modeName := parseModeId(bets)
+	modeId, modeName := parseModeId(bets, 400)
+	//modeId, modeName = 0, "暂时不启用模式" // TODO
 
 	// 投注成功
 	if modeId > 0 {
@@ -107,7 +109,7 @@ func m2sFn(as map[int]struct{}) []int {
 	return ss
 }
 
-func parseModeId(bets map[int]float64) (int, string) {
+func parseModeId(bets map[int]float64, md int) (int, string) {
 	var m1, m2, m3, m4, m5, m6, m7, m8 int
 	for result := range bets {
 		if result >= 14 {
@@ -139,35 +141,35 @@ func parseModeId(bets map[int]float64) (int, string) {
 	m6 = int(float64(m6*56) / 44)
 	log.Printf("模式权重：大数【%d】, 小数【%d】, 奇数【%d】, 偶数【%d】, 中数【%d】, 边数【%d】, 大尾数【%d】, 小尾数【%d】 \n", m1, m2, m3, m4, m5, m6, m7, m8)
 
-	if m1 >= 400 && m1 >= m2 && m1 >= m3 && m1 >= m4 && m1 >= m5 && m1 >= m6 && m1 >= m7 && m1 >= m8 {
+	if m1 >= md && m1 >= m2 && m1 >= m3 && m1 >= m4 && m1 >= m5 && m1 >= m6 && m1 >= m7 && m1 >= m8 {
 		return 1, "大数"
 	}
 
-	if m2 >= 400 && m2 >= m1 && m2 >= m3 && m2 >= m4 && m2 >= m5 && m2 >= m6 && m2 >= m7 && m2 >= m8 {
+	if m2 >= md && m2 >= m1 && m2 >= m3 && m2 >= m4 && m2 >= m5 && m2 >= m6 && m2 >= m7 && m2 >= m8 {
 		return 2, "小数"
 	}
 
-	if m3 >= 400 && m3 >= m1 && m3 >= m2 && m3 >= m4 && m3 >= m5 && m3 >= m6 && m3 >= m7 && m3 >= m8 {
+	if m3 >= md && m3 >= m1 && m3 >= m2 && m3 >= m4 && m3 >= m5 && m3 >= m6 && m3 >= m7 && m3 >= m8 {
 		return 3, "奇数"
 	}
 
-	if m4 >= 400 && m4 >= m1 && m4 >= m2 && m4 >= m3 && m4 >= m5 && m4 >= m6 && m4 >= m7 && m4 >= m8 {
+	if m4 >= md && m4 >= m1 && m4 >= m2 && m4 >= m3 && m4 >= m5 && m4 >= m6 && m4 >= m7 && m4 >= m8 {
 		return 4, "偶数"
 	}
 
-	if m5 >= 400 && m5 >= m1 && m5 >= m2 && m5 >= m3 && m5 >= m4 && m5 >= m6 && m5 >= m7 && m5 >= m8 {
+	if m5 >= md && m5 >= m1 && m5 >= m2 && m5 >= m3 && m5 >= m4 && m5 >= m6 && m5 >= m7 && m5 >= m8 {
 		return 5, "中数"
 	}
 
-	if m6 >= 400 && m6 >= m1 && m6 >= m2 && m6 >= m3 && m6 >= m4 && m6 >= m5 && m6 >= m7 && m6 >= m8 {
+	if m6 >= md && m6 >= m1 && m6 >= m2 && m6 >= m3 && m6 >= m4 && m6 >= m5 && m6 >= m7 && m6 >= m8 {
 		return 6, "边数"
 	}
 
-	if m7 >= 400 && m7 >= m1 && m7 >= m2 && m7 >= m3 && m7 >= m4 && m7 >= m5 && m7 >= m6 && m7 >= m8 {
+	if m7 >= md && m7 >= m1 && m7 >= m2 && m7 >= m3 && m7 >= m4 && m7 >= m5 && m7 >= m6 && m7 >= m8 {
 		return 7, "大尾数"
 	}
 
-	if m8 >= 400 && m8 >= m1 && m8 >= m2 && m8 >= m3 && m8 >= m4 && m8 >= m5 && m8 >= m6 && m8 >= m7 {
+	if m8 >= md && m8 >= m1 && m8 >= m2 && m8 >= m3 && m8 >= m4 && m8 >= m5 && m8 >= m6 && m8 >= m7 {
 		return 8, "小尾数"
 	}
 
