@@ -44,7 +44,8 @@ func Run(cache *Cache) {
 			}
 
 			h := time.Now().Hour()
-			if h >= 9 && h <= 10 {
+			if (h >= 9 && h <= 10) || (h >= 15 && h <= 16) {
+				log.Printf("%s 属于投注暂停时间 ******** \n", time.Now().Format("2006-01-02 15:04:05"))
 				continue
 			}
 
