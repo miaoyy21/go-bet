@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-var sleep = 400 * time.Millisecond
+var sleep = 500 * time.Millisecond
 
 func analysis(cache *Cache) error {
 	if err := cache.Sync(200); err != nil {
@@ -16,21 +16,21 @@ func analysis(cache *Cache) error {
 	}
 
 	issue := strconv.Itoa(cache.issue + 1)
-	time.Sleep(time.Duration(rand.Intn(250)) * time.Millisecond)
+	time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
 
 	// 当前账户可用余额
 	surplus, err := hGetGold(cache.user)
 	if err != nil {
 		return err
 	}
-	time.Sleep(sleep / 3.0)
+	time.Sleep(sleep / 4.0)
 
 	// 计算每个数字的间隔期数和当前赔率
 	rts, exp, _, err := RiddleDetail(cache.user, issue)
 	if err != nil {
 		return err
 	}
-	time.Sleep(sleep / 2.0)
+	time.Sleep(sleep / 4.0)
 
 	// 显示当前中奖情况
 	log.Printf("⭐️⭐️⭐️ 第【%d】期：开奖结果【%d】，下期预估期望返奖【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, surplus)
@@ -84,7 +84,7 @@ func analysis(cache *Cache) error {
 		return err
 	}
 	log.Printf("第【%s】期：使用投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
-	time.Sleep(sleep)
+	time.Sleep(sleep / 2.0)
 
 	// 查询用户设定的投注模式
 	mGold, err := hCustomModes(cache.user)
@@ -134,9 +134,11 @@ func analysis(cache *Cache) error {
 			if err := hBetting1(issue, stdBet, result, cache.user); err != nil {
 				return err
 			}
+
+			time.Sleep(sleep / 10.0)
 		}
 
-		time.Sleep(sleep / 2.0)
+		time.Sleep(sleep / 3.0)
 	}
 
 	return nil
