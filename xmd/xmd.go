@@ -43,6 +43,11 @@ func Run(cache *Cache) {
 				}
 			}
 
+			h := time.Now().Hour()
+			if h >= 9 && h <= 10 {
+				continue
+			}
+
 			if err := analysis(cache); err != nil {
 				log.Println(err.Error())
 			}

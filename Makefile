@@ -12,7 +12,7 @@ install:
 release:
 	# Build for windows
 	go clean
-	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o ${BINARY}_windows_386
+	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o ${BINARY}_windows_386.exe
 
 	# Build for linux
 	go clean
