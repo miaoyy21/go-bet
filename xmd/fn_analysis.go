@@ -25,6 +25,12 @@ func analysis(cache *Cache) error {
 		return err
 	}
 
+	// 查询用户设定的投注模式
+	m1Gold, err := hCustomModes(cache.user)
+	if err != nil {
+		return err
+	}
+
 	// 显示当前中奖情况
 	log.Printf("⭐️⭐️⭐️ 第【%d】期：开奖结果【%d】，下期预估期望返奖【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, surplus)
 
@@ -67,12 +73,6 @@ func analysis(cache *Cache) error {
 
 	// 确定投注模式ID
 	modeId, modeName := modeFn(bets, 400)
-	//if modeId <= 0 {
-	//	log.Printf("第【%s】期：无法确定投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
-	//	return nil
-	//}
-
-	// 使用模式投注
 	if modeId > 0 {
 		if err := hModesBetting(issue, modeId, cache.user); err != nil {
 			return err
@@ -80,14 +80,8 @@ func analysis(cache *Cache) error {
 		log.Printf("第【%s】期：使用投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
 	}
 
-	// 查询用户设定的投注模式
-	mGold, err := hCustomModes(cache.user)
-	if err != nil {
-		return err
-	}
-
 	// 投注模式之外的数字
-	extras := extraFn(modeId, mGold, x1s)
+	extras := extraFn(modeId, m1Gold, x1s)
 	if len(extras) > 0 {
 		log.Printf("第【%s】期：额外投注数字【%s】>>>>>>>>>> \n", issue, fmtIntSlice(m2sFn(extras)))
 	}
