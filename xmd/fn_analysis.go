@@ -4,7 +4,6 @@ import (
 	"log"
 	"sort"
 	"strconv"
-	"time"
 )
 
 func analysis(cache *Cache) error {
@@ -67,18 +66,19 @@ func analysis(cache *Cache) error {
 	log.Printf("第【%s】期：预投注数字【%s】 >>>>>>>>>> \n", issue, fmtIntSlice(rs))
 
 	// 确定投注模式ID
-	modeId, modeName := modeFn(bets, 350)
-	if modeId <= 0 {
-		log.Printf("第【%s】期：无法确定投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
-		return nil
-	}
+	modeId, modeName := modeFn(bets, 400)
+	//if modeId <= 0 {
+	//	log.Printf("第【%s】期：无法确定投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
+	//	return nil
+	//}
 
 	// 使用模式投注
-	if err := hModesBetting(issue, modeId, cache.user); err != nil {
-		return err
+	if modeId > 0 {
+		if err := hModesBetting(issue, modeId, cache.user); err != nil {
+			return err
+		}
+		log.Printf("第【%s】期：使用投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
 	}
-	log.Printf("第【%s】期：使用投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
-	time.Sleep(500 * time.Millisecond)
 
 	// 查询用户设定的投注模式
 	mGold, err := hCustomModes(cache.user)
@@ -127,8 +127,6 @@ func analysis(cache *Cache) error {
 			if err := hBetting1(issue, stdBet, result, cache.user); err != nil {
 				return err
 			}
-
-			time.Sleep(100 * time.Millisecond)
 		}
 	}
 
