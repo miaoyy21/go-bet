@@ -45,7 +45,11 @@ func fmtIntSlice(s []int) string {
 
 func modeFn(bets map[int]float64, md int) (int, string) {
 	var m1, m2, m3, m4, m5, m6, m7, m8 int
-	for result := range bets {
+	for result, rx := range bets {
+		if rx < 1.0 {
+			continue
+		}
+
 		if result >= 14 {
 			m1 += stds[result]
 		} else {
@@ -110,7 +114,7 @@ func modeFn(bets map[int]float64, md int) (int, string) {
 	return 0, "未知"
 }
 
-func extraFn(modeId int, mGold int, x1s map[int]struct{}) map[int]int {
+func extraFn(modeId int, mGold int, bets map[int]float64) map[int]int {
 	as := make([]int, 0)
 
 	switch modeId {
@@ -140,13 +144,16 @@ func extraFn(modeId int, mGold int, x1s map[int]struct{}) map[int]int {
 	}
 
 	extras := make(map[int]int)
-	for x1 := range x1s {
-		if _, ok := axs[x1]; ok {
+	for result, rx := range bets {
+		if _, ok := axs[result]; ok {
 			continue
 		}
 
-		betGold := float64(mGold*2) * float64(stds[x1]) / 1000
-		extras[x1] = int(math.Ceil(betGold/500.0) * 500)
+		betGold := rx * float64(mGold*2) * float64(stds[result]) / 1000
+		iGold := int(math.Floor(betGold/500.0) * 500)
+		if iGold > 0 {
+			extras[result] = iGold
+		}
 	}
 
 	return extras

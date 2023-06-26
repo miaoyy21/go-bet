@@ -20,7 +20,7 @@ func analysis(cache *Cache) error {
 	}
 
 	// 计算每个数字的间隔期数和当前赔率
-	rts, exp, _, err := RiddleDetail(cache.user, issue)
+	rts, exp, dev, err := RiddleDetail(cache.user, issue)
 	if err != nil {
 		return err
 	}
@@ -32,11 +32,10 @@ func analysis(cache *Cache) error {
 	}
 
 	// 显示当前中奖情况
-	log.Printf("⭐️⭐️⭐️ 第【%d】期：开奖结果【%d】，下期预估期望返奖【%.2f%%】，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp*100, surplus)
+	log.Printf("⭐️⭐️⭐️ 第【%d】期：开奖结果【%d】，下期「预估期望【%6.4f】，预估平均方差【%6.4f】」，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp, dev, surplus)
 
 	// 仅投注当前赔率大于标准赔率的数字
 	bets := make(map[int]float64)
-	x1s := make(map[int]struct{})
 	for _, result := range SN28 {
 		r0 := 1000.0 / float64(stds[result])
 		r1 := rts[result]
@@ -44,7 +43,6 @@ func analysis(cache *Cache) error {
 		var rx float64
 		if r1/r0 >= 1.0 {
 			rx = 1.0
-			x1s[result] = struct{}{}
 		} else {
 			rx = (r1/r0 - 0.98) * 100.0 / 2.0
 		}
@@ -81,7 +79,7 @@ func analysis(cache *Cache) error {
 	}
 
 	// 投注模式之外的数字
-	extras := extraFn(modeId, m1Gold, x1s)
+	extras := extraFn(modeId, m1Gold, bets)
 	if len(extras) > 0 {
 		log.Printf("第【%s】期：额外投注数字【%s】>>>>>>>>>> \n", issue, fmtIntSlice(m2sFn(extras)))
 	}
