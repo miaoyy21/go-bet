@@ -34,6 +34,32 @@ func analysis(cache *Cache) error {
 	// 显示当前中奖情况
 	log.Printf("⭐️⭐️⭐️ 第【%d】期：开奖结果【%d】，下期「预估期望【%6.4f】，预估平均方差【%6.4f】」，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp, dev, surplus)
 
+	// 投注金额 系数设定
+	if cache.money < 2<<24 {
+		// 33,554,432
+		m1Gold = int(float64(m1Gold) * 0.4)
+	} else if cache.money < 2<<25 {
+		// 67,108,864
+		m1Gold = int(float64(m1Gold) * 0.7)
+	} else if cache.money < 2<<26 {
+		// 134,217,728
+		m1Gold = int(float64(m1Gold) * 0.9)
+	} else {
+		// 268,435,456
+		if cache.money > 2<<27 {
+			m1Gold = int(float64(m1Gold) * 1.25)
+		}
+	}
+
+	// 赔率标准方差 系数设定
+	if dev > 1.1 {
+		m1Gold = int(float64(m1Gold) * 1.30)
+	} else if dev > 1.05 {
+		m1Gold = int(float64(m1Gold) * 1.20)
+	} else if dev > 1.00 {
+		m1Gold = int(float64(m1Gold) * 1.10)
+	}
+
 	// 仅投注当前赔率大于标准赔率的数字
 	bets := make(map[int]float64)
 	for _, result := range SN28 {
@@ -61,6 +87,15 @@ func analysis(cache *Cache) error {
 		bets[result] = rx
 	}
 
+	if err := betMode(cache, issue, m1Gold, bets); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// 使用基于投注模式方式投注
+func betMode(cache *Cache, issue string, m1Gold int, bets map[int]float64) error {
 	// 数字排序
 	rs := make([]int, 0, len(bets))
 	for result := range bets {
