@@ -149,7 +149,7 @@ func extraFn(modeId int, mGold int, bets map[int]float64) map[int]int {
 			continue
 		}
 
-		betGold := rx * float64(mGold*2) * float64(stds[result]) / 1000
+		betGold := rx * float64(2*mGold) * float64(stds[result]) / 1000
 		iGold := int(math.Floor(betGold/500.0) * 500)
 		if iGold > 0 {
 			extras[result] = iGold

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/json"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -30,12 +31,14 @@ func (o *Cache) Reload() (bool, error) {
 	}
 
 	user := NewUserBase(
-		conf.IsDebug, conf.Origin, conf.URL, conf.Cookie, conf.Agent,
+		conf.IsDebug, conf.IsBetMode, conf.Origin, conf.URL, conf.Cookie, conf.Agent,
 		conf.Unix, conf.KeyCode, conf.DeviceId, conf.UserId, conf.Token,
 	)
 
 	o.md5 = h.Sum(nil)
 	o.user = user
+
+	log.Printf("当前是否启用设定投注模式【%t】 ... \n", o.user.isBetMode)
 
 	return true, nil
 }

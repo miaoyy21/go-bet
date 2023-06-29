@@ -11,6 +11,8 @@ func Run(cache *Cache) {
 	if cache.user.isDebug {
 		log.Println("当前设置为调试模式，不发送投注请求 ...")
 	}
+
+	log.Printf("当前是否启用设定投注模式【%t】 ... \n", cache.user.isBetMode)
 	calc()
 
 	dua := time.Now().Sub(time.Now().Truncate(time.Minute))
@@ -43,11 +45,11 @@ func Run(cache *Cache) {
 				}
 			}
 
-			//h := time.Now().Hour()
-			//if h == 3 || (h >= 9 && h <= 10) || (h >= 15 && h <= 16) {
-			//	log.Printf("%s 属于投注暂停时间 ******** \n", time.Now().Format("2006-01-02 15:04:05"))
-			//	continue
-			//}
+			hm := time.Now().Format("15:04")
+			if (hm >= "08:00" && hm <= "12:00") || (hm >= "13:30" && hm <= "17:30") {
+				log.Printf("%s 属于投注暂停时间 ******** \n", time.Now().Format("2006-01-02 15:04:05"))
+				continue
+			}
 
 			if err := analysis(cache); err != nil {
 				log.Println(err.Error())

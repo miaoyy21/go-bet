@@ -1,7 +1,8 @@
 package xmd
 
 type UserBase struct {
-	isDebug bool
+	isDebug   bool
+	isBetMode bool
 
 	origin string
 	url    string
@@ -14,9 +15,10 @@ type UserBase struct {
 	token  string
 }
 
-func NewUserBase(debug bool, origin string, url string, cookie string, agent string, unix string, code string, device string, id string, token string) UserBase {
+func NewUserBase(debug bool, isBetMode bool, origin string, url string, cookie string, agent string, unix string, code string, device string, id string, token string) UserBase {
 	return UserBase{
-		isDebug: debug,
+		isDebug:   debug,
+		isBetMode: isBetMode,
 
 		origin: origin,
 		url:    url,
