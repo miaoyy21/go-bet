@@ -24,6 +24,12 @@ func Run(cache *Cache) {
 			log.Println(err.Error())
 		}
 
+		hm := time.Now().Format("15:04")
+		if (hm >= "09:00" && hm <= "11:00") || (hm >= "14:00" && hm <= "17:00") {
+			log.Println("属于投注暂停时间 ********")
+			return
+		}
+
 		if err := analysis(cache); err != nil {
 			log.Println(err.Error())
 		}
