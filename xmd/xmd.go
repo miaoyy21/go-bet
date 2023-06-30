@@ -46,8 +46,8 @@ func Run(cache *Cache) {
 			}
 
 			hm := time.Now().Format("15:04")
-			if (hm >= "08:00" && hm <= "12:00") || (hm >= "13:30" && hm <= "17:30") {
-				log.Printf("%s 属于投注暂停时间 ******** \n", time.Now().Format("2006-01-02 15:04:05"))
+			if (hm >= "09:00" && hm <= "11:00") || (hm >= "14:00" && hm <= "17:00") {
+				log.Println("属于投注暂停时间 ********")
 				continue
 			}
 
