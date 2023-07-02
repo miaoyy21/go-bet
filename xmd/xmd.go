@@ -2,12 +2,14 @@ package xmd
 
 import (
 	"log"
+	"math/rand"
 	"time"
 )
 
 var SN28 = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27}
 
 func Run(cache *Cache) {
+	rand.Seed(time.Now().Unix())
 	if cache.user.isDebug {
 		log.Println("当前设置为调试模式，不发送投注请求 ...")
 	}
@@ -63,8 +65,10 @@ func Run(cache *Cache) {
 func isStop() bool {
 	hm := time.Now().Format("15:04")
 	if (hm >= "09:00" && hm <= "11:00") || (hm >= "14:00" && hm <= "17:00") {
-		log.Println("属于投注暂停时间 ********")
-		return true
+		if rand.Float32() <= 0.50 {
+			log.Println("属于投注暂停时间，随机选择不进行投注 ********")
+			return true
+		}
 	}
 
 	return false

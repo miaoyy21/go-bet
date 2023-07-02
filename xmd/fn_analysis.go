@@ -2,10 +2,13 @@ package xmd
 
 import (
 	"log"
+	"math/rand"
 	"sort"
 	"strconv"
 	"time"
 )
+
+var latest = make(map[int]struct{})
 
 func analysis(cache *Cache) error {
 	if err := cache.Sync(200); err != nil {
@@ -15,6 +18,18 @@ func analysis(cache *Cache) error {
 	issue := strconv.Itoa(cache.issue + 1)
 	if !cache.user.isBetMode {
 		time.Sleep(2 * time.Second)
+	}
+
+	// 设定是否进行投注
+	if len(latest) > 0 {
+		if _, ok := latest[cache.result]; !ok {
+			if rand.Float32() <= 0.80 {
+				latest = make(map[int]struct{})
+				log.Printf("😤😤😤 第【%s】期：上一期开奖结果【%d】，由于投注失利，随机选择不进行投注 >>>>>>>>>> \n", issue, cache.result)
+
+				return nil
+			}
+		}
 	}
 
 	// 当前账户可用余额
@@ -30,6 +45,7 @@ func analysis(cache *Cache) error {
 	}
 
 	// 显示当前中奖情况
+	latest = make(map[int]struct{})
 	log.Printf("⭐️⭐️⭐️ 第【%d】期：开奖结果【%d】，下期「预估期望【%6.4f】，预估平均方差【%6.4f】」，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp, dev, surplus)
 
 	// 仅投注当前赔率大于标准赔率的数字
@@ -51,6 +67,7 @@ func analysis(cache *Cache) error {
 		}
 
 		if rx >= 1.0 {
+			latest[result] = struct{}{}
 			log.Printf("第【%s】期：竞猜数字【 H %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", issue, result, r0, r1, r1/r0)
 		} else {
 			log.Printf("第【%s】期：竞猜数字【 L %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", issue, result, r0, r1, r1/r0)
