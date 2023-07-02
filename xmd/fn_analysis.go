@@ -21,15 +21,11 @@ func analysis(cache *Cache) error {
 	}
 
 	// 设定是否进行投注
-	if len(latest) > 0 {
-		if _, ok := latest[cache.result]; !ok {
-			if rand.Float32() <= 0.80 {
-				latest = make(map[int]struct{})
-				log.Printf("😤😤😤 第【%s】期：上一期开奖结果【%d】，由于投注失利，随机选择不进行投注 >>>>>>>>>> \n", issue, cache.result)
+	if _, ok := latest[cache.result]; !ok && len(latest) > 0 && rand.Float32() <= 0.20 {
+		latest = make(map[int]struct{})
+		log.Printf("😤😤😤 第【%s】期：上一期开奖结果【%d】，由于投注失利，随机选择不进行投注 >>>>>>>>>> \n", issue, cache.result)
 
-				return nil
-			}
-		}
+		return nil
 	}
 
 	// 当前账户可用余额

@@ -65,10 +65,8 @@ func Run(cache *Cache) {
 func isStop() bool {
 	hm := time.Now().Format("15:04")
 	if (hm >= "09:00" && hm <= "11:00") || (hm >= "14:00" && hm <= "17:00") {
-		if rand.Float32() <= 0.50 {
-			log.Println("属于投注暂停时间，随机选择不进行投注 ********")
-			return true
-		}
+		log.Println("属于投注暂停时间，不进行投注 ********")
+		return true
 	}
 
 	return false
