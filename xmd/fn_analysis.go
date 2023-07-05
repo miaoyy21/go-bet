@@ -10,11 +10,8 @@ import (
 var latest = make(map[int]struct{})
 
 func analysis(cache *Cache) error {
-	if err := cache.Sync(200); err != nil {
-		return err
-	}
-
 	issue := strconv.Itoa(cache.issue + 1)
+
 	if !cache.user.isBetMode {
 		time.Sleep(2 * time.Second)
 	}

@@ -22,8 +22,12 @@ func Run(cache *Cache) {
 	time.Sleep(time.Second * time.Duration(cache.secs-dua.Seconds()))
 
 	go func() {
+		if err := cache.Sync(200); err != nil {
+			log.Panicln(err.Error())
+		}
+
 		if _, err := cache.Reload(); err != nil {
-			log.Println(err.Error())
+			log.Panicln(err.Error())
 		}
 
 		if isStop(cache) {
@@ -31,7 +35,7 @@ func Run(cache *Cache) {
 		}
 
 		if err := analysis(cache); err != nil {
-			log.Println(err.Error())
+			log.Panicln(err.Error())
 		}
 	}()
 
@@ -49,6 +53,11 @@ func Run(cache *Cache) {
 				if ok {
 					log.Println("配置文件变化，重新加载配置文件完成 ...")
 				}
+			}
+
+			// 查询开奖历史
+			if err := cache.Sync(200); err != nil {
+				log.Println(err.Error())
 			}
 
 			if isStop(cache) {
