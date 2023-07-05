@@ -2,7 +2,6 @@ package xmd
 
 import (
 	"log"
-	"math/rand"
 	"sort"
 	"strconv"
 	"time"
@@ -18,14 +17,6 @@ func analysis(cache *Cache) error {
 	issue := strconv.Itoa(cache.issue + 1)
 	if !cache.user.isBetMode {
 		time.Sleep(2 * time.Second)
-	}
-
-	// 设定是否进行投注
-	if _, ok := latest[cache.result]; !ok && len(latest) > 0 && rand.Float32() <= 0.20 {
-		latest = make(map[int]struct{})
-		log.Printf("😤😤😤 第【%s】期：上一期开奖结果【%d】，由于投注失利，随机选择不进行投注 >>>>>>>>>> \n", issue, cache.result)
-
-		return nil
 	}
 
 	// 当前账户可用余额

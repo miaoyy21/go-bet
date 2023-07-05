@@ -26,7 +26,7 @@ func Run(cache *Cache) {
 			log.Println(err.Error())
 		}
 
-		if isStop() {
+		if isStop(cache) {
 			return
 		}
 
@@ -51,7 +51,7 @@ func Run(cache *Cache) {
 				}
 			}
 
-			if isStop() {
+			if isStop(cache) {
 				continue
 			}
 
@@ -62,12 +62,20 @@ func Run(cache *Cache) {
 	}
 }
 
-func isStop() bool {
-	hm := time.Now().Format("15:04")
-	if (hm >= "09:00" && hm <= "11:00") || (hm >= "14:00" && hm <= "17:00") {
-		log.Println("属于投注暂停时间，不进行投注 ********")
-		return true
+func isStop(cache *Cache) bool {
+	if len(latest) <= 0 {
+		return false
 	}
 
-	return false
+	if _, ok := latest[cache.result]; ok {
+		return false
+	}
+
+	if rand.Float32() <= 0.50 {
+		return false
+	}
+
+	latest = make(map[int]struct{})
+	log.Printf("😤😤😤 第【%d】期：上一期开奖结果【%d】，由于投注失利，随机选择不进行投注 >>>>>>>>>> \n", cache.issue+1, cache.result)
+	return true
 }
