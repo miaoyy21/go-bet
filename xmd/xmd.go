@@ -23,11 +23,11 @@ func Run(cache *Cache) {
 
 	go func() {
 		if err := cache.Sync(200); err != nil {
-			log.Panicln(err.Error())
+			log.Println(err.Error())
 		}
 
 		if _, err := cache.Reload(); err != nil {
-			log.Panicln(err.Error())
+			log.Println(err.Error())
 		}
 
 		if isStop(cache) {
@@ -35,7 +35,7 @@ func Run(cache *Cache) {
 		}
 
 		if err := analysis(cache); err != nil {
-			log.Panicln(err.Error())
+			log.Println(err.Error())
 		}
 	}()
 
