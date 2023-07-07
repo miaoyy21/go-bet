@@ -13,6 +13,8 @@ var stops = 0
 
 func analysis(cache *Cache) error {
 	issue := strconv.Itoa(cache.issue + 1)
+
+	latest = make(map[int]struct{})
 	if !cache.user.isBetMode {
 		time.Sleep(2 * time.Second)
 	}
@@ -30,7 +32,6 @@ func analysis(cache *Cache) error {
 	}
 
 	// 显示当前中奖情况
-	latest = make(map[int]struct{})
 	log.Printf("⭐️⭐️⭐️ 第【%d】期：开奖结果【%d】，下期「预估期望【%6.4f】，预估平均方差【%6.4f】」，余额【%d】，开始执行分析 ...\n", cache.issue, cache.result, exp, dev, surplus)
 
 	// 仅投注当前赔率大于标准赔率的数字
@@ -52,7 +53,6 @@ func analysis(cache *Cache) error {
 		}
 
 		if rx >= 1.0 {
-			latest[result] = struct{}{}
 			log.Printf("第【%s】期：竞猜数字【 H %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", issue, result, r0, r1, r1/r0)
 		} else {
 			log.Printf("第【%s】期：竞猜数字【 L %02d】，标准赔率【%-7.2f】，实际赔率【%-7.2f】，赔率系数【%-6.4f】\n", issue, result, r0, r1, r1/r0)
@@ -97,14 +97,14 @@ func betMode(cache *Cache, issue string, bets map[int]float64) error {
 	// 确定投注模式ID
 	modeId, modeName := modeFn(bets, 250)
 	if modeId > 0 {
+		log.Printf("第【%s】期：使用投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
 		if err := hModesBetting(issue, modeId, cache.user); err != nil {
 			return err
 		}
-		log.Printf("第【%s】期：使用投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
 	}
 
 	// 投注模式之外的数字
-	extras := extraFn(modeId, m1Gold, bets)
+	ams, extras := extraFn(modeId, m1Gold, bets)
 	if len(extras) > 0 {
 		log.Printf("第【%s】期：额外投注数字【%s】>>>>>>>>>> \n", issue, fmtIntSlice(m2sFn(extras)))
 	}
@@ -135,12 +135,14 @@ func betMode(cache *Cache, issue string, bets map[int]float64) error {
 	}
 
 	// 单数字投注
+	latest = ams
 	for _, stdBet := range stdBets {
 		if len(betMaps[stdBet]) > 0 {
 			log.Printf("第【%s】期：押注金额【%-6d】，押注数字【%s】，投注成功 >>>>>>>>>> \n", issue, stdBet, fmtIntSlice(betMaps[stdBet]))
 		}
 
 		for _, result := range betMaps[stdBet] {
+			latest[result] = struct{}{}
 			if err := hBetting1(issue, stdBet, result, cache.user); err != nil {
 				return err
 			}
@@ -162,6 +164,7 @@ func betSingle(cache *Cache, issue string, mrx float64, bets map[int]float64) er
 			continue
 		}
 
+		latest[result] = struct{}{}
 		betGold := int(mrx * bets[result] * float64(2*m1Gold) * float64(stds[result]) / 1000)
 		if err := hBetting1(issue, betGold, result, cache.user); err != nil {
 			return err

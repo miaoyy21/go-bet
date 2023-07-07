@@ -114,7 +114,7 @@ func modeFn(bets map[int]float64, md int) (int, string) {
 	return 0, "未知"
 }
 
-func extraFn(modeId int, mGold int, bets map[int]float64) map[int]int {
+func extraFn(modeId int, mGold int, bets map[int]float64) (map[int]struct{}, map[int]int) {
 	as := make([]int, 0)
 
 	switch modeId {
@@ -138,14 +138,14 @@ func extraFn(modeId int, mGold int, bets map[int]float64) map[int]int {
 		as = make([]int, 0)
 	}
 
-	axs := make(map[int]struct{})
+	ams := make(map[int]struct{})
 	for _, a := range as {
-		axs[a] = struct{}{}
+		ams[a] = struct{}{}
 	}
 
 	extras := make(map[int]int)
 	for result, rx := range bets {
-		if _, ok := axs[result]; ok {
+		if _, ok := ams[result]; ok {
 			continue
 		}
 
@@ -156,5 +156,5 @@ func extraFn(modeId int, mGold int, bets map[int]float64) map[int]int {
 		}
 	}
 
-	return extras
+	return ams, extras
 }

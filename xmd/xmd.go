@@ -72,18 +72,21 @@ func Run(cache *Cache) {
 }
 
 func isStop(cache *Cache) bool {
-	if stops > 0 {
+
+	if stops > 1 {
 		stops--
 		latest = make(map[int]struct{})
-		log.Printf("😤😤😤 第【%d】期：上一期开奖结果【%d】，暂停投注，剩余期数【%d】 >>>>>>>>>> \n", cache.issue+1, cache.result, stops)
-		return true
+		//log.Printf("😤😤😤 第【%d】期：上一期开奖结果【%d】，暂停投注，剩余期数【%d】 >>>>>>>>>> \n", cache.issue+1, cache.result, stops)
+		//return true
+		return false
 	}
 
-	if len(latest) <= 0 {
+	if len(latest) < 1 {
 		return false
 	}
 
 	if _, ok := latest[cache.result]; ok {
+		fails = 0
 		return false
 	}
 
@@ -94,6 +97,7 @@ func isStop(cache *Cache) bool {
 
 	fails, stops = 0, 10
 	latest = make(map[int]struct{})
-	log.Printf("😤😤😤 第【%d】期：上一期开奖结果【%d】，暂停投注，剩余期数【%d】 >>>>>>>>>> \n", cache.issue+1, cache.result, stops)
-	return true
+	//log.Printf("😤😤😤 第【%d】期：上一期开奖结果【%d】，暂停投注，剩余期数【%d】 >>>>>>>>>> \n", cache.issue+1, cache.result, stops)
+	//return true
+	return false
 }
