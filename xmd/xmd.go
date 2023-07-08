@@ -72,32 +72,41 @@ func Run(cache *Cache) {
 }
 
 func isStop(cache *Cache) bool {
+	hm := time.Now().Format("15:04")
 
-	if stops > 1 {
-		stops--
+	// 工作时间段
+	if (hm >= "04:30" && hm <= "05:30") || (hm >= "08:30" && hm <= "11:30") || (hm >= "14:30" && hm <= "17:00") {
+		if stops > 1 {
+			stops--
+			latest = make(map[int]struct{})
+			log.Printf("😤😤😤 第【%d】期：上一期开奖结果【%d】，暂停投注，剩余期数【%d】 >>>>>>>>>> \n", cache.issue+1, cache.result, stops)
+			return true
+		}
+
+		if len(latest) < 1 {
+			return false
+		}
+
+		if _, ok := latest[cache.result]; ok {
+			fails = 0
+			return false
+		}
+
+		fails++
+		if fails < 3 {
+			return false
+		}
+
+		fails, stops = 0, 4
 		latest = make(map[int]struct{})
-		//log.Printf("😤😤😤 第【%d】期：上一期开奖结果【%d】，暂停投注，剩余期数【%d】 >>>>>>>>>> \n", cache.issue+1, cache.result, stops)
-		//return true
-		return false
+		log.Printf("😤😤😤 第【%d】期：上一期开奖结果【%d】，暂停投注，剩余期数【%d】 >>>>>>>>>> \n", cache.issue+1, cache.result, stops)
+		return true
 	}
 
-	if len(latest) < 1 {
-		return false
+	fails, stops = 0, 0
+	if _, ok := latest[cache.result]; !ok && rand.Float32() <= 0.80 {
+		return true
 	}
 
-	if _, ok := latest[cache.result]; ok {
-		fails = 0
-		return false
-	}
-
-	fails++
-	if fails < 3 {
-		return false
-	}
-
-	fails, stops = 0, 10
-	latest = make(map[int]struct{})
-	//log.Printf("😤😤😤 第【%d】期：上一期开奖结果【%d】，暂停投注，剩余期数【%d】 >>>>>>>>>> \n", cache.issue+1, cache.result, stops)
-	//return true
 	return false
 }

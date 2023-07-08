@@ -86,6 +86,11 @@ func betMode(cache *Cache, issue string, bets map[int]float64) error {
 		return err
 	}
 
+	if m1Gold*2 <= 1000 {
+		log.Printf("第【%s】期：投注金额%d小于设定的最小金额，不进行投注 >>>>>>>>>> \n", issue, m1Gold)
+		return nil
+	}
+
 	// 数字排序
 	rs := make([]int, 0, len(bets))
 	for result := range bets {
@@ -157,6 +162,11 @@ func betSingle(cache *Cache, issue string, mrx float64, bets map[int]float64) er
 	m1Gold, err := hCustomModes(cache.user)
 	if err != nil {
 		return err
+	}
+
+	if m1Gold*2 <= 1000 {
+		log.Printf("第【%s】期：投注金额%d小于设定的最小金额，不进行投注 >>>>>>>>>> \n", issue, m1Gold)
+		return nil
 	}
 
 	for _, result := range SN28 {
