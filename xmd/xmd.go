@@ -104,6 +104,10 @@ func isStop(cache *Cache) bool {
 	}
 
 	fails, stops = 0, 0
+	if len(latest) < 1 {
+		return false
+	}
+
 	if _, ok := latest[cache.result]; !ok && rand.Float32() <= 0.80 {
 		return true
 	}
