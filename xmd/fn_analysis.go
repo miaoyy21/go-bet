@@ -44,7 +44,8 @@ func analysis(cache *Cache) error {
 		if r1/r0 >= 1.0 {
 			rx = 1.0
 		} else {
-			rx = (r1/r0 - 0.98) * 100.0 / 2.0
+			rx = (r1/r0 - 0.99) * 100.0
+			//rx = (r1/r0 - 0.98) * 100.0 / 2.0
 		}
 
 		if rx <= 0.01 {
@@ -86,7 +87,7 @@ func betMode(cache *Cache, issue string, bets map[int]float64) error {
 		return err
 	}
 
-	if m1Gold*2 <= 1000 {
+	if m1Gold*2 <= 10000 {
 		log.Printf("第【%s】期：投注金额%d小于设定的最小金额，不进行投注 >>>>>>>>>> \n", issue, m1Gold)
 		return nil
 	}
@@ -164,7 +165,7 @@ func betSingle(cache *Cache, issue string, mrx float64, bets map[int]float64) er
 		return err
 	}
 
-	if m1Gold*2 <= 1000 {
+	if m1Gold*2 <= 10000 {
 		log.Printf("第【%s】期：投注金额%d小于设定的最小金额，不进行投注 >>>>>>>>>> \n", issue, m1Gold)
 		return nil
 	}
