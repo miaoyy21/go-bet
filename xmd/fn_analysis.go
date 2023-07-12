@@ -8,8 +8,6 @@ import (
 )
 
 var latest = make(map[int]struct{})
-var fails = 0
-var stops = 0
 
 func analysis(cache *Cache) error {
 	issue := strconv.Itoa(cache.issue + 1)
@@ -101,12 +99,17 @@ func betMode(cache *Cache, issue string, bets map[int]float64) error {
 	log.Printf("第【%s】期：预投注数字【%s】 >>>>>>>>>> \n", issue, fmtIntSlice(rs))
 
 	// 确定投注模式ID
-	modeId, modeName := modeFn(bets, 250)
-	if modeId > 0 {
-		log.Printf("第【%s】期：使用投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
-		if err := hModesBetting(issue, modeId, cache.user); err != nil {
-			return err
-		}
+	md := 300
+	modeId, modeName := modeFn(bets, md)
+	if modeId == 0 {
+		log.Printf("第【%s】期：所有模式权重均不超过%d，的无法确定投注模式，暂不投注 >>>>>>>>>> \n", issue, md)
+		latest = make(map[int]struct{})
+		return nil
+	}
+
+	log.Printf("第【%s】期：使用投注模式【%s】 >>>>>>>>>> \n", issue, modeName)
+	if err := hModesBetting(issue, modeId, cache.user); err != nil {
+		return err
 	}
 
 	// 投注模式之外的数字
